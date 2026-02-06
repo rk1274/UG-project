@@ -126,7 +126,8 @@ if __name__ == "__main__":
                 w_e[e] = ccc
 
             nx.set_edge_attributes(G.get_graph(), w_e, 'label')
-
+            
+            G.apply_warehouse_logic()
             # print internal data
             if config["misc"]["print_DAG"]:
                 G.print_data()

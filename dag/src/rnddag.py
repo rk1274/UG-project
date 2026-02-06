@@ -14,7 +14,8 @@ import networkx as nx
 from networkx.drawing.nx_agraph import graphviz_layout, to_agraph
 import pygraphviz as pgv
 
-from random import seed, randint, random
+import random
+from random import seed, randint
 
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
@@ -27,7 +28,7 @@ class DAGTaskset:
         self.util = 0
         self.task_number = 0
         self.tasks = []
-
+    
     def gen(self, u, n):
         # generate tasks
 
@@ -73,6 +74,8 @@ class DAG:
         self.fork_n_min = 2
         self.fork_n_max = 4
 
+        self.node_info = {}
+
     def __str__(self):
         A = nx.nx_agraph.to_agraph(self.G)
         return A.__str__()
@@ -88,7 +91,7 @@ class DAG:
 
     def gen(self, algorithm):
         if algorithm == "nfj":
-            self.gen_rnd_nfj()
+            self.gen_nfj()
         elif algorithm == "rnd":
             self.gen_rnd()
         else:
@@ -135,7 +138,7 @@ class DAG:
             for i in nodes[k+1]:
                 for ii in nodes_parent:
                     # add connections
-                    if random() < self.connect_prob:
+                    if random.random() < self.connect_prob:
                         G.add_edge(ii, i)
                         if i in nodes_orphan:
                             nodes_orphan.remove(i)
@@ -215,7 +218,7 @@ class DAG:
             for i in nodes[k+1]:
                 for ii in nodes_parent:
                     # add connections
-                    if random() < connect_prob:
+                    if random.random() < connect_prob:
                         G.add_edge(ii, i)
                         if i in nodes_orphan.copy():
                             nodes_orphan.remove(i)
@@ -283,7 +286,7 @@ class DAG:
             nodes_parent_next = []
             fork_happened = False
             for node_p in nodes_parent:
-                if random() < self.p_fork or node_p == 1:
+                if random.random() < self.p_fork or node_p == 1:
                     kk = randint(self.fork_n_min, self.fork_n_max)
                     for i in range(kk):
                         G.add_node(n, rank=r)
@@ -321,7 +324,7 @@ class DAG:
         # start to join
         join_list = []
         for node_p in nodes_parent:
-            if random() < self.p_join:
+            if random.random() < self.p_join:
                 join_list.append(node_p)
 
         # print(join_list)
@@ -356,35 +359,63 @@ class DAG:
         # return the generated graph
         self.G = G
 
+    def apply_warehouse_logic(self):
+        ranks = [data.get('rank', 10) for n, data in self.G.nodes(data=True)]
+        max_rank = max(ranks) if ranks else 1
+
+        for n, data in self.G.nodes(data=True):
+            current_rank = data.get('rank', 0)
+            depth_percent = current_rank / max_rank
+            
+            if depth_percent < 0.3: item_type, base_h = "large", 30
+            elif depth_percent < 0.7: item_type, base_h = "medium", 15
+            else: item_type, base_h = "small", 5
+
+            site = random.choice(["close", "far"])
+            travel = 50 if site == "far" else 10
+            
+            self.G.nodes[n].clear() 
+            
+            self.G.nodes[n].update({
+                'task_id': f"T-{self.task_num}-{n}",
+                'item_type': item_type,
+                'collection_site': site,
+                'cost': base_h + travel,
+                'rank': current_rank
+            })
+
     def config(self):
         pass
 
     def print_data(self):
         #print(self.G.graph)
-        print(self.G.nodes.data())
-        print(self.G.edges.data())
+        # print(self.G.nodes.data())
+        # print(self.G.edges.data())
+        this = False
 
     def save(self, basefolder="./data/"):
-        # layout graph
-        A = nx.nx_agraph.to_agraph(self.G)
+        self.apply_warehouse_logic()
 
-        #print("G", self.G.graph)
-        #print(A)
-
-        A.layout(prog='dot')
-
-        # create basefolder (if not exists)
         if not os.path.exists(basefolder):
             os.makedirs(basefolder)
 
-        # save graph (png)
+        export_G = self.G.copy()
+
+        for attr in ['U', 'T', 'W', 'Index']:
+            if attr in export_G.graph:
+                del export_G.graph[attr]
+
+        for u, v, data in export_G.edges(data=True):
+            data.clear()
+        
+        nx.write_gml(export_G, basefolder + self.name + '.gml')
+
+        for n, data in export_G.nodes(data=True):
+            data['label'] = f"{data.get('item_type')}\nCost: {data.get('cost')}"
+
+        A = nx.nx_agraph.to_agraph(export_G)
+        A.layout(prog='dot')
         A.draw(basefolder + self.name + '.png', format="png")
-        
-        # save graph (gpickle)
-        nx.write_gpickle(self.G, basefolder + self.name + '.gpickle')
-        
-        # save graph (gml)
-        nx.write_gml(self.G, basefolder + self.name + '.gml')
 
     def load(self, basefolder="./data/"):
         pass
@@ -408,8 +439,10 @@ class DAG:
         plt.show()
 
 
+
 if __name__ == "__main__":
     G = DAG()
     G.gen("nfj")
+    G.apply_warehouse_logic()
     G.save(basefolder="./")
     G.plot(basefolder="./")

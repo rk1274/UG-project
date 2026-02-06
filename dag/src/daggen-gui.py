@@ -131,6 +131,7 @@ class daggen_gui(QMainWindow):
     def event_on_button_gen_clicked(self):
         G = rnddag.DAG()
         G.gen("rnd")
+        G.apply_warehouse_logic()
         G.save()
         G.plot()
 
