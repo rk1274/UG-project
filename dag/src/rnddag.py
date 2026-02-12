@@ -360,29 +360,81 @@ class DAG:
         self.G = G
 
     def apply_warehouse_logic(self):
-        ranks = [data.get('rank', 10) for n, data in self.G.nodes(data=True)]
-        max_rank = max(ranks) if ranks else 1
+        CAPACITY = {"small": 1, "medium": 2, "large": 4}
+        CAPACITY_REV = {1: "small", 2: "medium", 4: "large"}
 
-        for n, data in self.G.nodes(data=True):
-            current_rank = data.get('rank', 0)
-            depth_percent = current_rank / max_rank
-            
-            if depth_percent < 0.3: item_type, base_h = "large", 30
-            elif depth_percent < 0.7: item_type, base_h = "medium", 15
-            else: item_type, base_h = "small", 5
+        HANDLING_COST = {"small": 5, "medium": 15, "large": 30}
+        TRAVEL_COST = {"close": 10, "far": 50}
 
-            site = random.choice(["close", "far"])
-            travel = 50 if site == "far" else 10
-            
-            self.G.nodes[n].clear() 
-            
-            self.G.nodes[n].update({
-                'task_id': f"T-{self.task_num}-{n}",
-                'item_type': item_type,
-                'collection_site': site,
-                'cost': base_h + travel,
-                'rank': current_rank
-            })
+        WEIGHTS = {
+            4: 2,  
+            2: 6,   
+            1: 2   
+        }
+
+        topo = list(nx.topological_sort(self.G))
+
+        root = topo[0]
+        root_type = random.choice(["large", "medium", "small"]) # TODO make this more likely to be large/medium
+        self.G.nodes[root].update({
+            "task_id": f"T-{self.task_num}-{root}",
+            "item_type": root_type,
+            "collection_site": random.choice(["close", "far"]),
+        })
+        self.G.nodes[root]["cost"] = (
+            HANDLING_COST[root_type] +
+            TRAVEL_COST[self.G.nodes[root]["collection_site"]]
+        )
+
+        for parent in topo:
+            parent_data = self.G.nodes[parent]
+            parent_type = parent_data.get("item_type")
+
+            if parent_type is None:
+                continue
+
+            children = list(self.G.successors(parent))
+            if not children:
+                continue
+
+            budget = CAPACITY[parent_type]
+            remaining_children = len(children)
+
+            allocations = []
+
+            while remaining_children > 0 and budget > 0:
+                valid_sizes = [s for s in (4, 2, 1) if s <= budget]
+                if not valid_sizes:
+                    break
+
+                max_allowed = budget - (remaining_children - 1)
+                valid_sizes = [s for s in valid_sizes if s <= max_allowed]
+                if not valid_sizes:
+                    break
+
+                weights = [WEIGHTS[s] for s in valid_sizes]
+                size = random.choices(valid_sizes, weights=weights, k=1)[0]
+                allocations.append(size)
+
+                budget -= size
+                remaining_children -= 1
+
+            while remaining_children > 0:
+                allocations.append(1)
+                remaining_children -= 1
+
+            random.shuffle(allocations)
+
+            for child, size in zip(children, allocations):
+                item_type = CAPACITY_REV[size]
+                site = random.choice(["close", "far"])
+
+                self.G.nodes[child].update({
+                    "task_id": f"T-{self.task_num}-{child}",
+                    "item_type": item_type,
+                    "collection_site": site,
+                    "cost": HANDLING_COST[item_type] + TRAVEL_COST[site],
+                })
 
     def config(self):
         pass
@@ -411,7 +463,7 @@ class DAG:
         nx.write_gml(export_G, basefolder + self.name + '.gml')
 
         for n, data in export_G.nodes(data=True):
-            data['label'] = f"{data.get('item_type')}\nCost: {data.get('cost')}"
+            data['label'] = f"{data.get('item_type')}"
 
         A = nx.nx_agraph.to_agraph(export_G)
         A.layout(prog='dot')

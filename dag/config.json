@@ -18,7 +18,7 @@
     "workload": 10000
   },
   "dag_config": {
-    "parallelism": 5,
+    "parallelism": 2,
     "layer_num_min": 3,
     "layer_num_max": 5,
     "connect_prob": 0.5
