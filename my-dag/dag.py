@@ -4,7 +4,6 @@ import random
 import argparse
 from enum import Enum
 
-# class syntax
 class Size(Enum):
     LARGE = 4
     MEDIUM = 2
@@ -47,9 +46,6 @@ class Order:
             order.append(Task(Size.SMALL, i+self.num_large+self.num_medium))
 
         return order
-    
-    def string(self):
-        return self.name
 
     def get_total(self):
         return self.num_large + self.num_medium + self.num_small
@@ -70,62 +66,65 @@ class Order:
             case Size.SMALL:
                 self.num_small -= 1
                 return
+            
+    def generate_dag(self):
+        G = nx.DiGraph()
+
+        rank = 0
+        root = self.get_largest()
+        root_id = f"{root.size.name}_{root.id}"
+        G.add_node(root_id, rank=rank)
+
+        self.remove(root)
+        current_parents = [root]
+
+        while self.get_total() > 0 and current_parents:
+            rank += 1
+            next_parents = []
+
+            for parent in current_parents:
+                size_remaining = parent.size.value
+
+                for task in self.order[:]:
+                    if task.size.value <= size_remaining:
+                        node_id = f"{task.size.name}_{task.id}"
+
+                        G.add_node(node_id, rank=rank)
+                        G.add_edge(
+                            f"{parent.size.name}_{parent.id}",
+                            node_id
+                        )
+
+                        next_parents.append(task)
+                        self.remove(task)
+
+                        size_remaining -= task.size.value
+
+            current_parents = next_parents
+
+        self.dag = G
         
+    def save(self):
+        print("Saving...")
+
+        A = nx.nx_agraph.to_agraph(self.dag)
+
+        A.layout(prog='dot')
+
+        if not os.path.exists("./data/"):
+            os.makedirs("./data/")
+
+        A.draw("./data/" + "dag_" + self.name + '.png', format="png")
+        
+        nx.write_gml(self.dag, "./data/" + "dag_" + self.name + '.gml')
+
 def generate_random_order():
-    order =  Order(2,4,8)
+    large = random.randrange(1,10)
+    medium = random.randrange(1,10)
+    small = random.randrange(1,10)
+    order =  Order(large,medium,small)
 
     return order
-    
-def generate_dag(order):
-    G = nx.DiGraph()
-
-    rank = 0
-    root = order.get_largest()
-    root_id = f"{root.size.name}_{root.id}"
-    G.add_node(root_id, rank=rank)
-
-    order.remove(root)
-    current_parents = [root]
-
-    while order.get_total() > 0 and current_parents:
-        rank += 1
-        next_parents = []
-
-        for parent in current_parents:
-            size_remaining = parent.size.value
-
-            for task in order.order[:]:
-                if task.size.value <= size_remaining:
-                    node_id = f"{task.size.name}_{task.id}"
-
-                    G.add_node(node_id, rank=rank)
-                    G.add_edge(
-                        f"{parent.size.name}_{parent.id}",
-                        node_id
-                    )
-
-                    next_parents.append(task)
-                    order.remove(task)
-
-                    size_remaining -= task.size.value
-
-        current_parents = next_parents
-
-    return G
-
-def save(G, name):
-    print("Saving...")
-
-    A = nx.nx_agraph.to_agraph(G)
-
-    A.layout(prog='dot')
-
-    if not os.path.exists("./data/"):
-        os.makedirs("./data/")
-
-    A.draw("./data/" + "dag_" + name + '.png', format="png")
-    
-    nx.write_gml(G, "./data/" + "dag_" + name + '.gml')
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate a DAG from task counts.")
@@ -142,6 +141,6 @@ if __name__ == "__main__":
     else: 
         order = Order(args.large, args.medium, args.small)
 
-    Graph = generate_dag(order)
+    order.generate_dag()
 
-    save(Graph, order.string())
+    order.save()
