@@ -14,8 +14,7 @@ class Task:
         self.size = size
         self.id = task_id
         self.node_id = f"{size.name}_{task_id}"
-        # Randomly assign a 'weight' (execution time) based on size
-        # This is the 'Node Weight' for your HEFT calculation later
+        # TODO - make weights better
         self.weight = size.value * 5 + random.randint(1, 5) 
 
 class Order:
@@ -31,14 +30,13 @@ class Order:
         for i in range(self.num_large): tasks.append(Task(Size.LARGE, i))
         for i in range(self.num_medium): tasks.append(Task(Size.MEDIUM, i + self.num_large))
         for i in range(self.num_small): tasks.append(Task(Size.SMALL, i + self.num_large + self.num_medium))
+        
         return tasks
 
     def generate_dag(self):
         G = nx.DiGraph()
         
-        # Sort tasks by size (descending) 
         all_tasks = sorted(self.tasks, key=lambda x: x.size.value, reverse=True)
-        larges = [t for t in all_tasks if t.size == Size.LARGE]
 
         for t in all_tasks:
             G.add_node(t.node_id, weight=t.weight, size=t.size.name)
@@ -47,18 +45,12 @@ class Order:
         remaining_tasks = all_tasks[1:]
         processed_tasks = [base]
 
-        # 2. Build dependencies - EVERY remaining task MUST have a parent
         for task in remaining_tasks:
-            # Filter potential parents: must be same size or larger
             potential_parents = [p for p in processed_tasks if p.size.value >= task.size.value]
 
-            # Logic Check: If for some reason no parent exists (shouldn't happen with sorted list), 
-            # we force the first available base as the parent.
             if not potential_parents:
-                parent = base
+                parents = [base]
             else:
-                # 75% chance: Single parent
-                # 25% chance: Multi-parent (Join) if enough parents exist
                 if random.random() > 0.75 and len(potential_parents) >= 2:
                     parents = random.sample(potential_parents, 2)
                 else:
@@ -81,14 +73,11 @@ class Order:
                             parents.append(rel_task)
 
             for p in parents:
-                # If parent is a Task object, use node_id; if it's already a string, use it directly
                 p_id = p.node_id if hasattr(p, 'node_id') else p
                 G.add_edge(p_id, task.node_id)
             
             processed_tasks.append(task)
 
-        # 3. Add a "Virtual Sink"
-        # We find nodes that have NO children (out_degree == 0)
         leaves = [n for n in G.nodes() if G.out_degree(n) == 0]
         G.add_node("SINK", weight=0, size="VIRTUAL")
         for leaf in leaves:
@@ -97,32 +86,20 @@ class Order:
         self.dag = G
 
     def get_large_relatives(self, G, node_id):
-        # 1. Get all children, but filter for LARGE size
-        # G.nodes[node_id] accesses the dictionary of attributes for that node
-        # 1. Get Large Children
         large_children = {n for n in G.successors(node_id) 
                         if G.nodes[n].get('size') == "LARGE"}
 
-        # 2. Get Large Siblings
         large_siblings = {s for p in G.predecessors(node_id) 
                         for s in G.successors(p) 
                         if G.nodes[s].get('size') == "LARGE" and s != node_id}
 
-        # 3. Combine using Union (|)
         combined = large_children | large_siblings
         
         return list(combined)
 
     def get_simple_list(self):
-        """
-        Returns a linear list of node IDs that respects all 
-        precedence constraints but ignores weights/bottlenecks.
-        """
-        # lexicographical_topological_sort keeps the order predictable
-        # (e.g., it will usually group Large items first, then Medium, then Small)
         simple_queue = list(nx.lexicographical_topological_sort(self.dag))
         
-        # Remove the 'SINK' node if you added one, as it's not a real task
         if "SINK" in simple_queue:
             simple_queue.remove("SINK")
             
