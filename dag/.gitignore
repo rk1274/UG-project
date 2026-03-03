@@ -1,7 +1,0 @@
-*.pyc
-.idea/
-venv/
-output/
-data/
-logs/
-__pycache__/

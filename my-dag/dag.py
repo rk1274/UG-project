@@ -108,17 +108,21 @@ class Order:
     def save(self):
         print("Saving...")
 
-        A = nx.nx_agraph.to_agraph(self.dag)
-
-        A.layout(prog='dot')
-
         if not os.path.exists("./data/"):
             os.makedirs("./data/")
 
-        A.draw("./data/" + "dag_" + self.name + '.png', format="png")
-        
-        nx.write_gml(self.dag, "./data/" + "dag_" + self.name + '.gml')
+        try:
+            pydot_graph = nx.drawing.nx_pydot.to_pydot(self.dag)
+            
+            pydot_graph.set_prog('dot')
 
+            pydot_graph.write_png("./data/dag_" + self.name + '.png')
+            print(f"Image saved to ./data/dag_{self.name}.png")
+            
+        except Exception as e:
+            print(f"Drawing failed, but saving data anyway. Error: {e}")
+
+        nx.write_gml(self.dag, "./data/dag_" + self.name + '.gml')
         print(f"{self.name}:{self.get_simple_list()}")
 
 def generate_random_order():
