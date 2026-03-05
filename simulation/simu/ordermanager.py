@@ -1,10 +1,11 @@
 import order
 import random
 import dag_generator
+import orderDAG
 import time
 
 class OrderManager:
-    def __init__(self, num_init_orders: int, num_dynamic_orders: int, dynamic_deadline:int):
+    def __init__(self, num_init_orders: int, num_dynamic_orders: int, dynamic_deadline:int, size_to_shelves:dict, shelves_registry:dict):
         self._num_init_orders = num_init_orders
         self._num_dynamic_orders = num_dynamic_orders
         self._dynamic_deadline = dynamic_deadline
@@ -16,7 +17,7 @@ class OrderManager:
         self._order_work_start_times = {}
         self._order_completion_times = {}
         self._all_orders = {}
-        self.generate_orders_uniform(num_init_orders, num_dynamic_orders, 4)
+        self.generate_orders(num_init_orders, num_dynamic_orders, size_to_shelves, shelves_registry)
 
         for ordr in self._init_orders:
             self._order_intro_times[ordr.get_id()] = 0
@@ -24,41 +25,61 @@ class OrderManager:
         self._dynamic_orders_intro_steps = {}
         self.generate_dynamic_order_introduction_times_uniform(self._dynamic_deadline)
 
-
     def get_dynamic_deadline(self):
         return self._dynamic_deadline
+    
     def set_order_start_work_time(self, order_id, step_value):
         self._order_work_start_times[order_id] = step_value
 
     def set_order_completion_time(self, ordr: order.Order, step_value:int):
         self._order_completion_times[ordr.get_id()] = step_value
 
-    def generate_orders(self, num_init_orders: int, num_dynamic_orders: int):
-        
-
-    def generate_orders_uniform(self, num_init_orders: int, num_dynamic_orders: int, order_size: int):
+    def generate_orders(self, num_init_orders: int, num_dynamic_orders: int, size_to_shelves, shelves_registry):
         order_id_ctr = 0
-        for i in range(num_init_orders):
-            current_items = []
-            for j in range(order_size):
-                selected_item_index = random.randint(0, len(self._item_set.keys()) - 1)
-                current_items.append(self._item_set["item%s" % selected_item_index])
-            order_prio = random.randint(1, 5)
-            current_order = order.Order(current_items, order_prio, order_id_ctr)
-            self._all_orders[order_id_ctr] = current_order
-            self._init_orders.append(current_order)
-            order_id_ctr = order_id_ctr + 1
+        for _ in range(num_init_orders):
+            self.generate_order(self._init_orders, order_id_ctr, size_to_shelves, shelves_registry)
 
-        for i2 in range(num_dynamic_orders):
-            current_items = []
-            for j2 in range(order_size):
-                selected_item_index = random.randint(0, len(self._item_set.keys()) - 1)
-                current_items.append(self._item_set["item%s" % selected_item_index])
-            order_prio = random.randint(1, 5)
-            current_order = order.Order(current_items, order_prio, order_id_ctr)
-            self._all_orders[order_id_ctr] = current_order
-            self._dynamic_orders.append(current_order)
-            order_id_ctr = order_id_ctr + 1
+            order_id_ctr+=1
+
+        for _ in range(num_dynamic_orders):
+            self.generate_order(self._dynamic_orders, order_id_ctr, size_to_shelves, shelves_registry)
+
+            order_id_ctr+=1
+
+    def generate_order(self, order_list, id, size_to_shelves, shelves_registry):
+        l, m, s = random.randint(1, 3), random.randint(1, 4), random.randint(1, 5)
+            
+        goal_pos = [0, 3]
+        dag_gen = dag_generator.Order(l, m, s, size_to_shelves, shelves_registry, goal_pos)
+        dag_gen.generate_dag()
+
+        order = orderDAG.OrderDAG(dag_gen, id, 1)
+        self._all_orders[id] = order
+        order_list.append(order)
+
+    # def generate_orders_uniform(self, num_init_orders: int, num_dynamic_orders: int, order_size: int):
+    #     order_id_ctr = 0
+    #     for i in range(num_init_orders):
+    #         current_items = []
+    #         for j in range(order_size):
+    #             selected_item_index = random.randint(0, len(self._item_set.keys()) - 1)
+    #             current_items.append(self._item_set["item%s" % selected_item_index])
+    #         order_prio = random.randint(1, 5)
+    #         current_order = order.Order(current_items, order_prio, order_id_ctr)
+    #         self._all_orders[order_id_ctr] = current_order
+    #         self._init_orders.append(current_order)
+    #         order_id_ctr = order_id_ctr + 1
+
+    #     for i2 in range(num_dynamic_orders):
+    #         current_items = []
+    #         for j2 in range(order_size):
+    #             selected_item_index = random.randint(0, len(self._item_set.keys()) - 1)
+    #             current_items.append(self._item_set["item%s" % selected_item_index])
+    #         order_prio = random.randint(1, 5)
+    #         current_order = order.Order(current_items, order_prio, order_id_ctr)
+    #         self._all_orders[order_id_ctr] = current_order
+    #         self._dynamic_orders.append(current_order)
+    #         order_id_ctr = order_id_ctr + 1
 
     def generate_dynamic_order_introduction_times_uniform(self, deadline):
         for ordr in self._dynamic_orders:

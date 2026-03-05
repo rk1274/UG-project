@@ -2,26 +2,28 @@ import networkx as nx
 import os
 import random
 import argparse
-from enum import Enum
-
-class Size(Enum):
-    LARGE = 4
-    MEDIUM = 2
-    SMALL = 1
+import utils
 
 class Task:
-    def __init__(self, size, task_id):
+    def __init__(self, size, task_id, assigned_shelf_name, shelf_pos, goal_pos):
         self.size = size
         self.id = task_id
         self.node_id = f"{size.name}_{task_id}"
-        # TODO - make weights better
-        self.weight = size.value * 5 + random.randint(1, 5) 
+        self.shelf_name = assigned_shelf_name
+
+        distance = utils.taxicab_dist(shelf_pos[0], shelf_pos[1], goal_pos[0], goal_pos[1])
+        # Base weight on size + physical distance weighting
+        self.weight = (size.value * 10) + (distance * 0.5) + random.randint(1, 5)
 
 class Order:
-    def __init__(self, num_large, num_medium, num_small):
+    def __init__(self, num_large, num_medium, num_small,
+                 size_to_shelves_map, shelves_registry, goal_pos):
         self.num_large = num_large
         self.num_medium = num_medium
         self.num_small = num_small
+        self.size_to_shelves_map = size_to_shelves_map # e.g., {"LARGE": ["shelf0", "shelf1"]}
+        self.shelves_registry = shelves_registry     # The actual shelf objects to get positions
+        self.goal_pos = goal_pos
         self.name = f"L{num_large}_M{num_medium}_S{num_small}_{random.randint(100,999)}"
         self.tasks = self._make_tasks()
 
@@ -29,10 +31,29 @@ class Order:
 
     def _make_tasks(self):
         tasks = []
-        for i in range(self.num_large): tasks.append(Task(Size.LARGE, i))
-        for i in range(self.num_medium): tasks.append(Task(Size.MEDIUM, i + self.num_large))
-        for i in range(self.num_small): tasks.append(Task(Size.SMALL, i + self.num_large + self.num_medium))
+        counts = {
+            utils.Size.LARGE: self.num_large,
+            utils.Size.MEDIUM: self.num_medium,
+            utils.Size.SMALL: self.num_small
+        }
         
+        total_idx = 0
+        for size, count in counts.items():
+            for i in range(count):
+                # Randomly pick between the two available shelves for this size
+                possible_shelves = self.size_to_shelves_map[size]
+                chosen_shelf_name = random.choice(possible_shelves)
+                shelf_obj = self.shelves_registry[chosen_shelf_name]
+                
+                tasks.append(Task(
+                    size, 
+                    total_idx, 
+                    chosen_shelf_name, 
+                    shelf_obj.get_position(), 
+                    self.goal_pos
+                ))
+                total_idx += 1
+
         return tasks
 
     def generate_dag(self):
@@ -41,7 +62,7 @@ class Order:
         all_tasks = sorted(self.tasks, key=lambda x: x.size.value, reverse=True)
 
         for t in all_tasks:
-            G.add_node(t.node_id, weight=t.weight, size=t.size.name)
+            G.add_node(t.node_id, weight=t.weight, size=t.size.name, shelf_name=t.shelf_name)
 
         base = all_tasks[0]
         remaining_tasks = all_tasks[1:]
@@ -58,8 +79,8 @@ class Order:
                 else:
                     parents = [random.choice(potential_parents)]
 
-            if task.size != Size.LARGE:
-                large_parent_objects = [p for p in parents if p.size == Size.LARGE]
+            if task.size != utils.Size.LARGE:
+                large_parent_objects = [p for p in parents if p.size == utils.Size.LARGE]
                 
                 if large_parent_objects:
                     needed = set() 
@@ -100,9 +121,6 @@ class Order:
         combined = large_children | large_siblings
         
         return list(combined)
-
-    def get_simple_list(self):
-        return self.list
         
     def save(self):
         print("Saving...")
@@ -123,7 +141,7 @@ class Order:
 
         nx.write_gml(self.dag, "./data/dag_" + self.name + '.gml')
 
-        for task in self.get_simple_list():
+        for task in self.list:
             print(task.node_id)
 
 def generate_random_order():

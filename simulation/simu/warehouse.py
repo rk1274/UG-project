@@ -15,6 +15,7 @@ import robothome
 import time
 from dataclasses import dataclass, field
 
+ITEMS = ["SMALL", "MEDIUM", "LARGE"]
 class Warehouse:
     def __init__(self, w_house_filename: str, robot_max_inventory: int, schedule_mode: str,
                  robot_fault_rates: list[float], fault_tolerant_mode, step_limit: int):
@@ -25,6 +26,12 @@ class Warehouse:
         self._robots = {}
         self._order_stations = {}
         self._shelves = {}
+        self._size_to_shelves = {
+            utils.Size.LARGE: [],
+            utils.Size.MEDIUM: [],
+            utils.Size.SMALL: []
+        }
+
         self._homes = {}
 
         self._robot_fault_rates = robot_fault_rates
@@ -34,12 +41,11 @@ class Warehouse:
         self.generate_items()
         self._dynamic_deadline = 100
 
-        self._order_manager = ordermanager.OrderManager(5, 5, self._items,
-                                                        self._dynamic_deadline)
-
         self._robot_max_inventory = robot_max_inventory
         # Warehouse cell (x,y) is accessed via self._cells[y][x]
         self._cells = self.parse_warehouse_file(w_house_filename)
+
+        self._order_manager = ordermanager.OrderManager(5, 5, self._dynamic_deadline, self._size_to_shelves, self._shelves)
 
         self._scheduler = scheduler.Scheduler(self._order_manager,
                                               self._robots, self._shelves, self._order_stations,
@@ -504,15 +510,33 @@ class Warehouse:
 
                     cells_copy[row_ctr].append([new_robot_name, new_home_name])
                     robot_name_ctr = robot_name_ctr + 1
+                elif char == "L":
+                    new_shelf_name = "shelf%s" % shelf_name_ctr
+
+                    new_shelf = shelf.Shelf(col_ctr, row_ctr, new_shelf_name, item.Item(utils.Size.LARGE))
+
+                    self._shelves[new_shelf_name] = new_shelf
+                    self._size_to_shelves[utils.Size.LARGE].append(new_shelf_name)
+
+                    cells_copy[row_ctr].append([new_shelf_name])
+                    shelf_name_ctr = shelf_name_ctr + 1
+                elif char == "M":
+                    new_shelf_name = "shelf%s" % shelf_name_ctr
+
+                    new_shelf = shelf.Shelf(col_ctr, row_ctr, new_shelf_name, item.Item(utils.Size.MEDIUM))
+
+                    self._shelves[new_shelf_name] = new_shelf
+                    self._size_to_shelves[utils.Size.MEDIUM].append(new_shelf_name)
+
+                    cells_copy[row_ctr].append([new_shelf_name])
+                    shelf_name_ctr = shelf_name_ctr + 1
                 elif char == "S":
                     new_shelf_name = "shelf%s" % shelf_name_ctr
-                    possible_item_name = "item%s" % shelf_name_ctr
 
-                    if possible_item_name in self._items.keys():
-                        new_shelf = shelf.Shelf(col_ctr, row_ctr, new_shelf_name, self._items[possible_item_name])
-                    else:
-                        new_shelf = shelf.Shelf(col_ctr, row_ctr, new_shelf_name)
+                    new_shelf = shelf.Shelf(col_ctr, row_ctr, new_shelf_name, item.Item(utils.Size.SMALL))
+
                     self._shelves[new_shelf_name] = new_shelf
+                    self._size_to_shelves[utils.Size.SMALL].append(new_shelf_name)
 
                     cells_copy[row_ctr].append([new_shelf_name])
                     shelf_name_ctr = shelf_name_ctr + 1
@@ -529,22 +553,18 @@ class Warehouse:
                     cells_copy[row_ctr].append([])
                 col_ctr = col_ctr + 1
             row_ctr = row_ctr + 1
-        if shelf_name_ctr != self._NUM_ITEMS:
-            raise Exception("The incorrect amount of shelves were present for the amount of items specified")
         return cells_copy
 
     def transmit(self):
         udptransmit.transmit_warehouse_size(self._width, self._height)
 
     def generate_items(self):
-        item_types = ["small_close", "medium_close", "large_close",
-                      "small_far", "medium_far", "large_far"]
+        self._items = [item.Item(utils.Size.LARGE),
+                       item.Item(utils.Size.MEDIUM),
+                       item.Item(utils.Size.SMALL)]
         
-        for i, size in enumerate(item_types):
-            item_name = f"item_{size}"
-            # Using 'i' as the dependency/size level
-            # self._items[item_name] = item.Item(item_name, i)
-            udptransmit.transmit_item_existence(item_name)
+        for i in self._items:
+            udptransmit.transmit_item_existence(i.get_name())
 
     def move_robot_next_path_spot(self, robot_obj):
         next_spot = robot_obj.get_movement_path()[0]

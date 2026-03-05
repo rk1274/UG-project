@@ -11,8 +11,8 @@ def run_simple_sim(warehouse_file, transmit=False):
     # 1. Setup Environment
     os.environ["ROBOTSIM_TRANSMIT"] = str(transmit)
 
-    inv_size = 3          # Robot carrying capacity
-    schedule_mode = "simple-interrupt" 
+    inv_size = 1          # Robot carrying capacity
+    schedule_mode = "simple" 
     fault_rates = [0, 0, 0, 0] # [Battery, Motor, Sensor, Comms]
     fault_mode = True      # Enable/Disable fault tolerance logic
     step_limit = 2000      # Safety cutoff

@@ -43,6 +43,7 @@ def transmit_goal_creation(name: str, x: int, y: int):
 
 
 def transmit_item_existence(name: str):
+    print("RAAAAAAAAAAA\n\n\n\n\n\n\n\n\n\n", name)
     message = '{"command":"ITEM", "itemName":"%s"}' % name
     send_udp_message(message)
 

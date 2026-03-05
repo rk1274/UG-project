@@ -1,16 +1,18 @@
+import utils
+
 class Item:
-    def __init__(self, item_name: str, item_dep: int):
-        self._name = item_name
-        self._dep = item_dep
+    def __init__(self, size: utils.Size):
+        self._size = size
+        self._name = f"item_{size.name.lower()}_{size.value}"
 
     def __eq__(self, other):
-        return self._name == other.get_name() and self._dep == other.get_dependency()
-
-    def get_dependency(self):
-        return self._dep
+        return self._size == other.get_size()
 
     def get_name(self):
         return self._name
+    
+    def get_size(self):
+        return self._size
 
     def __repr__(self):
-        return "Item name %s Item dep %s" % (self._name, self._dep)
+        return "Item size %s" % self._size

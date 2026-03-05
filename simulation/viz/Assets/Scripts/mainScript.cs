@@ -73,7 +73,10 @@ public class mainScript : MonoBehaviour
     public void CreateItem(string name)
     {
         this.items.Add(name);
-        int sidenum = Int32.Parse(name.Substring(4)) + 3;
+        string[] parts = name.Split('_'); 
+        string lastPart = parts[parts.Length - 1]; // This gets "1"
+
+        int sidenum = Int32.Parse(lastPart) + 3;
         Debug.Log($"Creating item with {sidenum} sides");
         createPolygonObj(sidenum, itemDisplayCtr, -2, name);
         itemDisplayCtr++;

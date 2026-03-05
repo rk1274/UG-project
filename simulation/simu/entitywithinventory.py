@@ -18,18 +18,12 @@ class InventoryEntity:
         self._should_transmit = is_simulation_obj
 
     def add_item_to_inventory(self, item_to_add: item.Item):
-        new_dep = item_to_add.get_dependency()
-        if new_dep <= self.last_item_dep:
-            self._inventory.append(item_to_add)
-            self.last_item_dep = new_dep
+        if len(self._inventory) > self._max_inv:
+            raise customexceptions.SimulationError("Inventory of object %s overfilled" % self._name)
 
-            if len(self._inventory) > self._max_inv:
-                raise customexceptions.SimulationError("Inventory of object %s overfilled" % self._name)
+        if self._should_transmit:
+            udptransmit.transmit_item_gained(self._name, item_to_add.get_name())
 
-            if self._should_transmit:
-                udptransmit.transmit_item_gained(self._name, item_to_add.get_name())
-        else:
-            raise customexceptions.SimulationError("Item dependency rule violated by object %s" % self._name)
 
     def pop_item_from_inventory(self) -> item.Item:
         if len(self._inventory) == 0:
