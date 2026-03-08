@@ -18,8 +18,11 @@ class InventoryEntity:
         self._should_transmit = is_simulation_obj
 
     def add_item_to_inventory(self, item_to_add: item.Item):
+        print("Adding item to inv,",item_to_add)
         if len(self._inventory) > self._max_inv:
             raise customexceptions.SimulationError("Inventory of object %s overfilled" % self._name)
+
+        self._inventory.append(item_to_add)
 
         if self._should_transmit:
             udptransmit.transmit_item_gained(self._name, item_to_add.get_name())
@@ -70,7 +73,7 @@ class InventoryEntity:
             transfer_inv.reverse()
             return transfer_inv
 
-    def receive_inventory(self, items):
+    def receive_inventory(self, items, id):
         for itm in items:
             self.add_item_to_inventory(itm)
 

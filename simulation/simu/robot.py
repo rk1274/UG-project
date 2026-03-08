@@ -20,6 +20,8 @@ class Robot(entitywithinventory.InventoryEntity):
         self._steps_halted = 0
         self._prio = None
 
+        self._current_task_id = None
+
         self._battery_critical_fault_rate = fault_rates[0]
         self._battery_low_fault_rate = fault_rates[1]
         self._actuator_fault_rate = fault_rates[2]
@@ -38,6 +40,12 @@ class Robot(entitywithinventory.InventoryEntity):
         self.actuators_faulted = False
 
         super().__init__(name, max_inv_size)
+
+    def set_task_id(self, id):
+        self._current_task_id = id
+    
+    def get_task_id(self):
+        return self._current_task_id
 
     def set_assigned_order(self, id_num):
         self._assigned_order = id_num
