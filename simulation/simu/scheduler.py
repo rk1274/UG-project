@@ -102,23 +102,35 @@ class Scheduler:
         self._flags.append(flag)
 
     def schedule(self, step_value):
-        #print("SCHEDULING")
-        #print("The current backlog is %s" % self._orders_backlog)
-        #print("The current active is %s" % self._orders_active)
-        #print("The current robot assignment is %s" % self._order_robots_assignment)
-        #print("The current goal assignment is %s" % self._order_goal_assignment)
+        # print("SCHEDULING")
+        # print("The current backlog is:")
+        # for order in self._orders_backlog:
+        #     print(order.get_id())
+        # print("The current active is:")
+        # for order in self._orders_active:
+        #     print(order.get_id())
+        # print("The current robot assignment is %s" % self._order_robots_assignment)
+        # print("The current goal assignment is %s" % self._order_goal_assignment)
 
         new_orders = []
         new_orders = self.simple_single_robot_schedule(self._fault_tolerant_mode)
-
 
         if new_orders != None:
             for order_obj in new_orders:
                 self._order_manager_ref.set_order_start_work_time(order_obj.get_id(), step_value)
 
-        #print("AFTER SCHEDULING")
-        #print("After, the current backlog is %s" % self._orders_backlog)
-        #print("After, the current active is %s" % self._orders_active)
+        # print("AFTER SCHEDULING")
+        
+        # print("After, new orders:" )
+        # for order in new_orders:
+        #     print(order.get_id())
+
+        # print("After, the current backlog is" )
+        # for order in self._orders_backlog:
+        #     print(order.get_id())
+        # print("After, the current active is")
+        # for order in self._orders_active:
+        #     print(order.get_id())
         #print("After, The current robot assignment is %s" % self._order_robots_assignment)
         #print("After, The current goal assignment is %s" % self._order_goal_assignment)
     def get_items_already_delivered_for_order(self, order_id):
@@ -172,6 +184,7 @@ class Scheduler:
 
         for order_obj in orders_to_add:
             self._orders_backlog.append(order_obj)
+            print("\n\n\n\n HEREEEE \n\n")
 
 
     def generate_order_to_complete_fault(self, order_id):
@@ -208,6 +221,9 @@ class Scheduler:
                     continue
                 # Store as (priority, order_id, task_id)
                 all_ready_tasks.append((order_obj, tid))
+            
+            # if len(tasks) == 0:
+            #     print("NO READY TASKS for order with id %s" % order_obj.get_id())
 
         # TODO MAYBE SORT READY TASKS
 
@@ -217,7 +233,8 @@ class Scheduler:
                 if not self._orders_backlog:
                     break
 
-                new_order = self._orders_backlog.pop(0)
+                new_order = self._orders_backlog[0]
+                # print("\n\n\n\n Introducing new order %s from backlog \n\n\n" % new_order.get_id())
                 goal_obj = self.find_goal_for_order(new_order)
                 if goal_obj == None:
                     break
@@ -231,6 +248,7 @@ class Scheduler:
                     all_ready_tasks.append((new_order, tid))
 
                 orders_to_move.append(new_order)
+                _ = self._orders_backlog.pop(0)
 
             order_obj, task_id = all_ready_tasks.pop(0)
             # TODO this is a simple fix for a race condition but pls do something better!!!
@@ -238,7 +256,7 @@ class Scheduler:
                 continue
             self._active_tasks[f"{task_id}_{order_obj.get_id()}"] = True
             order_obj.mark_assigned(task_id)
-            print("\n",robot_obj.get_name(),"is taking:", task_id,"for order",order_obj.get_id(),"\n")
+            # print("\n",robot_obj.get_name(),"is taking:", task_id,"for order",order_obj.get_id(),"\n")
             
 
             goal_name = self._order_goal_assignment.get(order_obj.get_id())
@@ -248,8 +266,9 @@ class Scheduler:
                         order_obj, robot_obj, goal_obj, task_id
                     )
                                                                            
-        for ordr in orders_to_move:
-            self._orders_active.append(ordr)
+        # for ordr in orders_to_move:
+        #     print("\n\n\n\n Introducing new order %s from backlog \n\n\n" % ordr.get_id())
+        #     self._orders_active.append(ordr)
             
         return orders_to_move
                                                                 
@@ -316,6 +335,7 @@ class Scheduler:
         self._schedule[robot_name] = targets_list + self._schedule[robot_name]
 
     def add_order(self, order, step_value):
+        print("Adding new order %s to backlog" % order.get_id())
         self._orders_backlog.append(order)
         self.schedule(step_value)
 
@@ -391,6 +411,8 @@ class Scheduler:
         if self._orders_backlog:
             return False
         if self._orders_active:
+            # for order in self._orders_active:
+                # print("Orders still active: %s" % order.get_id())
             return False
         return True
 
@@ -400,10 +422,11 @@ class Scheduler:
         _ = self._order_robots_assignment.pop(order.get_id())
         self._order_goal_assignment.pop(order.get_id())
         #print("Order %s completed by robot %s" % (order.get_id(), robots))
-        print("order %s complete" % order.get_id())
+        print("Order %s complete" % order.get_id())
         order_manager.set_order_completion_time(order, step_ctr)
 
         self.schedule(step_ctr)
+
 
 
 

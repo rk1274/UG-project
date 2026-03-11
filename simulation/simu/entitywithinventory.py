@@ -18,7 +18,7 @@ class InventoryEntity:
         self._should_transmit = is_simulation_obj
 
     def add_item_to_inventory(self, item_to_add: item.Item):
-        print("Adding item to inv,",item_to_add)
+        # print("Adding item to inv,",item_to_add)
         if len(self._inventory) > self._max_inv:
             raise customexceptions.SimulationError("Inventory of object %s overfilled" % self._name)
 

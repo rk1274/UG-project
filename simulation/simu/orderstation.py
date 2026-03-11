@@ -27,7 +27,6 @@ class OrderStation(entitywithinventory.InventoryEntity):
         #print("Already had %s" % self._inventory)
 
         # TODO probably dont need to recieve the inventory.
-        print("ITEMS: ", items)
         self.receive_inventory(items, taskID)
 
         print("recieved:",taskID, "for order:",self._active_order.get_id(), "from robot:", obj.get_name())
