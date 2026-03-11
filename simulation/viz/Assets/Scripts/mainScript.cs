@@ -76,10 +76,33 @@ public class mainScript : MonoBehaviour
         string[] parts = name.Split('_'); 
         string lastPart = parts[parts.Length - 1]; // This gets "1"
 
+        float width = 1.0f;
+        float height = 1.0f;
+
+        string size = parts[1];
+        switch (size.ToLower())
+        {
+            case "small":
+                width = 1.0f; 
+                height = 1.0f;
+                break;
+            case "medium":
+                width = 2.4f; 
+                height = 1.2f;
+                break;
+            case "large":
+                width = 3.0f; 
+                height = 3.0f;
+                break;
+            default:
+                Debug.LogWarning("Unknown size passed: " + size);
+                return;
+        }
+
         int sidenum = Int32.Parse(lastPart) + 3;
         Debug.Log($"Creating item with {sidenum} sides");
-        createPolygonObj(sidenum, itemDisplayCtr, -2, name);
-        itemDisplayCtr++;
+        createPolygonObj(itemDisplayCtr, -2, name, width, height);
+        itemDisplayCtr += (int)width;
     }
 
     public Color GenerateRandomColor()
@@ -98,8 +121,10 @@ public class mainScript : MonoBehaviour
 
         shelfDict[shelfClone.name] = shelfClone;
 
-        GameObject itemClone = Instantiate(this.itemObjects[itemName], new Vector3(0.25f + x, 2.0f, 0.25f +y), shelfOriginal.transform.rotation);
-        itemClone.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+        GameObject originalItem = this.itemObjects[itemName];
+        GameObject itemClone = Instantiate(this.itemObjects[itemName], new Vector3(0.5f + x, 2.0f, 0.5f +y), shelfOriginal.transform.rotation);
+        float shelfScaleFactor = 0.5f;
+        itemClone.transform.localScale = originalItem.transform.localScale * shelfScaleFactor;
 
     }
 
@@ -134,6 +159,7 @@ public class mainScript : MonoBehaviour
     public void correctScreenPosition()
     {
         int counter = 250;
+        float uiScaleFactor = 0.5f;
         foreach (GameObject g in this.itemObjects.Values)
         {
             Camera cam = Camera.main;
@@ -141,7 +167,8 @@ public class mainScript : MonoBehaviour
             Debug.Log($"camera z {cam.transform.position.y}");
             Vector3 p = cam.ScreenToWorldPoint(new Vector3(counter, 70, cam.transform.position.y));
 
-            g.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+            Vector3 currentScale = g.transform.localScale;
+            g.transform.localScale = new Vector3(currentScale.x * uiScaleFactor, currentScale.y, currentScale.z * uiScaleFactor);
             g.transform.position = new Vector3(p.x, p.y, p.z);
 
             counter += 100;
@@ -149,17 +176,15 @@ public class mainScript : MonoBehaviour
     }
 
 
-    void createPolygonObj(int sides, int x, int y, string name)
+    void createPolygonObj(int x, int y, string name, float w, float h)
     {
-        GameObject newobj = new GameObject();
+        GameObject newobj = GameObject.CreatePrimitive(PrimitiveType.Cube);
         newobj.name = "Item";
-        
-        var meshFilter = newobj.AddComponent<MeshFilter>();
-        var meshRenderer = newobj.AddComponent<MeshRenderer>();
 
-        meshRenderer.material = new Material(Shader.Find("Standard"));
-        meshRenderer.material.color = GenerateRandomColor();
-        meshFilter.mesh = createMesh(sides);
+        newobj.GetComponent<Renderer>().material.color = GenerateRandomColor();
+
+        newobj.transform.position = new Vector3(x, y, 0);
+        newobj.transform.localScale = new Vector3(w, 0.3f,h);
 
         this.itemObjects.Add(name, newobj);
     }

@@ -35,8 +35,16 @@ public class robot : MonoBehaviour
 
     public void addToInventory(string itemName) 
     {
-        GameObject itemClone = Instantiate(MainScript.itemObjects[itemName], new Vector3(0.25f + this.transform.position.x , 3.0f + (items.Count * 0.1f), 0.25f + this.transform.position.z), this.transform.rotation);
-        itemClone.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+        Vector3 originalScale = MainScript.itemObjects[itemName].transform.localScale;
+
+        GameObject itemClone = Instantiate(MainScript.itemObjects[itemName], 
+            new Vector3(this.transform.position.x, 2.0f + (items.Count * 0.2f), this.transform.position.z), 
+            this.transform.rotation);
+
+        float carryFactor = 0.5f; 
+        itemClone.transform.localScale = originalScale * carryFactor;
+        itemClone.transform.parent = this.transform;
+
         items.Add(itemClone);
     }
 

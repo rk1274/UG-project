@@ -37,7 +37,7 @@ def run_simple_sim(warehouse_file, transmit=False):
     while keep_running:
         # If transmitting to visualizer, slow down so you can actually see it
         if transmit:
-            time.sleep(0.5)
+            time.sleep(0.1)
             
         # simu.step() returns True when all orders are finished or an error occurs
         finished = simu.step()

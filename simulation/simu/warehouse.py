@@ -564,6 +564,7 @@ class Warehouse:
                        item.Item(utils.Size.SMALL)]
         
         for i in self._items:
+            print("Generated item %s" % i.get_name())
             udptransmit.transmit_item_existence(i.get_name())
 
     def move_robot_next_path_spot(self, robot_obj):
