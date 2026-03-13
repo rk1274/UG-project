@@ -121,6 +121,13 @@ class Order:
         combined = large_children | large_siblings
         
         return list(combined)
+    
+    def save_image(self, name):
+        pydot_graph = nx.drawing.nx_pydot.to_pydot(self.dag)
+            
+        pydot_graph.set_prog('dot')
+
+        pydot_graph.write_png("./data/dag_" + name + '.png')
         
     def save(self):
         print("Saving...")

@@ -1,3 +1,5 @@
+import os
+
 import order
 import random
 import dag_generator
@@ -35,6 +37,8 @@ class OrderManager:
         self._order_completion_times[ordr.get_id()] = step_value
 
     def generate_orders(self, num_init_orders: int, num_dynamic_orders: int, size_to_shelves, shelves_registry):
+        self.clear_img_directory()
+
         order_id_ctr = 0
         for _ in range(num_init_orders):
             self.generate_order(self._init_orders, order_id_ctr, size_to_shelves, shelves_registry)
@@ -45,6 +49,13 @@ class OrderManager:
             self.generate_order(self._dynamic_orders, order_id_ctr, size_to_shelves, shelves_registry)
 
             order_id_ctr+=1
+    
+    def clear_img_directory(self):
+        if not os.path.exists("./data/"):
+            os.makedirs("./data/")
+
+        for file in os.listdir("./data/"):
+            os.remove(os.path.join("./data/", file))
 
     def generate_order(self, order_list, id, size_to_shelves, shelves_registry):
         l, m, s = random.randint(1, 3), random.randint(1, 4), random.randint(1, 5)
@@ -52,6 +63,7 @@ class OrderManager:
         goal_pos = [0, 3]
         dag_gen = dag_generator.Order(l, m, s, size_to_shelves, shelves_registry, goal_pos)
         dag_gen.generate_dag()
+        dag_gen.save_image(f"order_{id}")
 
         order = orderDAG.OrderDAG(dag_gen, id, 1)
         self._all_orders[id] = order
