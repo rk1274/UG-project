@@ -5,9 +5,9 @@ import math
 import customexceptions
 import gahandler
 import ordermanager
+import orderDAG
 import utils
 import pygad
-import order
 import random
 
 class Scheduler:
@@ -184,8 +184,6 @@ class Scheduler:
 
         for order_obj in orders_to_add:
             self._orders_backlog.append(order_obj)
-            print("\n\n\n\n HEREEEE \n\n")
-
 
     def generate_order_to_complete_fault(self, order_id):
         items_already_delivered = self.get_items_already_delivered_for_order(order_id)
@@ -199,7 +197,7 @@ class Scheduler:
         for item1 in items_already_delivered:
             items_left_to_deliver.remove(item1)
 
-        new_order = order.Order(items_left_to_deliver, order_to_remove.get_prio(),
+        new_order = orderDAG.OrderDAG(items_left_to_deliver, order_to_remove.get_prio(),
                                 order_to_remove.get_id(), order_to_remove.get_original_items())
 
         if len(items_already_delivered) == 0:

@@ -1,9 +1,7 @@
-import customexceptions
 import entitywithinventory
 import udptransmit
 import math
 import orderDAG
-
 
 class OrderStation(entitywithinventory.InventoryEntity):
     def __init__(self, x_pos: int, y_pos: int, name: str, warehouse):
@@ -20,18 +18,15 @@ class OrderStation(entitywithinventory.InventoryEntity):
         udptransmit.transmit_goal_creation(self._name, self._x, self._y)
 
     def interact(self, obj):
-        #print("Robot %s interacting with order station %s" % (obj.get_name(), self._name))
         items = obj.transfer_inventory()
         taskID = obj.get_task_id()
-        #print("Order station %s recieved %s" % (self.get_name(), received))
-        #print("Already had %s" % self._inventory)
 
         # TODO probably dont need to recieve the inventory.
         self.receive_inventory(items, taskID)
 
         print("recieved:",taskID, "for order:",self._active_order.get_id(), "from robot:", obj.get_name())
 
-        # TODO is there even multiple items?
+        # TODO is there even multiple items? change this to always only be 1 ??
         for item in items:
             self._active_order.mark_completed(taskID)
 
@@ -43,7 +38,6 @@ class OrderStation(entitywithinventory.InventoryEntity):
                                                                         self._warehouse_ref.get_total_steps(),
                                                                         self._active_order)
             self.clear_inventory()
-
 
         flag_maybe = obj.consume_flag()
         if flag_maybe is not None:

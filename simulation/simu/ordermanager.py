@@ -1,6 +1,5 @@
 import os
 
-import order
 import random
 import dag_generator
 import orderDAG
@@ -33,7 +32,7 @@ class OrderManager:
     def set_order_start_work_time(self, order_id, step_value):
         self._order_work_start_times[order_id] = step_value
 
-    def set_order_completion_time(self, ordr: order.Order, step_value:int):
+    def set_order_completion_time(self, ordr: orderDAG.OrderDAG, step_value:int):
         self._order_completion_times[ordr.get_id()] = step_value
 
     def generate_orders(self, num_init_orders: int, num_dynamic_orders: int, size_to_shelves, shelves_registry):

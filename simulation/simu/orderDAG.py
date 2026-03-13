@@ -1,6 +1,6 @@
 class OrderDAG:
     def __init__(self, dag_order_obj, id, prio):
-        self.dag = dag_order_obj.dag  # The NetworkX graph from your generator
+        self.dag = dag_order_obj.dag
         self.order_id = dag_order_obj.name
         self.completed_tasks = set()
         self.assigned_tasks = set()

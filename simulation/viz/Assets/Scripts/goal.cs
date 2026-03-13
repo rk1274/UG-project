@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class goal : MonoBehaviour 
 {
-
     public List<GameObject> items = new();
 
     public mainScript MainScript;
