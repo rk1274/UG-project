@@ -6,10 +6,12 @@ import orderDAG
 import time
 
 class OrderManager:
-    def __init__(self, num_init_orders: int, num_dynamic_orders: int, dynamic_deadline:int, size_to_shelves:dict, shelves_registry:dict):
+    def __init__(self, num_init_orders: int, num_dynamic_orders: int, dynamic_deadline:int, size_to_shelves:dict,
+                shelves_registry:dict, print_dags: bool):
         self._num_init_orders = num_init_orders
         self._num_dynamic_orders = num_dynamic_orders
         self._dynamic_deadline = dynamic_deadline
+        self._print_dags = print_dags
 
         self._init_orders = []
         self._dynamic_orders = []
@@ -62,7 +64,9 @@ class OrderManager:
         goal_pos = [0, 3]
         dag_gen = dag_generator.Order(l, m, s, size_to_shelves, shelves_registry, goal_pos)
         dag_gen.generate_dag()
-        dag_gen.save_image(f"order_{id}")
+        if self._print_dags:
+            print(f"Saving DAG for order {id}...")
+            dag_gen.save_image(f"order_{id}")
 
         order = orderDAG.OrderDAG(dag_gen, id, 1)
         self._all_orders[id] = order

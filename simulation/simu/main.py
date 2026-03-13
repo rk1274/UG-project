@@ -3,43 +3,42 @@ import os
 import argparse
 import time
 
-def run_simple_sim(warehouse_file, transmit=False):
+def run_simple_sim(warehouse_file, transmit=False, print_dags=False):
     """
     A simplified runner that just starts the simulation and 
     loops until all tasks are complete.
     """
-    # 1. Setup Environment
     os.environ["ROBOTSIM_TRANSMIT"] = str(transmit)
 
-    inv_size = 1          # Robot carrying capacity
+    # TODO inv should always be 1.
+    inv_size = 1         
     schedule_mode = "simple" 
-    fault_rates = [0, 0, 0, 0] # [Battery, Motor, Sensor, Comms]
-    fault_mode = True      # Enable/Disable fault tolerance logic
-    step_limit = 2000      # Safety cutoff
+
+    # TODO faults ofc.
+    fault_rates = [0, 0, 0, 0] 
+    fault_mode = False      
+    
+    step_limit = 2000     
     
     print(f"Initializing Warehouse: {warehouse_file}...")
     
-    # 3. Initialize the Warehouse
-    # This triggers the OrderManager and Scheduler internally
     simu = warehouse.Warehouse(
         warehouse_file, 
         inv_size, 
         schedule_mode, 
         fault_rates, 
         fault_mode, 
-        step_limit
+        step_limit,
+        print_dags
     )
 
     print("Starting Simulation Loop...")
     
-    # 4. Main Simulation Loop
     keep_running = True
     while keep_running:
-        # If transmitting to visualizer, slow down so you can actually see it
         if transmit:
             time.sleep(0.2)
             
-        # simu.step() returns True when all orders are finished or an error occurs
         finished = simu.step()
         keep_running = not finished
         
@@ -51,7 +50,8 @@ def run_simple_sim(warehouse_file, transmit=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-t", action="store_true", help="Transmit UDP packets for visualization")
+    parser.add_argument("-p", action="store_true", help="Print visualisations of the generated DAGs")
     parser.add_argument("-f", type=str, default="whouse.txt", help="The warehouse layout file")
     args = parser.parse_args()
 
-    run_simple_sim(args.f, transmit=args.t)
+    run_simple_sim(args.f, transmit=args.t, print_dags=args.p)

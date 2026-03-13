@@ -87,7 +87,7 @@ public class mainScript : MonoBehaviour
         }
 
         Debug.Log($"Creating {size} item");
-        createPolygonObj(itemDisplayCtr, -2, name, width, height);
+        CreatePolygonObj(itemDisplayCtr, -2, name, width, height);
         itemDisplayCtr += (int)width;
     }
 
