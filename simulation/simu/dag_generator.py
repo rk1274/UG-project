@@ -111,16 +111,20 @@ class Order:
         self.list = processed_tasks
 
     def get_large_relatives(self, G, node_id):
-        large_children = {n for n in G.successors(node_id) 
-                        if G.nodes[n].get('size') == "LARGE"}
+        descendants = set()
+    
+        for d in nx.descendants(G, node_id):
+            if G.nodes[d].get('size') == "LARGE":
+                descendants.add(d)
+                
+        siblings = set()
+        for p in G.predecessors(node_id):
+            for s in G.successors(p):
+                if s != node_id and G.nodes[s].get('size') == "LARGE":
+                    siblings.add(s)
+                    # siblings.update(n for n in nx.descendants(G, s) if G.nodes[n].get('size') == "LARGE")
 
-        large_siblings = {s for p in G.predecessors(node_id) 
-                        for s in G.successors(p) 
-                        if G.nodes[s].get('size') == "LARGE" and s != node_id}
-
-        combined = large_children | large_siblings
-        
-        return list(combined)
+        return list(descendants | siblings)
     
     def save_image(self, name):
         pydot_graph = nx.drawing.nx_pydot.to_pydot(self.dag)

@@ -1,4 +1,5 @@
 import entitywithinventory
+import customexceptions
 import udptransmit
 import math
 import orderDAG
@@ -25,6 +26,11 @@ class OrderStation(entitywithinventory.InventoryEntity):
         self.receive_inventory(items, taskID)
 
         print("recieved:",taskID, "for order:",self._active_order.get_id(), "from robot:", obj.get_name())
+
+        if "large" in items[0].get_name():
+            for item in self.report_inventory():
+                if not "large" in item.get_name():
+                    raise customexceptions.SimulationError(f"Added a large after a medium/small for order {self._active_order.get_id()}. {item.get_name()}")
 
         # TODO is there even multiple items? change this to always only be 1 ??
         for item in items:
