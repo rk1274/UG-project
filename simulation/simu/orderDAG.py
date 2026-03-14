@@ -1,12 +1,11 @@
 class OrderDAG:
-    def __init__(self, dag_order_obj, id, prio):
-        self.dag = dag_order_obj.dag
-        self.order_id = dag_order_obj.name
+    def __init__(self, dag_graph, ranks, id, prio):
+        self.dag = dag_graph
         self.completed_tasks = set()
         self.assigned_tasks = set()
         self.id = id
         self.prio = prio
-        self.ranks = dag_order_obj.ranks
+        self.ranks = ranks
 
     def get_prio(self):
         return self.prio

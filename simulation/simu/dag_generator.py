@@ -110,7 +110,7 @@ class Order:
 
         self.list = processed_tasks
 
-        self.compute_upward_ranks()
+        self.ranks = compute_upward_ranks(G)
 
     def get_large_relatives(self, G, node_id):
         descendants = set()
@@ -127,56 +127,38 @@ class Order:
                     # siblings.update(n for n in nx.descendants(G, s) if G.nodes[n].get('size') == "LARGE")
 
         return list(descendants | siblings)
-    
-    def save_image(self, name):
-        pydot_graph = nx.drawing.nx_pydot.to_pydot(self.dag)
-            
-        pydot_graph.set_prog('dot')
-
-        pydot_graph.write_png("./data/dag_" + name + '.png')
         
-    def save(self):
-        print("Saving...")
-
-        if not os.path.exists("./data/"):
-            os.makedirs("./data/")
+    def save(self, name):
+        if not os.path.exists(f"./{utils.DAG_FOLDER}/"):
+            os.makedirs(f"./{utils.DAG_FOLDER}/")
 
         try:
             pydot_graph = nx.drawing.nx_pydot.to_pydot(self.dag)
             
             pydot_graph.set_prog('dot')
 
-            pydot_graph.write_png("./data/dag_" + self.name + '.png')
-            print(f"Image saved to ./data/dag_{self.name}.png")
+            pydot_graph.write_png(f"./{utils.DAG_FOLDER}/dag_{name}.png")
             
         except Exception as e:
             print(f"Drawing failed, but saving data anyway. Error: {e}")
 
-        nx.write_gml(self.dag, "./data/dag_" + self.name + '.gml')
-
-        for task in self.list:
-            print(task.node_id)
+        nx.write_gml(self.dag, f"./{utils.DAG_FOLDER}/dag_{name}.gml")
     
-    def compute_upward_ranks(self):
-        """Calculates rank_u for each node in the DAG."""
-        ranks = {}
+def compute_upward_ranks(dag):
+    """Calculates rank_u for each node in the DAG."""
+    ranks = {}
+    
+    nodes = list(nx.topological_sort(dag))
+    for node in reversed(nodes):
+        weight = dag.nodes[node].get('weight', 0)
         
-        # We traverse backwards from SINK to Entry
-        nodes = list(nx.topological_sort(self.dag))
-        for node in reversed(nodes):
-            weight = self.dag.nodes[node].get('weight', 0)
-            
-            # Successors in the DAG
-            successors = list(self.dag.successors(node))
-            if not successors:
-                ranks[node] = weight
-            else:
-                # Rank = weight + max(ranks of successors)
-                # In multi-robot, communication cost is 0 if same robot, 
-                # but usually ignored in basic HEFT or treated as constant.
-                ranks[node] = weight + max(ranks[s] for s in successors)
+        successors = list(dag.successors(node))
+        if not successors:
+            ranks[node] = weight
+        else:
+            ranks[node] = weight + max(ranks[s] for s in successors)
 
-        self.ranks = ranks
+    return ranks
 
 def generate_random_order():
     large = random.randrange(1,10)

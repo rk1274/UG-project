@@ -2,8 +2,10 @@ import warehouse
 import os
 import argparse
 import time
+import utils
+import random
 
-def run_simple_sim(warehouse_file, transmit=False, print_dags=False, mode="simple"):
+def run_simple_sim(warehouse_file, transmit=False, print_dags=False, mode="simple", use_dags=False):
     """
     A simplified runner that just starts the simulation and 
     loops until all tasks are complete.
@@ -28,7 +30,8 @@ def run_simple_sim(warehouse_file, transmit=False, print_dags=False, mode="simpl
         fault_rates, 
         fault_mode, 
         step_limit,
-        print_dags
+        print_dags,
+        use_dags
     )
 
     print("Starting Simulation Loop...")
@@ -51,7 +54,12 @@ if __name__ == "__main__":
     parser.add_argument("-t", action="store_true", help="Transmit UDP packets for visualization")
     parser.add_argument("-p", action="store_true", help="Print visualisations of the generated DAGs")
     parser.add_argument("-s", type=str, default="simple", help="The scheduler to use. 'simple', 'heft' or 'heft-dls'")
+    parser.add_argument("-d", action="store_true", help=f"Use /{utils.DAG_FOLDER} as the dags for the simulation")
     parser.add_argument("-f", type=str, default="whouse.txt", help="The warehouse layout file")
+    parser.add_argument("-r", action="store_true", help="Use a random seed")
     args = parser.parse_args()
 
-    run_simple_sim(args.f, transmit=args.t, print_dags=args.p, mode=args.s)
+    if args.r:
+        random.seed(42)
+
+    run_simple_sim(args.f, transmit=args.t, print_dags=args.p, mode=args.s, use_dags=args.d)

@@ -18,7 +18,7 @@ from dataclasses import dataclass, field
 ITEMS = ["SMALL", "MEDIUM", "LARGE"]
 class Warehouse:
     def __init__(self, w_house_filename: str, robot_max_inventory: int, schedule_mode: str,
-                 robot_fault_rates: list[float], fault_tolerant_mode, step_limit: int, print_dags: bool):
+                 robot_fault_rates: list[float], fault_tolerant_mode, step_limit: int, print_dags: bool, use_dags:bool):
         self._fault_tolerant_mode = fault_tolerant_mode
 
         self._current_orders = []
@@ -45,7 +45,7 @@ class Warehouse:
         # Warehouse cell (x,y) is accessed via self._cells[y][x]
         self._cells = self.parse_warehouse_file(w_house_filename)
 
-        self._order_manager = ordermanager.OrderManager(5, 5, self._dynamic_deadline, self._size_to_shelves, self._shelves, print_dags)
+        self._order_manager = ordermanager.OrderManager(5, 5, self._dynamic_deadline, self._size_to_shelves, self._shelves, print_dags, use_dags)
 
         if schedule_mode == "simple":
             self._scheduler = scheduler.SimpleScheduler(self._order_manager,
