@@ -3,7 +3,7 @@ import os
 import argparse
 import time
 
-def run_simple_sim(warehouse_file, transmit=False, print_dags=False):
+def run_simple_sim(warehouse_file, transmit=False, print_dags=False, mode="simple"):
     """
     A simplified runner that just starts the simulation and 
     loops until all tasks are complete.
@@ -12,7 +12,6 @@ def run_simple_sim(warehouse_file, transmit=False, print_dags=False):
 
     # TODO inv should always be 1.
     inv_size = 1         
-    schedule_mode = "simple" 
 
     # TODO faults ofc.
     fault_rates = [0, 0, 0, 0] 
@@ -25,7 +24,7 @@ def run_simple_sim(warehouse_file, transmit=False, print_dags=False):
     simu = warehouse.Warehouse(
         warehouse_file, 
         inv_size, 
-        schedule_mode, 
+        mode, 
         fault_rates, 
         fault_mode, 
         step_limit,
@@ -51,7 +50,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-t", action="store_true", help="Transmit UDP packets for visualization")
     parser.add_argument("-p", action="store_true", help="Print visualisations of the generated DAGs")
+    parser.add_argument("-s", type=str, default="simple", help="The scheduler to use. 'simple', 'heft' or 'heft-dls'")
     parser.add_argument("-f", type=str, default="whouse.txt", help="The warehouse layout file")
     args = parser.parse_args()
 
-    run_simple_sim(args.f, transmit=args.t, print_dags=args.p)
+    run_simple_sim(args.f, transmit=args.t, print_dags=args.p, mode=args.s)

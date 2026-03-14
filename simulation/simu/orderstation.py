@@ -36,7 +36,7 @@ class OrderStation(entitywithinventory.InventoryEntity):
         for item in items:
             self._active_order.mark_completed(taskID)
 
-        self._warehouse_ref.get_scheduler().schedule(self._warehouse_ref.get_total_steps())
+        self._warehouse_ref.get_scheduler().schedule()
 
         if self._active_order.is_finished():
             self._warehouse_ref.get_scheduler().handle_complete_order(

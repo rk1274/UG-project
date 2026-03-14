@@ -110,6 +110,8 @@ class Order:
 
         self.list = processed_tasks
 
+        self.compute_upward_ranks()
+
     def get_large_relatives(self, G, node_id):
         descendants = set()
     
@@ -154,6 +156,27 @@ class Order:
 
         for task in self.list:
             print(task.node_id)
+    
+    def compute_upward_ranks(self):
+        """Calculates rank_u for each node in the DAG."""
+        ranks = {}
+        
+        # We traverse backwards from SINK to Entry
+        nodes = list(nx.topological_sort(self.dag))
+        for node in reversed(nodes):
+            weight = self.dag.nodes[node].get('weight', 0)
+            
+            # Successors in the DAG
+            successors = list(self.dag.successors(node))
+            if not successors:
+                ranks[node] = weight
+            else:
+                # Rank = weight + max(ranks of successors)
+                # In multi-robot, communication cost is 0 if same robot, 
+                # but usually ignored in basic HEFT or treated as constant.
+                ranks[node] = weight + max(ranks[s] for s in successors)
+
+        self.ranks = ranks
 
 def generate_random_order():
     large = random.randrange(1,10)

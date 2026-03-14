@@ -6,6 +6,7 @@ class OrderDAG:
         self.assigned_tasks = set()
         self.id = id
         self.prio = prio
+        self.ranks = dag_order_obj.ranks
 
     def get_prio(self):
         return self.prio
@@ -36,7 +37,13 @@ class OrderDAG:
         self.assigned_tasks.remove(task_id)
         self.completed_tasks.add(task_id)
 
+    def is_completed(self, task_id):
+        return task_id in self.completed_tasks
+
     def is_finished(self):
         # The mission is done when the only thing left is the VIRTUAL SINK
         non_virtual_nodes = [n for n in self.dag.nodes() if n != "SINK"]
         return len(self.completed_tasks) == len(non_virtual_nodes)
+    
+    def get_upward_ranks(self):
+        return self.ranks

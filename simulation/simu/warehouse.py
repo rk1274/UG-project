@@ -47,12 +47,19 @@ class Warehouse:
 
         self._order_manager = ordermanager.OrderManager(5, 5, self._dynamic_deadline, self._size_to_shelves, self._shelves, print_dags)
 
-        self._scheduler = scheduler.Scheduler(self._order_manager,
+        if schedule_mode == "simple":
+            self._scheduler = scheduler.SimpleScheduler(self._order_manager,
                                               self._robots, self._shelves, self._order_stations,
                                               self._homes, self._order_manager.get_init_orders(),
-                                              schedule_mode,
                                               self._robot_max_inventory, self._fault_tolerant_mode)
-        self._scheduler.schedule(1)
+        if schedule_mode == "heft":
+            self._scheduler = scheduler.HeftScheduler(self._order_manager,
+                                              self._robots, self._shelves, self._order_stations,
+                                              self._homes, self._order_manager.get_init_orders(),
+                                              self._robot_max_inventory, self._fault_tolerant_mode)
+
+        
+        self._scheduler.schedule()
 
         self._width = len(self._cells[0])
         self._height = len(self._cells)
@@ -87,7 +94,7 @@ class Warehouse:
                 #print("Robot %s waited a step" % robot_obj.get_name())
                 should_schedule = robot_obj.decrement_wait_steps()
                 if should_schedule:
-                    self._scheduler.schedule(self._total_steps)
+                    self._scheduler.schedule()
             #self.print_layout_simple()
             #print(self._scheduler._orders_active)
             #print(self._scheduler._orders_backlog)
@@ -158,7 +165,7 @@ class Warehouse:
             self.sensor_faulty_bots[robot_obj.get_name()] = robot_obj
             robot_obj.add_wait_steps(2)
         if True in fault_list:
-            self._scheduler.schedule(self._total_steps)
+            self._scheduler.schedule()
 
     def get_total_steps(self):
         return self._total_steps

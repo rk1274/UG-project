@@ -1,17 +1,13 @@
 import copy
-import math
-
 
 import customexceptions
-import gahandler
 import ordermanager
 import orderDAG
 import utils
-import pygad
-import random
+import networkx as nx
 
 class Scheduler:
-    def __init__(self, order_manager, robots: dict, shelves: dict, goals: dict, homes: dict, init_orders: list, schedule_mode:str,
+    def __init__(self, order_manager, robots: dict, shelves: dict, goals: dict, homes: dict, init_orders: list,
                  robot_inventory_size: int,
                  fault_tolerant_mode: bool):
         self._order_manager_ref = order_manager
@@ -26,11 +22,7 @@ class Scheduler:
 
         self._order_to_amount_robots_assigned = {}
 
-        self._schedule_mode = schedule_mode
         self._ga_attempts = [0,0,0,0,0]
-
-        if schedule_mode not in ["simple", "simple-interrupt", "multi-robot", "multi-robot-genetic"]:
-            raise customexceptions.SimulationError("Invalid scheduling mode provided")
 
         for shelf_name, shelf in self._shelves.items():
             item_name = shelf.get_item().get_name()
@@ -77,6 +69,10 @@ class Scheduler:
 
         self.recalculate_distances()
 
+    def schedule(self):
+        """Must be implemented by subclasses"""
+        raise NotImplementedError
+    
     def get_ga_attempts(self):
         return self._ga_attempts
 
@@ -101,38 +97,6 @@ class Scheduler:
     def add_flag(self, flag: str):
         self._flags.append(flag)
 
-    def schedule(self, step_value):
-        # print("SCHEDULING")
-        # print("The current backlog is:")
-        # for order in self._orders_backlog:
-        #     print(order.get_id())
-        # print("The current active is:")
-        # for order in self._orders_active:
-        #     print(order.get_id())
-        # print("The current robot assignment is %s" % self._order_robots_assignment)
-        # print("The current goal assignment is %s" % self._order_goal_assignment)
-
-        new_orders = []
-        new_orders = self.simple_single_robot_schedule(self._fault_tolerant_mode)
-
-        if new_orders != None:
-            for order_obj in new_orders:
-                self._order_manager_ref.set_order_start_work_time(order_obj.get_id(), step_value)
-
-        # print("AFTER SCHEDULING")
-        
-        # print("After, new orders:" )
-        # for order in new_orders:
-        #     print(order.get_id())
-
-        # print("After, the current backlog is" )
-        # for order in self._orders_backlog:
-        #     print(order.get_id())
-        # print("After, the current active is")
-        # for order in self._orders_active:
-        #     print(order.get_id())
-        #print("After, The current robot assignment is %s" % self._order_robots_assignment)
-        #print("After, The current goal assignment is %s" % self._order_goal_assignment)
     def get_items_already_delivered_for_order(self, order_id):
         order_goal_name = self._order_goal_assignment[order_id]
         order_goal = self._goals[order_goal_name]
@@ -204,73 +168,8 @@ class Scheduler:
             self._order_goal_assignment.pop(order_id)
 
         return order_to_remove, new_order
-
-    def simple_single_robot_schedule(self, fault_tolerant_mode, single_item_mode=False):
-        free_robots = self.find_free_robots(fault_tolerant_mode)
-        if not free_robots:
-            return
-
-        # 2. Collect EVERY task that is currently "Ready" across ALL active orders
-        all_ready_tasks = []
-        for order_obj in self._orders_active:
-            tasks = order_obj.get_ready_tasks() # Tasks with dependencies met
-            for tid in tasks:
-                if f"{tid}_{order_obj.get_id()}" in self._active_tasks:
-                    continue
-                # Store as (priority, order_id, task_id)
-                all_ready_tasks.append((order_obj, tid))
-            
-            # if len(tasks) == 0:
-            #     print("NO READY TASKS for order with id %s" % order_obj.get_id())
-
-        # TODO MAYBE SORT READY TASKS
-
-        orders_to_move = []
-        for robot_obj in free_robots:
-            if not all_ready_tasks:
-                if not self._orders_backlog:
-                    break
-
-                new_order = self._orders_backlog[0]
-                # print("\n\n\n\n Introducing new order %s from backlog \n\n\n" % new_order.get_id())
-                goal_obj = self.find_goal_for_order(new_order)
-                if goal_obj == None:
-                    break
-
-                self._order_goal_assignment[new_order.get_id()] = goal_obj.get_name()
-                goal_obj.set_active_order(new_order)
-
-                self._orders_active.append(new_order)
-                tasks = new_order.get_ready_tasks()
-                for tid in tasks:
-                    all_ready_tasks.append((new_order, tid))
-
-                orders_to_move.append(new_order)
-                _ = self._orders_backlog.pop(0)
-
-            order_obj, task_id = all_ready_tasks.pop(0)
-            # TODO this is a simple fix for a race condition but pls do something better!!!
-            if f"{task_id}_{order_obj.get_id()}" in self._active_tasks:
-                continue
-            self._active_tasks[f"{task_id}_{order_obj.get_id()}"] = True
-            order_obj.mark_assigned(task_id)
-            # print("\n",robot_obj.get_name(),"is taking:", task_id,"for order",order_obj.get_id(),"\n")
-            
-
-            goal_name = self._order_goal_assignment.get(order_obj.get_id())
-            goal_obj = self._goals[goal_name]
-
-            self.assign_single_robot_schedule_empty_starting_inventory(
-                        order_obj, robot_obj, goal_obj, task_id
-                    )
-                                                                           
-        # for ordr in orders_to_move:
-        #     print("\n\n\n\n Introducing new order %s from backlog \n\n\n" % ordr.get_id())
-        #     self._orders_active.append(ordr)
-            
-        return orders_to_move
                                                                 
-    def find_free_robots(self, fault_tolerant_mode):
+    def find_free_robots(self, fault_tolerant_mode=False):
         free_robots = []
         for robot_name, robot in self._robots.items():
             if fault_tolerant_mode:
@@ -306,22 +205,6 @@ class Scheduler:
 
         return free_goal_obj
 
-    def assign_single_robot_schedule_empty_starting_inventory(self, order_obj, robot_obj, goal_obj, task_id):
-        robot_name = robot_obj.get_name()
-        goal_name = goal_obj.get_name()
-        self._order_robots_assignment[order_obj.get_id()] = [robot_name]
-        self._order_goal_assignment[order_obj.get_id()] = goal_name
-        robot_obj.set_prio(order_obj.get_prio())
-
-        # Assuming the node data contains the actual item/shelf info
-        # or that task_id maps to an item name
-        task_data = order_obj.dag.nodes[task_id]
-        assigned_shelf = task_data['shelf_name']
-
-        self.add_to_schedule(robot_name, assigned_shelf, task_id)
-        
-        self.add_to_schedule(robot_name, goal_name, task_id)
-
     def add_to_schedule(self, robot_name, target_name, task_id):
         if robot_name not in self._schedule.keys():
             self._schedule[robot_name] = []
@@ -335,7 +218,7 @@ class Scheduler:
     def add_order(self, order, step_value):
         print("Adding new order %s to backlog" % order.get_id())
         self._orders_backlog.append(order)
-        self.schedule(step_value)
+        self.schedule()
 
     def direct_robot(self, robot_obj):
         robot_name = robot_obj.get_name()
@@ -423,18 +306,139 @@ class Scheduler:
         print("Order %s complete" % order.get_id())
         order_manager.set_order_completion_time(order, step_ctr)
 
-        self.schedule(step_ctr)
+        self.schedule()
 
+    def assign_single_robot_schedule_empty_starting_inventory(self, order_obj, robot_obj, goal_obj, task_id):
+        robot_name = robot_obj.get_name()
+        goal_name = goal_obj.get_name()
+        self._order_robots_assignment[order_obj.get_id()] = [robot_name]
+        self._order_goal_assignment[order_obj.get_id()] = goal_name
+        robot_obj.set_prio(order_obj.get_prio())
 
+        # Assuming the node data contains the actual item/shelf info
+        # or that task_id maps to an item name
+        task_data = order_obj.dag.nodes[task_id]
+        assigned_shelf = task_data['shelf_name']
 
+        self.add_to_schedule(robot_name, assigned_shelf, task_id)
+        
+        self.add_to_schedule(robot_name, goal_name, task_id)
 
+    def get_order_from_backlog(self):
+        order = self._orders_backlog[0]
+        goal_obj = self.find_goal_for_order(order)
+        if goal_obj is None:
+            return None
 
+        self._order_goal_assignment[order.get_id()] = goal_obj.get_name()
+        goal_obj.set_active_order(order)
 
+        self._orders_backlog.pop(0)
+        self._orders_active.append(order)
 
+        return order
+        
+    def assign_task_with_robot(self, task_id, order_obj, robot_obj):
+        if f"{task_id}_{order_obj.get_id()}" in self._active_tasks:
+            return False
+        
+        self._active_tasks[f"{task_id}_{order_obj.get_id()}"] = True
+        order_obj.mark_assigned(task_id)
+        
+        goal_name = self._order_goal_assignment.get(order_obj.get_id())
+        self.assign_single_robot_schedule_empty_starting_inventory(
+            order_obj, robot_obj, self._goals[goal_name], task_id
+        )
 
+        return True
 
+class SimpleScheduler(Scheduler):
+    def schedule(self):
+        free_robots = self.find_free_robots()
+        if not free_robots:
+            return
+        
+        all_ready_tasks = []
+        for order_obj in self._orders_active:
+            tasks = order_obj.get_ready_tasks() 
+            for tid in tasks:
+                if f"{tid}_{order_obj.get_id()}" in self._active_tasks:
+                    continue
 
+                all_ready_tasks.append((order_obj, tid))
+            
+        # TODO MAYBE SORT READY TASKS
 
+        orders_to_move = []
+        for robot_obj in free_robots:
+            if not all_ready_tasks:
+                if not self._orders_backlog:
+                    break
 
+                new_order = self.get_order_from_backlog()
+                if new_order == None:
+                    break
 
+                tasks = new_order.get_ready_tasks()
+                for tid in tasks:
+                    all_ready_tasks.append((new_order, tid))
 
+            assigned_this_robot = False
+            while all_ready_tasks and not assigned_this_robot:
+                order_obj, task_id = all_ready_tasks.pop(0)
+                
+                assigned_this_robot = self.assign_task_with_robot(task_id, order_obj, robot_obj)
+            
+        return orders_to_move
+
+class HeftScheduler(Scheduler):
+    def schedule(self):
+        free_robots = self.find_free_robots(self._fault_tolerant_mode)
+        if not free_robots:
+            return
+        
+        all_ready_tasks = []
+        for order in self._orders_active:
+            all_ready_tasks.extend(self.get_ready_tasks_with_rank(order))
+
+        all_ready_tasks.sort(key=lambda x: x['rank'], reverse=True)
+
+        orders_to_move = []
+        for robot_obj in free_robots:
+            if not all_ready_tasks:
+                if not self._orders_backlog:
+                    break
+
+                new_order = self.get_order_from_backlog()
+                if new_order == None:
+                    break
+
+                orders_to_move.append(new_order)
+
+                all_ready_tasks.extend(self.get_ready_tasks_with_rank(new_order))
+                all_ready_tasks.sort(key=lambda x: x['rank'], reverse=True)    
+
+            assigned_this_robot = False
+            while all_ready_tasks and not assigned_this_robot:
+                task_info = all_ready_tasks.pop(0)
+                order_obj = task_info['order']
+                task_id = task_info['task_id']
+                
+                assigned_this_robot = self.assign_task_with_robot(task_id, order_obj, robot_obj)
+
+        return orders_to_move
+        
+    def get_ready_tasks_with_rank(self, order):
+        ready_tasks = []
+        ranks = order.get_upward_ranks()
+        ready_ids = order.get_ready_tasks()
+        for tid in ready_ids:
+            if f"{tid}_{order.get_id()}" not in self._active_tasks:
+                ready_tasks.append({
+                    'order': order,
+                    'task_id': tid,
+                    'rank': ranks.get(tid, 0)
+                })
+
+        return ready_tasks
+    
