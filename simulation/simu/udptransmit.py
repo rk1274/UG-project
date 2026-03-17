@@ -61,7 +61,6 @@ def transmit_clear_inventory(objname: str):
     message = '{"command":"CLEARINV", "objName":"%s"}' % objname
     send_udp_message(message)
 
-
 def transmit_order_create(orderid: int, prio:int, items:list[str]):
     item_string = ""
     for item in items:
@@ -76,6 +75,10 @@ def transmit_order_active(orderid:int):
 
 def transmit_order_complete(orderid: int):
     message = '{"command":"ORDERCOMPLETE", "objName":"%s"}' % orderid
+    send_udp_message(message)
+
+def transmit_battery_level(robot_name: str, battery_level: float):
+    message = '{"command":"BATTERYLEVEL", "objName":"%s", "batteryLevel":"%.2f"}' % (robot_name, battery_level)
     send_udp_message(message)
 
 

@@ -12,10 +12,7 @@ class RobotHome:
             obj.add_wait_steps(3)
 
         if obj.apply_charge_wait_upon_reaching_home:
-            obj.apply_charge_wait_upon_reaching_home = False
-            obj.clear_inventory()
-            obj.add_wait_steps(obj.charge_time)
-
+            obj.start_charging()
 
         obj.set_amount_of_items_to_transfer_next_time(None)
         return

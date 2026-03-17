@@ -344,7 +344,15 @@ class Scheduler:
         
         self._active_tasks[f"{task_id}_{order_obj.get_id()}"] = True
         order_obj.mark_assigned(task_id)
-        
+    
+        size = task_id.split("_")[0].lower()
+        if size == "small":
+            robot_obj.set_payload_weight(1.0)
+        elif size == "medium":
+            robot_obj.set_payload_weight(2.0)
+        else:
+            robot_obj.set_payload_weight(5.0)
+
         goal_name = self._order_goal_assignment.get(order_obj.get_id())
         self.assign_single_robot_schedule_empty_starting_inventory(
             order_obj, robot_obj, self._goals[goal_name], task_id

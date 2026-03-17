@@ -20,7 +20,15 @@ class Robot(entitywithinventory.InventoryEntity):
         self._steps_halted = 0
         self._prio = None
 
+        self._is_charging = False
+
         self._current_task_id = None
+
+        self._battery_level = 100
+        self._current_payload_weight = 0.0
+
+        self.BASE_DRAIN = 0.1    
+        self.WEIGHT_FACTOR = 0.2
 
         self._battery_critical_fault_rate = fault_rates[0]
         self._battery_low_fault_rate = fault_rates[1]
@@ -32,7 +40,9 @@ class Robot(entitywithinventory.InventoryEntity):
         self.battery_faulted = False
         self.gone_home_to_clear_inv = False
 
+        # make this a const
         self.charge_time = 50
+
         self.apply_charge_wait_upon_reaching_home = False
 
         self.battery_faulted_critical = False
@@ -40,6 +50,19 @@ class Robot(entitywithinventory.InventoryEntity):
         self.actuators_faulted = False
 
         super().__init__(name, max_inv_size)
+
+    def get_battery_level(self):
+        return self._battery_level
+    
+    def set_payload_weight(self, weight: float):
+        self._current_payload_weight = weight
+
+    def start_charging(self):
+        print("CHARGING", self.get_name())
+        self.apply_charge_wait_upon_reaching_home = False
+        self.clear_inventory()
+        self.add_wait_steps(self.charge_time)
+        self._is_charging = True
 
     def set_task_id(self, id):
         self._current_task_id = id
@@ -85,14 +108,37 @@ class Robot(entitywithinventory.InventoryEntity):
         # Reset the states of the faults that involve waiting after the wait is over
         if self.wait_steps == 0:
             self.actuators_faulted = False
+
+            if self._is_charging:
+                self._is_charging = False
+                self._battery_level = 100
+                print("CHARGING COMPLETE", self.get_name())
+                udptransmit.transmit_battery_level(self._name, self._battery_level)
+
             if (self._home_x == self._x) and (self._home_y == self._y) and self.battery_faulted:
                 self.battery_faulted = False
                 return True
 
+    def deplete_battery(self, distance=1):
+        """Calculates and subtracts battery based on weight"""
+        if self.battery_faulted_critical:
+            return
+
+        drain = distance * (self.BASE_DRAIN + (self._current_payload_weight * self.WEIGHT_FACTOR))
+        self._battery_level -= drain
+
+        if self._battery_level < 20:
+            self.apply_charge_wait_upon_reaching_home = True
+
+        udptransmit.transmit_battery_level(self._name, self._battery_level)
 
     def set_position(self, x, y):
         if self.wait_steps != 0:
             raise customexceptions.SimulationError("Cannot move a robot that is waiting")
+        
+        dist = abs(self._x - x) + abs(self._y - y)
+        self.deplete_battery(dist)
+        
         self._steps_halted = 0
         self._x = x
         self._y = y

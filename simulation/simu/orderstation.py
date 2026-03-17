@@ -22,6 +22,8 @@ class OrderStation(entitywithinventory.InventoryEntity):
         items = obj.transfer_inventory()
         taskID = obj.get_task_id()
 
+        obj.set_payload_weight(0.0)
+
         # TODO probably dont need to recieve the inventory.
         self.receive_inventory(items, taskID)
 

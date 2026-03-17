@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using JetBrains.Annotations;
 using Unity.VisualScripting;
 using UnityEngine;
-
+using TMPro;
 
 public class mainScript : MonoBehaviour
 {
@@ -20,6 +20,9 @@ public class mainScript : MonoBehaviour
     public GameObject goalOriginal;
     public GameObject goalContainer;
 
+    public GameObject batteryTextTemplate; 
+    public GameObject batteryTextContainer;
+
     public GameObject canvas;
 
     public Dictionary<string, GameObject> robotDict = new Dictionary<string, GameObject>();
@@ -27,6 +30,8 @@ public class mainScript : MonoBehaviour
     public Dictionary<string, GameObject> goalDict = new Dictionary<string, GameObject>();
 
     public Dictionary<string, GameObject> itemObjects = new Dictionary<string, GameObject>();
+
+    public Dictionary<string, TextMeshProUGUI> batteryTextDict = new Dictionary<string, TextMeshProUGUI>();
 
     public List<string> items = new List<string>();
 
@@ -52,10 +57,39 @@ public class mainScript : MonoBehaviour
         Renderer rend = robotClone.GetComponent<Renderer>();
         Material mat = new Material(Shader.Find("Standard"));
 
-        mat.color = GenerateRandomColor();
+        Color robotColor = GenerateRandomColor();
+        mat.color = robotColor;
         rend.material = mat;
 
         robotDict[robotClone.name] = robotClone;
+
+        if (batteryTextTemplate != null && batteryTextContainer != null)
+        {
+            GameObject textClone = Instantiate(batteryTextTemplate, batteryTextContainer.transform);
+            textClone.name = name + "_BatteryText";
+            textClone.SetActive(true);
+
+            UnityEngine.UI.Image colorBox = textClone.GetComponentInChildren<UnityEngine.UI.Image>();
+            TextMeshProUGUI tmp = textClone.GetComponent<TextMeshProUGUI>();
+            tmp.text = "100%"; // Initial state
+            
+            if (colorBox != null) colorBox.color = robotColor;
+
+            batteryTextDict[name] = tmp;
+        }
+    }
+
+    public void UpdateBatteryText(string robotName, string level)
+    {
+        if (batteryTextDict.ContainsKey(robotName))
+        {
+            batteryTextDict[robotName].text = $"{level}%";
+            
+            // Visual feedback: change color if low
+            float bLevel = float.Parse(level);
+            if (bLevel < 20) batteryTextDict[robotName].color = Color.red;
+            else batteryTextDict[robotName].color = Color.white;
+        }
     }
 
     public void CreateItem(string name)

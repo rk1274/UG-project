@@ -92,6 +92,7 @@ class Warehouse:
                 self.decide_robot_action(robot_obj)
             else:
                 #print("Robot %s waited a step" % robot_obj.get_name())
+                print("waiting...", robot_obj.get_name())
                 should_schedule = robot_obj.decrement_wait_steps()
                 if should_schedule:
                     self._scheduler.schedule()
