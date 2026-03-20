@@ -1,29 +1,15 @@
-import copy
-
 import customexceptions
 import ordermanager
-import orderDAG
 import utils
-import networkx as nx
-
 
 class Scheduler:
-    def __init__(self, order_manager, robots: dict, shelves: dict, goals: dict, homes: dict, init_orders: list,
-                 robot_inventory_size: int,
-                 fault_tolerant_mode: bool):
-        self._order_manager_ref = order_manager
-        self._fault_tolerant_mode = fault_tolerant_mode
+    def __init__(self, robots: dict, shelves: dict, goals: dict, homes: dict, init_orders: list):
         self._robots = robots
-        self._num_robots = len(robots.keys())
         self._shelves = shelves
         self._item_to_shelf_mapping = {}
         self._shelf_to_item_mapping = {}
         
         self._active_tasks = {}
-
-        self._order_to_amount_robots_assigned = {}
-
-        self._ga_attempts = [0,0,0,0,0]
 
         for shelf_name, shelf in self._shelves.items():
             item_name = shelf.get_item().get_name()
@@ -38,8 +24,6 @@ class Scheduler:
         self._flags = []
         self._homes = homes
 
-        self._ROBOT_INVENTORY_SIZE = robot_inventory_size
-
         self._orders_backlog = []
         self._orders_backlog.extend(init_orders)
 
@@ -51,31 +35,22 @@ class Scheduler:
         self._schedule = {}
 
         self._all_positions = {}
-        self._all_genes = []
         self._all_distances = {}
-
-        self._mr_flag_ctr = 0
 
         for robot_name, robot_obj in self._robots.items():
             self._all_positions[robot_name] = robot_obj.get_position()
-            self._all_genes.append(robot_name)
 
         for shelf_name, shelf_obj in self._shelves.items():
             self._all_positions[shelf_name] = shelf_obj.get_position()
-            self._all_genes.append(shelf_name)
 
         for goal_name, goal_obj in self._goals.items():
             self._all_positions[goal_name] = goal_obj.get_position()
-            self._all_genes.append(goal_name)
 
         self.recalculate_distances()
 
     def schedule(self):
         """Must be implemented by subclasses"""
         raise NotImplementedError
-    
-    def get_ga_attempts(self):
-        return self._ga_attempts
 
     def recalculate_distances(self):
         for robot_name, robot_obj in self._robots.items():
@@ -94,83 +69,12 @@ class Scheduler:
                             y2 = self._all_positions[location2][1]
 
                             self._all_distances[(location1, location2)] = utils.taxicab_dist(x1,y1,x2,y2)
-
-    def add_flag(self, flag: str):
-        self._flags.append(flag)
-
-    def get_items_already_delivered_for_order(self, order_id):
-        order_goal_name = self._order_goal_assignment[order_id]
-        order_goal = self._goals[order_goal_name]
-        return order_goal.report_inventory()
-
-    def get_order_to_amount_of_robots_assigned(self):
-        return self._order_to_amount_robots_assigned
-
-    def reassign_orders_if_faulted(self):
-        orders_to_remove = []
-        orders_to_add = []
-        for order_id, robot_names in self._order_robots_assignment.items():
-            if len(robot_names) == 1:
-                robot_obj = self._robots[robot_names[0]]
-                if robot_obj.battery_faulted_critical or robot_obj.battery_faulted:
-                    self._schedule[robot_names[0]] = []
-                    order_to_remove, new_order = self.generate_order_to_complete_fault(order_id)
-
-                    orders_to_remove.append(order_to_remove)
-                    orders_to_add.append(new_order)
-            else:
-                critical_battery_fault_bots = []
-                battery_charge_bots = []
-                non_faulted_bots = []
-                for robot_name in robot_names:
-                    robot_obj = self._robots[robot_name]
-                    if robot_obj.battery_faulted_critical:
-                        critical_battery_fault_bots.append(robot_name)
-                    if robot_obj.battery_faulted:
-                        battery_charge_bots.append(robot_name)
-                    if not robot_obj.battery_faulted_critical and not robot_obj.battery_faulted:
-                        non_faulted_bots.append(robot_name)
-                    else:
-                        self._schedule[robot_name] = []
-                if len(critical_battery_fault_bots) > 0 or len(battery_charge_bots) > 0:
-                    for robot_name in non_faulted_bots:
-                        robot_obj = self._robots[robot_name]
-                        robot_obj.gone_home_to_clear_inv = True
-                        robot_obj.set_target(self._homes[self.get_home_name_for_robot_name(robot_obj.get_name())])
-                        self._schedule[robot_obj.get_name()] = []
-                        order_to_remove, new_order = self.generate_order_to_complete_fault(order_id)
-
-                        orders_to_remove.append(order_to_remove)
-                        orders_to_add.append(new_order)
-
-        for order_obj in orders_to_remove:
-            self._order_robots_assignment.pop(order_obj.get_id())
-            self._orders_active.remove(order_obj)
-
-        for order_obj in orders_to_add:
-            self._orders_backlog.append(order_obj)
-
-    def generate_order_to_complete_fault(self, order_id):
-        items_already_delivered = self.get_items_already_delivered_for_order(order_id)
-        order_to_remove = None
-        for order_obj in self._orders_active:
-            if order_obj.get_id() == order_id:
-                order_to_remove = order_obj
-
-        items_left_to_deliver = copy.deepcopy(order_to_remove.get_original_items())
-
-        for item1 in items_already_delivered:
-            items_left_to_deliver.remove(item1)
-
-        new_order = orderDAG.OrderDAG(items_left_to_deliver, order_to_remove.get_prio(),
-                                order_to_remove.get_id(), order_to_remove.get_original_items())
-
-        if len(items_already_delivered) == 0:
-            self._order_goal_assignment.pop(order_id)
-
-        return order_to_remove, new_order
                                                                 
-    def find_free_robots_and_handle_faults(self, fault_tolerant_mode=False):
+    def find_free_robots_and_handle_faults(self):
+        """
+        Handles robots which have critically faulted.
+        RETURNS a list of robots available to take a new task.
+        """
         free_robots = []
         for robot_name, robot in self._robots.items():
             if robot.has_critically_faulted():
@@ -181,7 +85,7 @@ class Scheduler:
             if robot.is_charging():
                 continue
 
-            # Check whether there is a free robot to take the order
+            
             robot_already_used = False
             for assignment in self._order_robots_assignment.values():
                 if robot_name in assignment:
@@ -193,6 +97,9 @@ class Scheduler:
         return free_robots
     
     def handle_critical_faults(self, robot_obj):
+        """
+        Removes robot from any schedules and marks its task as unassigned so it can be rescheduled to a different robot.
+        """
         task_id = robot_obj.get_task_id()
         if task_id is not None:
             order_id = robot_obj.get_assigned_order()
@@ -210,6 +117,9 @@ class Scheduler:
             self.check_if_blocking(robot_obj)
 
     def check_if_blocking(self, robot_obj):
+        """
+        Raises an exception if the critically faulted robot is currently blocking any goals, shelves, or homes.
+        """
         x = robot_obj.get_position()[0]
         y = robot_obj.get_position()[1]
 
@@ -228,36 +138,13 @@ class Scheduler:
                 raise customexceptions.FaultBlockingError(robot_obj.get_name(), home_name)
 
 
-    def find_goal_for_order(self, order_obj):
-        free_goal_obj = None
-        # If this order already has an assigned goal
-        if (order_obj.get_id() in self._order_goal_assignment.keys() and order_obj.get_id()
-                not in self._order_robots_assignment.keys()):
-            goal_name = self._order_goal_assignment[order_obj.get_id()]
-            #print("preserving goal for order %s" % order_obj.get_id())
-            # Then we can use the same goal again
-            free_goal_obj = self._goals[goal_name]
-        else:
-            # Otherwise, for every goal
-            for goal_name, goal in self._goals.items():
-
-                # Check whether its being used
-                if goal_name not in self._order_goal_assignment.values():
-                    free_goal_obj = goal
-
-        return free_goal_obj
-
-    def add_to_schedule(self, robot_name, target_name, task_id, order_id):
-        if robot_name not in self._schedule.keys():
-            self._schedule[robot_name] = []
-        self._schedule[robot_name].append([target_name, task_id, order_id])
 
     def prepend_to_schedule(self, robot_name, targets_list):
         if robot_name not in self._schedule.keys():
             self._schedule[robot_name] = []
         self._schedule[robot_name] = targets_list + self._schedule[robot_name]
 
-    def add_order(self, order, step_value):
+    def add_order(self, order):
         print("Adding new order %s to backlog" % order.get_id())
         self._orders_backlog.append(order)
         self.schedule()
@@ -311,7 +198,8 @@ class Scheduler:
                 robot_next_target_obj = self._goals[robot_next_target_name]
         elif "home" in dest_type:
             robot_next_target_obj = self._homes[robot_next_target_name]
-        elif "block" in dest_type:
+        elif "block" in dest_type:\
+            # TODO idk what flags are for.
             split = robot_next_target_name.split("|")
             flag_name = split[1]
 
@@ -337,8 +225,6 @@ class Scheduler:
         if self._orders_backlog:
             return False
         if self._orders_active:
-            # for order in self._orders_active:
-                # print("Orders still active: %s" % order.get_id())
             return False
         return True
 
@@ -351,25 +237,13 @@ class Scheduler:
         print("Order %s complete" % order.get_id())
         order_manager.set_order_completion_time(order, step_ctr)
 
-        self.schedule()
-
-    def assign_single_robot_schedule_empty_starting_inventory(self, order_obj, robot_obj, goal_obj, task_id):
-        robot_name = robot_obj.get_name()
-        goal_name = goal_obj.get_name()
-        self._order_robots_assignment[order_obj.get_id()] = [robot_name]
-        self._order_goal_assignment[order_obj.get_id()] = goal_name
-        robot_obj.set_prio(order_obj.get_prio())
-
-        # Assuming the node data contains the actual item/shelf info
-        # or that task_id maps to an item name
-        task_data = order_obj.dag.nodes[task_id]
-        assigned_shelf = task_data['shelf_name']
-
-        self.add_to_schedule(robot_name, assigned_shelf, task_id, order_obj.get_id())
-        
-        self.add_to_schedule(robot_name, goal_name, task_id, order_obj.get_id())
+        self.schedule()    
 
     def get_order_from_backlog(self):
+        """
+        Gets an order from the backlog and assigns a goal to it.
+        Returns None if there are no goals available for the order.
+        """
         order = self._orders_backlog[0]
         goal_obj = self.find_goal_for_order(order)
         if goal_obj is None:
@@ -382,13 +256,28 @@ class Scheduler:
         self._orders_active.append(order)
 
         return order
+    
+    def find_goal_for_order(self, order_obj):
+        """
+        If the order already has an assigned goal, returns that goal, otherwise, returns a free goal.
+        """
+        if (order_obj.get_id() in self._order_goal_assignment.keys() and order_obj.get_id()
+                not in self._order_robots_assignment.keys()):
+            goal_name = self._order_goal_assignment[order_obj.get_id()]
+            return self._goals[goal_name]
+        
+        for goal_name, goal in self._goals.items():
+            if goal_name not in self._order_goal_assignment.values():
+                return goal
+
+        return
         
     def assign_task_with_robot(self, task_id, order_obj, robot_obj):
         if f"{task_id}_{order_obj.get_id()}" in self._active_tasks:
             return False
         
         self._active_tasks[f"{task_id}_{order_obj.get_id()}"] = True
-        order_obj.mark_assigned(task_id)
+        order_obj.mark_assigned(task_id) 
     
         size = task_id.split("_")[0].lower()
         if size == "small":
@@ -404,6 +293,25 @@ class Scheduler:
         )
 
         return True
+    
+    def assign_single_robot_schedule_empty_starting_inventory(self, order_obj, robot_obj, goal_obj, task_id):
+        robot_name = robot_obj.get_name()
+        goal_name = goal_obj.get_name()
+        self._order_robots_assignment[order_obj.get_id()] = [robot_name]
+        self._order_goal_assignment[order_obj.get_id()] = goal_name
+        robot_obj.set_prio(order_obj.get_prio())
+
+        task_data = order_obj.dag.nodes[task_id]
+        assigned_shelf = task_data['shelf_name']
+
+        self.add_to_schedule(robot_name, assigned_shelf, task_id, order_obj.get_id())
+        
+        self.add_to_schedule(robot_name, goal_name, task_id, order_obj.get_id())
+        
+    def add_to_schedule(self, robot_name, target_name, task_id, order_id):
+        if robot_name not in self._schedule.keys():
+            self._schedule[robot_name] = []
+        self._schedule[robot_name].append([target_name, task_id, order_id])
 
 class SimpleScheduler(Scheduler):
     def schedule(self):
@@ -420,18 +328,10 @@ class SimpleScheduler(Scheduler):
 
                 all_ready_tasks.append((order_obj, tid))
             
-        # TODO MAYBE SORT READY TASKS
+        # TODO maybe sort ready tasks?
 
         orders_to_move = []
         for robot_obj in free_robots:
-            if robot_obj.get_battery_level() <= utils.BATTERY_THRESHOLD:
-                print("Battery low for robot %s, sending home to charge" % robot_obj.get_name(), "Battery level was %s" % robot_obj.get_battery_level())
-                robot_obj.apply_charge_wait_upon_reaching_home = True
-                selected_home = self._homes[self.get_home_name_for_robot_name(robot_obj.get_name())]
-                self._schedule[robot_obj.get_name()] = [[selected_home.get_name(), None]]
-
-                continue
-
             if not all_ready_tasks:
                 if not self._orders_backlog:
                     break
@@ -454,7 +354,7 @@ class SimpleScheduler(Scheduler):
 
 class HeftScheduler(Scheduler):
     def schedule(self):
-        free_robots = self.find_free_robots_and_handle_faults(self._fault_tolerant_mode)
+        free_robots = self.find_free_robots_and_handle_faults()
         if not free_robots:
             return
         

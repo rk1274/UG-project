@@ -9,154 +9,129 @@ import customexceptions
 import utils
 
 class Robot(entitywithinventory.InventoryEntity):
+    CHARGE_TIME = 50
+    HALT_THRESHOLD = 10
+
     def __init__(self, name: str, x: int, y: int, max_inv_size: int, fault_rates: list):
-        self._x = x
-        self._y = y
-        self._home_x = x
-        self._home_y = y
+        self._x, self._y = x, y
+        self._home_x, self._home_y = x, y
+
         self.wait_steps = 0
-        self._assigned_order = None
         self._movement_path = []
         self._current_target = None
         self._steps_halted = 0
+        
+        self._assigned_order = None
+        self._current_task_id = None
         self._prio = None
+        self._goal_visit_flag = None
+
+        self._battery_level = 100.0
+        self._payload_weight = 0.0
+        self.BASE_DRAIN = 0.1    
+        self.WEIGHT_FACTOR = 0.2
 
         self._just_faulted = False
 
         self._charging = False
         self._was_charging_last_step = False
 
-        self._current_task_id = None
-
-        self._battery_level = 100
-        self._current_payload_weight = 0.0
-
-        self.BASE_DRAIN = 0.1    
-        self.WEIGHT_FACTOR = 0.2
-
-        self._battery_critical_fault_rate = fault_rates[0]
-        self._battery_low_fault_rate = fault_rates[1]
-        self._actuator_fault_rate = fault_rates[2]
-        self._sensor_fault_rate = fault_rates[3]
-
-        self._goal_visit_flag = None
-
-        self.battery_faulted = False
-        self.gone_home_to_clear_inv = False
-
-        # make this a const
-        self.charge_time = 50
-
+        self.battery_faulted_critical = False  # Permanent death
+        self.battery_faulted_low = False       # Needs recharge
+        self.sensors_faulted = False           # Permanent degradation
+        self.actuators_faulted = False         # Temporary stall
         self.apply_charge_wait_upon_reaching_home = False
-
-        self.battery_faulted_critical = False
-        self.sensors_faulted = False
-        self.actuators_faulted = False
 
         super().__init__(name, max_inv_size)
 
-    def has_critically_faulted(self):
-        return self.battery_faulted_critical
-
-    def get_battery_level(self):
-        return self._battery_level
-    
-    def set_payload_weight(self, weight: float):
-        self._current_payload_weight = weight
-
     def start_charging(self):
-        print("CHARGING", self.get_name())
+        """Initiates the charge cycle."""
+        print(f"CHARGING {self.get_name()}")
         udptransmit.transmit_battery_charging(self._name)
 
         self.apply_charge_wait_upon_reaching_home = False
         self.clear_inventory()
-        self.add_wait_steps(self.charge_time)
+        self.add_wait_steps(self.CHARGE_TIME)
         self._charging = True
 
-    def is_charging(self):
-        return self._charging or self.apply_charge_wait_upon_reaching_home
-
-    def set_task_id(self, id):
-        self._current_task_id = id
-    
-    def get_task_id(self):
-        return self._current_task_id
-
-    def set_assigned_order(self, id_num):
-        self._assigned_order = id_num
-
-    def get_assigned_order(self):
-        return self._assigned_order
-
-    def set_flag(self, flag: str):
-        self._goal_visit_flag = flag
-
-    def consume_flag(self):
-        return_val = self._goal_visit_flag
-        self._goal_visit_flag = None
-        return return_val
-
-    def get_assigned_order(self):
-        return self._assigned_order
-
-    def get_position(self):
-        return self._x, self._y
-
-    def set_prio(self, prio):
-        self._prio = prio
-
-    def get_prio(self):
-        return self._prio
-
-    def add_wait_steps(self, step_amount):
-        self.wait_steps = self.wait_steps + step_amount
-
-    def get_wait_steps(self):
-        return self.wait_steps
-
     def decrement_wait_steps(self):
+        """
+        Decrements wait time. 
+        RETURNS: True if the robot just finished waiting and is ready for reassignment.
+        """
         if self.wait_steps == math.inf:
             return False
 
-        self.wait_steps = self.wait_steps - 1
+        self.wait_steps -= 1
 
-        # Reset the states of the faults that involve waiting after the wait is over
         if self.wait_steps == 0:
             self.actuators_faulted = False
 
             if self._charging:
                 self._charging = False
-                self._was_charging_last_step = True
                 self._battery_level = 100
+                self._was_charging_last_step = True
                 print("CHARGING COMPLETE", self.get_name())
                 udptransmit.transmit_battery_level(self._name, self._battery_level)
 
-                return True
-
-            # TODO REMOVE
-            if (self._home_x == self._x) and (self._home_y == self._y) and self.battery_faulted:
-                self.battery_faulted = False
-                return True
-
+            return True
+        
+        return False
+    
     def deplete_battery(self, distance=1):
         """Calculates and subtracts battery based on weight"""
         if self.battery_faulted_critical:
             return
 
-        drain = distance * (self.BASE_DRAIN + (self._current_payload_weight * self.WEIGHT_FACTOR))
-        self._battery_level -= drain
+        drain = distance * (self.BASE_DRAIN + (self._payload_weight * self.WEIGHT_FACTOR))
+        self._battery_level = max(0, self._battery_level - drain)
 
         if self._battery_level < utils.BATTERY_THRESHOLD:
             self.apply_charge_wait_upon_reaching_home = True
 
         if self._battery_level <= 0:
             self.battery_faulted_critical = True
-            print("BATTERY CRITICALLY FAULTED for robot %s" % self._name)
             self._just_faulted = True
-            self.add_wait_steps(math.inf)
-            # raise customexceptions.SimulationError(self._name + "Zero")
+            self.wait_steps = math.inf
+
+            print("BATTERY CRITICALLY FAULTED for robot %s" % self._name)
 
         udptransmit.transmit_battery_level(self._name, self._battery_level)
+
+    def has_critically_faulted(self): return self.battery_faulted_critical
+
+    def get_battery_level(self): return self._battery_level
+    
+    def set_payload_weight(self, weight): self._payload_weight = weight
+
+    def is_charging(self): return self._charging or self.apply_charge_wait_upon_reaching_home
+
+    def set_task_id(self, id): self._current_task_id = id
+    
+    def get_task_id(self): return self._current_task_id
+
+    def set_assigned_order(self, id_num): self._assigned_order = id_num
+
+    def get_assigned_order(self): return self._assigned_order
+
+    def set_flag(self, flag: str): self._goal_visit_flag = flag
+
+    def consume_flag(self):
+        return_val = self._goal_visit_flag
+        self._goal_visit_flag = None
+        return return_val
+
+    def get_assigned_order(self): return self._assigned_order
+
+    def get_position(self): return self._x, self._y
+
+    def set_prio(self, prio): self._prio = prio
+
+    def get_prio(self): return self._prio
+
+    def add_wait_steps(self, amt): self.wait_steps += amt
+
+    def get_wait_steps(self): return self.wait_steps
 
     def set_position(self, x, y):
         if self.wait_steps != 0:
@@ -174,22 +149,18 @@ class Robot(entitywithinventory.InventoryEntity):
         if self._steps_halted > 10:
             self._steps_halted = 0
 
-    def get_steps_halted(self):
-        return self._steps_halted
+    def get_steps_halted(self): return self._steps_halted
 
-    def set_movement_path(self, path):
-        self._movement_path = path
+    def set_movement_path(self, path): self._movement_path = path
 
-    def get_movement_path(self):
-        return self._movement_path
+    def get_movement_path(self): return self._movement_path
 
     def set_target(self, target):
         self._current_target = target
         if target is None:
             self._prio = None
 
-    def get_target(self):
-        return self._current_target
+    def get_target(self): return self._current_target
 
     def interact_with_target(self):
         if self.get_position() != self._current_target.get_position():
@@ -210,8 +181,7 @@ class Robot(entitywithinventory.InventoryEntity):
         else:
             return False
 
-    def get_name(self):
-        return self._name
+    def get_name(self): return self._name
 
     def transmit_creation(self):
         udptransmit.transmit_robot_creation(self._name, self._x, self._y)

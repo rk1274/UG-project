@@ -48,16 +48,13 @@ class Warehouse:
         self._order_manager = ordermanager.OrderManager(5, 5, self._dynamic_deadline, self._size_to_shelves, self._shelves, print_dags, use_dags)
 
         if schedule_mode == "simple":
-            self._scheduler = scheduler.SimpleScheduler(self._order_manager,
+            self._scheduler = scheduler.SimpleScheduler(
                                               self._robots, self._shelves, self._order_stations,
-                                              self._homes, self._order_manager.get_init_orders(),
-                                              self._robot_max_inventory, self._fault_tolerant_mode)
+                                              self._homes, self._order_manager.get_init_orders())
         if schedule_mode == "heft":
-            self._scheduler = scheduler.HeftScheduler(self._order_manager,
+            self._scheduler = scheduler.HeftScheduler(
                                               self._robots, self._shelves, self._order_stations,
-                                              self._homes, self._order_manager.get_init_orders(),
-                                              self._robot_max_inventory, self._fault_tolerant_mode)
-
+                                              self._homes, self._order_manager.get_init_orders())
         
         self._scheduler.schedule()
 
@@ -112,7 +109,7 @@ class Warehouse:
         new_order = self._order_manager.possibly_introduce_dynamic_order(self._total_steps)
         if new_order is not None:
             #print("INTRODUCING A NEW ORDER ON STEP %s" % self._total_steps)
-            self._scheduler.add_order(new_order, self._total_steps)
+            self._scheduler.add_order(new_order)
 
         # ============================================DISPLAY LAYOUT==================================================
         # self.print_layout_simple()
@@ -137,8 +134,7 @@ class Warehouse:
 
         if robot_obj.get_target() is not None:
             # If the robot is traveling towards its home, it should still be treated as idle and available to schedule
-            if (type(robot_obj.get_target()) is robothome.RobotHome and not
-                    robot_obj.battery_faulted and not robot_obj.gone_home_to_clear_inv):
+            if (type(robot_obj.get_target()) is robothome.RobotHome):
                 # Check if the scheduler has a new job for this robot yet
                 #print("Robot is waiting for direction, while travelling home")
                 self._scheduler.direct_robot(robot_obj)
