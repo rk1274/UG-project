@@ -129,6 +129,11 @@ public class CommandExecutor : MonoBehaviour
             MainScript.GetComponent<mainScript>().UpdateBatteryText(cmd.objName, cmd.batteryLevel);
         }
 
+        else if (cmd.Command == CommandName.BATTERYCHARGING)
+        {
+            MainScript.GetComponent<mainScript>().SetBatteryCharging(cmd.objName);
+        }
+
 
 }
 

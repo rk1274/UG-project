@@ -41,7 +41,7 @@ public class mainScript : MonoBehaviour
 
     private TMPro.TextMeshProUGUI bottomtext;
 
-    private int itemDisplayCtr = 0;
+    private int itemDisplayCtr = 2;
 
     void Start()
     {
@@ -89,6 +89,14 @@ public class mainScript : MonoBehaviour
             float bLevel = float.Parse(level);
             if (bLevel < 20) batteryTextDict[robotName].color = Color.red;
             else batteryTextDict[robotName].color = Color.white;
+        }
+    }
+    
+    public void SetBatteryCharging(string robotName)
+    {
+        if (batteryTextDict.ContainsKey(robotName))
+        {
+            batteryTextDict[robotName].color = new Color(1.0f, 0.64f, 0.0f);
         }
     }
 

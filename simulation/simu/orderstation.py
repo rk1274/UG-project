@@ -23,6 +23,7 @@ class OrderStation(entitywithinventory.InventoryEntity):
         taskID = obj.get_task_id()
 
         obj.set_payload_weight(0.0)
+        obj.set_task_id(None)
 
         # TODO probably dont need to recieve the inventory.
         self.receive_inventory(items, taskID)

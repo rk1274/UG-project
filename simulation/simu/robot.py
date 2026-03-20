@@ -6,6 +6,7 @@ import math
 import shelf
 import orderstation
 import customexceptions
+import utils
 
 class Robot(entitywithinventory.InventoryEntity):
     def __init__(self, name: str, x: int, y: int, max_inv_size: int, fault_rates: list):
@@ -20,7 +21,10 @@ class Robot(entitywithinventory.InventoryEntity):
         self._steps_halted = 0
         self._prio = None
 
-        self._is_charging = False
+        self._just_faulted = False
+
+        self._charging = False
+        self._was_charging_last_step = False
 
         self._current_task_id = None
 
@@ -51,6 +55,9 @@ class Robot(entitywithinventory.InventoryEntity):
 
         super().__init__(name, max_inv_size)
 
+    def has_critically_faulted(self):
+        return self.battery_faulted_critical
+
     def get_battery_level(self):
         return self._battery_level
     
@@ -59,10 +66,15 @@ class Robot(entitywithinventory.InventoryEntity):
 
     def start_charging(self):
         print("CHARGING", self.get_name())
+        udptransmit.transmit_battery_charging(self._name)
+
         self.apply_charge_wait_upon_reaching_home = False
         self.clear_inventory()
         self.add_wait_steps(self.charge_time)
-        self._is_charging = True
+        self._charging = True
+
+    def is_charging(self):
+        return self._charging or self.apply_charge_wait_upon_reaching_home
 
     def set_task_id(self, id):
         self._current_task_id = id
@@ -72,6 +84,9 @@ class Robot(entitywithinventory.InventoryEntity):
 
     def set_assigned_order(self, id_num):
         self._assigned_order = id_num
+
+    def get_assigned_order(self):
+        return self._assigned_order
 
     def set_flag(self, flag: str):
         self._goal_visit_flag = flag
@@ -109,12 +124,16 @@ class Robot(entitywithinventory.InventoryEntity):
         if self.wait_steps == 0:
             self.actuators_faulted = False
 
-            if self._is_charging:
-                self._is_charging = False
+            if self._charging:
+                self._charging = False
+                self._was_charging_last_step = True
                 self._battery_level = 100
                 print("CHARGING COMPLETE", self.get_name())
                 udptransmit.transmit_battery_level(self._name, self._battery_level)
 
+                return True
+
+            # TODO REMOVE
             if (self._home_x == self._x) and (self._home_y == self._y) and self.battery_faulted:
                 self.battery_faulted = False
                 return True
@@ -127,8 +146,15 @@ class Robot(entitywithinventory.InventoryEntity):
         drain = distance * (self.BASE_DRAIN + (self._current_payload_weight * self.WEIGHT_FACTOR))
         self._battery_level -= drain
 
-        if self._battery_level < 20:
+        if self._battery_level < utils.BATTERY_THRESHOLD:
             self.apply_charge_wait_upon_reaching_home = True
+
+        if self._battery_level <= 0:
+            self.battery_faulted_critical = True
+            print("BATTERY CRITICALLY FAULTED for robot %s" % self._name)
+            self._just_faulted = True
+            self.add_wait_steps(math.inf)
+            # raise customexceptions.SimulationError(self._name + "Zero")
 
         udptransmit.transmit_battery_level(self._name, self._battery_level)
 

@@ -17,6 +17,9 @@ class RobotHome:
         obj.set_amount_of_items_to_transfer_next_time(None)
         return
 
+    def get_robot_name(self):
+        return self._robot_name
+
     def get_name(self):
         return self._name
 

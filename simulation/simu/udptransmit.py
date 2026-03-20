@@ -81,6 +81,10 @@ def transmit_battery_level(robot_name: str, battery_level: float):
     message = '{"command":"BATTERYLEVEL", "objName":"%s", "batteryLevel":"%.2f"}' % (robot_name, battery_level)
     send_udp_message(message)
 
+def transmit_battery_charging(robot_name: str):
+    message = '{"command":"BATTERYCHARGING", "objName":"%s"}' % robot_name
+    send_udp_message(message)
+
 
 
 

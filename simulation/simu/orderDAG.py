@@ -32,6 +32,9 @@ class OrderDAG:
     def mark_assigned(self, task_id):
         self.assigned_tasks.add(task_id)
 
+    def mark_unassigned(self, task_id):
+        self.assigned_tasks.remove(task_id)
+
     def mark_completed(self, task_id):
         self.assigned_tasks.remove(task_id)
         self.completed_tasks.add(task_id)

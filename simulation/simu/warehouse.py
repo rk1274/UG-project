@@ -79,23 +79,29 @@ class Warehouse:
         # ============================================UPDATE ROBOTS====================================================
         for robot_obj in self._robots.values():
             # Apply any faults
-            fault_list = robot_obj.maybe_introduce_fault()
-            self.apply_fault_actions(robot_obj, fault_list)
+            # fault_list = robot_obj.maybe_introduce_fault()
+            # self.apply_fault_actions(robot_obj, fault_list)
 
-
-
+            if robot_obj._just_faulted:
+                robot_obj._just_faulted = False
+                self._scheduler.schedule()
             # Robots should only take action if they are not waiting
-            if robot_obj.get_wait_steps() == 0:
+            elif robot_obj.get_wait_steps() == 0:
                 #print("Updating robot %s" % robot_obj.get_name())
                 #print("At (%s %s)" % (robot_obj.get_position()[0], robot_obj.get_position()[1]))
                 #print("Has target %s" % robot_obj.get_target())
                 self.decide_robot_action(robot_obj)
+                did_something = True
             else:
                 #print("Robot %s waited a step" % robot_obj.get_name())
-                print("waiting...", robot_obj.get_name())
+                if not robot_obj.is_charging() and not robot_obj.has_critically_faulted():
+                    print("waiting...", robot_obj.get_name())
+
                 should_schedule = robot_obj.decrement_wait_steps()
+
                 if should_schedule:
                     self._scheduler.schedule()
+                    did_something = True
             #self.print_layout_simple()
             #print(self._scheduler._orders_active)
             #print(self._scheduler._orders_backlog)
@@ -109,7 +115,7 @@ class Warehouse:
             self._scheduler.add_order(new_order, self._total_steps)
 
         # ============================================DISPLAY LAYOUT==================================================
-        #self.print_layout_simple()
+        # self.print_layout_simple()
         #print("===============================================================================")
         return self._scheduler.are_all_orders_complete() and self.get_total_steps() > self._dynamic_deadline + 1
 

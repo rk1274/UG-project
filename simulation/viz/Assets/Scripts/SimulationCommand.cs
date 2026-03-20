@@ -23,7 +23,8 @@ public enum CommandName
     ITEMLOST,
     CLEARINV,
 
-    BATTERYLEVEL
+    BATTERYLEVEL,
+    BATTERYCHARGING
 }
 
 [System.Serializable]
@@ -44,7 +45,7 @@ public class SimulationCommand
 
 
     public List<CommandName> needsPosition = new(){ CommandName.WAREHOUSESIZE, CommandName.CREATEROBOT, CommandName.CREATESHELF, CommandName.CREATEGOAL };
-    public List<CommandName> needsObjName = new() { CommandName.CREATEROBOT, CommandName.MOVEROBOT, CommandName.ROBOTPICKUP, CommandName.ROBOTPUTDOWN, CommandName.CREATESHELF, CommandName.CREATEGOAL, CommandName.ITEMGAINED, CommandName.ITEMLOST, CommandName.CLEARINV, CommandName.BATTERYLEVEL};
+    public List<CommandName> needsObjName = new() { CommandName.CREATEROBOT, CommandName.MOVEROBOT, CommandName.ROBOTPICKUP, CommandName.ROBOTPUTDOWN, CommandName.CREATESHELF, CommandName.CREATEGOAL, CommandName.ITEMGAINED, CommandName.ITEMLOST, CommandName.CLEARINV, CommandName.BATTERYLEVEL, CommandName.BATTERYCHARGING};
     public List<CommandName> needsItemName = new() { CommandName.CREATESHELF, CommandName.ITEM, CommandName.ITEMGAINED, CommandName.ITEMLOST};
 
 

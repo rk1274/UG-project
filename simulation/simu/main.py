@@ -39,7 +39,7 @@ def run_simple_sim(warehouse_file, transmit=False, print_dags=False, mode="simpl
     keep_running = True
     while keep_running:
         if transmit:
-            time.sleep(0.2)
+            time.sleep(0.0)
             
         finished = simu.step()
         keep_running = not finished
