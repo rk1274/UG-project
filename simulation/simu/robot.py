@@ -10,7 +10,7 @@ class Robot(entitywithinventory.InventoryEntity):
     CHARGE_TIME = 50
     HALT_THRESHOLD = 10
 
-    def __init__(self, name: str, x: int, y: int, max_inv_size: int, fault_rate: float):
+    def __init__(self, name: str, x: int, y: int, max_inv_size: int, fault_rate: float, use_battery: bool):
         self._x, self._y = x, y
         self._home_x, self._home_y = x, y
 
@@ -29,6 +29,7 @@ class Robot(entitywithinventory.InventoryEntity):
         self.BASE_DRAIN = 0.1    
         self.WEIGHT_FACTOR = 0.2
 
+        self._use_battery = use_battery
         self._charging = False
         self._was_charging_last_step = False
         self.apply_charge_wait_upon_reaching_home = False
@@ -81,7 +82,7 @@ class Robot(entitywithinventory.InventoryEntity):
     
     def deplete_battery(self, distance=1):
         """Calculates and subtracts battery based on weight"""
-        if self.critically_faulted:
+        if self.critically_faulted or not self._use_battery:
             return
 
         drain = distance * (self.BASE_DRAIN + (self.payload_weight * self.WEIGHT_FACTOR))

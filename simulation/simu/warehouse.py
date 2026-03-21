@@ -19,7 +19,7 @@ from dataclasses import dataclass, field
 ITEMS = ["SMALL", "MEDIUM", "LARGE"]
 class Warehouse:
     def __init__(self, w_house_filename: str, robot_max_inventory: int, schedule_mode: str,
-                 robot_fault_rate: float, step_limit: int, print_dags: bool, use_dags:bool):
+                 robot_fault_rate: float, use_battery:bool, step_limit: int, print_dags: bool, use_dags:bool):
 
         self._current_orders = []
         self._cells = []
@@ -35,6 +35,7 @@ class Warehouse:
         self._homes = {}
 
         self._robot_fault_rate = robot_fault_rate
+        self._use_battery = use_battery
 
         self._items = {}
         udptransmit.transmit_start()
@@ -483,7 +484,7 @@ class Warehouse:
         new_robot = robot.Robot(
             new_robot_name, x, y, 
             self._robot_max_inventory,
-            fault_rate
+            fault_rate, self._use_battery
         )
         self._robots[new_robot_name] = new_robot
 

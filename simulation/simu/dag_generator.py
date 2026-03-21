@@ -159,30 +159,3 @@ def compute_upward_ranks(dag):
             ranks[node] = weight + max(ranks[s] for s in successors)
 
     return ranks
-
-def generate_random_order():
-    large = random.randrange(1,10)
-    medium = random.randrange(1,10)
-    small = random.randrange(1,10)
-    order =  Order(large,medium,small)
-
-    return order
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Generate a DAG from task counts.")
-
-    parser.add_argument("--large", type=int, default=2, help="Number of large tasks")
-    parser.add_argument("--medium", type=int, default=5, help="Number of medium tasks")
-    parser.add_argument("--small", type=int, default=3, help="Number of small tasks")
-    parser.add_argument("--random", type=bool, default=False, help="Generate a random order")
-
-    args = parser.parse_args()
-
-    if args.random:
-        order = generate_random_order()
-    else: 
-        order = Order(args.large, args.medium, args.small)
-
-    order.generate_dag()
-
-    order.save()

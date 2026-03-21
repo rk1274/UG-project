@@ -28,7 +28,7 @@ class OrderStation(entitywithinventory.InventoryEntity):
         # TODO probably dont need to recieve the inventory.
         self.receive_inventory(items, taskID)
 
-        print("recieved:",taskID, "for order:",self._active_order.get_id(), "from robot:", obj.get_name())
+        print("recieved:",taskID, "for order:",self._active_order.get_id(), "from:", obj.get_name())
 
         if "large" in items[0].get_name():
             for item in self.report_inventory():
