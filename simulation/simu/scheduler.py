@@ -77,7 +77,7 @@ class Scheduler:
         """
         free_robots = []
         for robot_name, robot in self._robots.items():
-            if robot.has_critically_faulted():
+            if robot.critically_faulted:
                 self.handle_critical_faults(robot)
 
                 continue
@@ -100,9 +100,9 @@ class Scheduler:
         """
         Removes robot from any schedules and marks its task as unassigned so it can be rescheduled to a different robot.
         """
-        task_id = robot_obj.get_task_id()
+        task_id = robot_obj.current_task_id
         if task_id is not None:
-            order_id = robot_obj.get_assigned_order()
+            order_id = robot_obj.assigned_order
             order_obj = None
             for o in self._orders_active:
                 if o.get_id() == order_id:
@@ -112,9 +112,11 @@ class Scheduler:
                 self._active_tasks.pop(f"{task_id}_{order_id}")
 
             self._schedule[robot_obj.get_name()] = []
-            robot_obj.set_task_id(None)
+            robot_obj.current_task_id = None
 
-            self.check_if_blocking(robot_obj)
+            is_blocking, blocked_area = self.check_if_blocking(robot_obj)
+            if is_blocking:
+                raise customexceptions.FaultBlockingError(robot_obj.get_name(), blocked_area)
 
     def check_if_blocking(self, robot_obj):
         """
@@ -125,19 +127,19 @@ class Scheduler:
 
         for goal_name, goal_obj in self._goals.items():
             if goal_obj.get_position() == (x,y):
-                raise customexceptions.FaultBlockingError(robot_obj.get_name(), goal_name)
+                return True, goal_name
 
         for shelf_name, shelf_obj in self._shelves.items():
             if shelf_obj.get_position() == (x,y):
-                raise customexceptions.FaultBlockingError(robot_obj.get_name(), shelf_name)
+                return True, shelf_name
 
         for home_name, home_obj in self._homes.items():
             if home_obj.get_robot_name() == robot_obj.get_name():
                 continue
             if home_obj.get_position() == (x,y):
-                raise customexceptions.FaultBlockingError(robot_obj.get_name(), home_name)
-
-
+                return True, home_name
+            
+        return False, None
 
     def prepend_to_schedule(self, robot_name, targets_list):
         if robot_name not in self._schedule.keys():
@@ -162,10 +164,10 @@ class Scheduler:
                 robot_next_target_obj = self.parse_schedule_value(robot_next_target_name, robot_obj)
                 robot_obj.set_target(robot_next_target_obj)
                 if task_id != None:
-                    robot_obj.set_task_id(task_id)
+                    robot_obj.current_task_id = task_id
 
                 if order_id != None:
-                    robot_obj.set_assigned_order(order_id)
+                    robot_obj.assigned_order = order_id
 
             else:
                 for robot_assignment in self._order_robots_assignment.values():
@@ -198,7 +200,7 @@ class Scheduler:
                 robot_next_target_obj = self._goals[robot_next_target_name]
         elif "home" in dest_type:
             robot_next_target_obj = self._homes[robot_next_target_name]
-        elif "block" in dest_type:\
+        elif "block" in dest_type:
             # TODO idk what flags are for.
             split = robot_next_target_name.split("|")
             flag_name = split[1]
@@ -281,11 +283,11 @@ class Scheduler:
     
         size = task_id.split("_")[0].lower()
         if size == "small":
-            robot_obj.set_payload_weight(1.0)
+            robot_obj.payload_weight = 1.0
         elif size == "medium":
-            robot_obj.set_payload_weight(2.0)
+            robot_obj.payload_weight = 2.0
         else:
-            robot_obj.set_payload_weight(5.0)
+            robot_obj.payload_weight = 5.0
 
         goal_name = self._order_goal_assignment.get(order_obj.get_id())
         self.assign_single_robot_schedule_empty_starting_inventory(
@@ -299,7 +301,7 @@ class Scheduler:
         goal_name = goal_obj.get_name()
         self._order_robots_assignment[order_obj.get_id()] = [robot_name]
         self._order_goal_assignment[order_obj.get_id()] = goal_name
-        robot_obj.set_prio(order_obj.get_prio())
+        robot_obj.prio = order_obj.get_prio()
 
         task_data = order_obj.dag.nodes[task_id]
         assigned_shelf = task_data['shelf_name']
