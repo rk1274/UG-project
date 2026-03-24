@@ -12,8 +12,13 @@ public enum CommandName
     
     CREATEROBOT,
     MOVEROBOT,
+    ROBOTWAITING,
+    ROBOTACTIVE,
     ROBOTPICKUP,
     ROBOTPUTDOWN,
+
+    ROBOTDEAD,
+    ROBOTFAULT,
 
     CREATESHELF,
 
@@ -45,7 +50,10 @@ public class SimulationCommand
 
 
     public List<CommandName> needsPosition = new(){ CommandName.WAREHOUSESIZE, CommandName.CREATEROBOT, CommandName.CREATESHELF, CommandName.CREATEGOAL };
-    public List<CommandName> needsObjName = new() { CommandName.CREATEROBOT, CommandName.MOVEROBOT, CommandName.ROBOTPICKUP, CommandName.ROBOTPUTDOWN, CommandName.CREATESHELF, CommandName.CREATEGOAL, CommandName.ITEMGAINED, CommandName.ITEMLOST, CommandName.CLEARINV, CommandName.BATTERYLEVEL, CommandName.BATTERYCHARGING};
+    public List<CommandName> needsObjName = new() { CommandName.CREATEROBOT, CommandName.MOVEROBOT, 
+        CommandName.ROBOTWAITING, CommandName.ROBOTACTIVE, CommandName.ROBOTPICKUP, CommandName.ROBOTPUTDOWN, 
+        CommandName.CREATESHELF, CommandName.CREATEGOAL, CommandName.ITEMGAINED, CommandName.ITEMLOST, 
+        CommandName.CLEARINV, CommandName.BATTERYLEVEL, CommandName.BATTERYCHARGING, CommandName.ROBOTDEAD, CommandName.ROBOTFAULT};
     public List<CommandName> needsItemName = new() { CommandName.CREATESHELF, CommandName.ITEM, CommandName.ITEMGAINED, CommandName.ITEMLOST};
 
 

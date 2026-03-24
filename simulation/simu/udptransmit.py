@@ -51,30 +51,12 @@ def transmit_item_gained(objname: str, item_name: str):
     message = '{"command":"ITEMGAINED", "objName":"%s", "itemName":"%s"}' % (objname, item_name)
     send_udp_message(message)
 
-
 def transmit_item_lost(objname: str, item_name: str):
     message = '{"command":"ITEMLOST", "objName":"%s", "itemName":"%s"}' % (objname, item_name)
     send_udp_message(message)
 
-
 def transmit_clear_inventory(objname: str):
     message = '{"command":"CLEARINV", "objName":"%s"}' % objname
-    send_udp_message(message)
-
-def transmit_order_create(orderid: int, prio:int, items:list[str]):
-    item_string = ""
-    for item in items:
-        item_string += item
-        item_string += "|"
-    item_string = item_string[:-1]
-    message = '{"command":"ORDERCREATE", "objName":"%s", "posX":"%s", "itemName":"%s"}' % (orderid, prio, item_string)
-    send_udp_message(message)
-
-def transmit_order_active(orderid:int):
-    message = '{"command":"ORDERACTIVE", "objName":"%s"}'
-
-def transmit_order_complete(orderid: int):
-    message = '{"command":"ORDERCOMPLETE", "objName":"%s"}' % orderid
     send_udp_message(message)
 
 def transmit_battery_level(robot_name: str, battery_level: float):
@@ -84,6 +66,23 @@ def transmit_battery_level(robot_name: str, battery_level: float):
 def transmit_battery_charging(robot_name: str):
     message = '{"command":"BATTERYCHARGING", "objName":"%s"}' % robot_name
     send_udp_message(message)
+
+def robot_waiting(robot_name: str):
+    message = '{"command":"ROBOTWAITING", "objName":"%s"}' % robot_name
+    send_udp_message(message)
+    
+def robot_active(robot_name: str):
+    message = '{"command":"ROBOTACTIVE", "objName":"%s"}' % robot_name
+    send_udp_message(message)
+
+def robot_dead(robot_name: str):
+    message = '{"command":"ROBOTDEAD", "objName":"%s"}' % robot_name
+    send_udp_message(message)
+
+def robot_temp_fault(robot_name: str):
+    message = '{"command":"ROBOTFAULT", "objName":"%s"}' % robot_name
+    send_udp_message(message)
+
 
 
 

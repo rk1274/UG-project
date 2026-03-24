@@ -42,6 +42,8 @@ class Robot(entitywithinventory.InventoryEntity):
         self.critically_faulted = False  # Permanent death
         self.actuators_faulted = False    # Temporary stall
 
+        self.status_history = []
+
         self.num_faults = 0
 
         super().__init__(name, max_inv_size)
@@ -93,6 +95,7 @@ class Robot(entitywithinventory.InventoryEntity):
 
         if self.battery_level <= 0:
             self.critically_faulted = True
+            udptransmit.robot_dead(self._name)
             self._just_critically_faulted = True
             self.wait_steps = math.inf
 
@@ -170,6 +173,7 @@ class Robot(entitywithinventory.InventoryEntity):
             self.wait_steps += 10
             self._just_critically_faulted = True
             self.num_faults += 1
+            udptransmit.robot_temp_fault(self._name)
 
     def check_for_critical_fault(self):
         """Checks if robot is permanently broken."""
@@ -178,6 +182,7 @@ class Robot(entitywithinventory.InventoryEntity):
             self.wait_steps = math.inf
             self._just_critically_faulted = True
             self.critically_faulted = True
+            udptransmit.robot_dead(self._name)
 
     def __repr__(self):
         return self._name

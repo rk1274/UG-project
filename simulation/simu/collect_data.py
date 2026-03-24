@@ -1,0 +1,85 @@
+import warehouse
+import random
+import csv
+import os
+import customexceptions
+
+def get_sim_data(warehouse_file, mode, seed_val):
+    """Runs a single simulation and returns the final stats."""
+
+    random.seed(seed_val)
+    inv_size = 1
+    fault_rate = 0.000
+    use_battery = False
+
+    num_init_orders = 10
+    num_dynamic_orders = 10
+
+    simu = warehouse.Warehouse(
+        num_init_orders, num_dynamic_orders,
+        warehouse_file, inv_size, mode, fault_rate, 
+        use_battery, 2000, False, False
+    )
+
+    try:
+        while not simu.step():
+            pass
+        
+        total_steps = simu.get_total_steps()
+        num_robots = len(simu._robots)
+        overall_wait = 0
+        for robot in simu._robots.values():
+            overall_wait += sum(1 for status in robot.status_history if status == "W")
+
+        avg_wait_pct = (overall_wait / (total_steps * num_robots)) * 100
+        
+        return {
+            "scheduler": mode,
+            "seed": seed_val,
+            "total_steps": total_steps,
+            "avg_wait_pct": round(avg_wait_pct, 2),
+            "status": "SUCCESS"
+        }
+
+    except customexceptions.FaultBlockingError as e:
+        return {
+            "scheduler": mode,
+            "seed": seed_val,
+            "total_steps": None,
+            "avg_wait_pct": None,
+            "status": "BLOCKED_BY_FAULT"
+        }
+    
+    except customexceptions.SimulationError as e:
+        return {
+            "scheduler": mode,
+            "seed": seed_val,
+            "total_steps": None, 
+            "avg_wait_pct": None,
+            "status": "SIM_ERROR"
+        }
+
+if __name__ == "__main__":
+    
+    os.environ["ROBOTSIM_TRANSMIT"] = "False"
+
+    schedulers = ["simple", "heft", "dls", "heft-dls"]
+    seeds = range(100, 130)
+    warehouse_file = "whouse.txt"
+    output_file = "results/10_init_10_dynamic.csv"
+
+    all_results = []
+
+    for scheduler in schedulers:
+        for s in seeds:
+            data = get_sim_data(warehouse_file, scheduler, s)
+            all_results.append(data)
+        print("Done.")
+
+    keys = all_results[0].keys()
+    with open(output_file, 'w', newline='') as f:
+        dict_writer = csv.DictWriter(f, fieldnames=keys)
+        dict_writer.writeheader()
+        dict_writer.writerows(all_results)
+
+    print(f"\nSuccess! Data saved to {output_file}")

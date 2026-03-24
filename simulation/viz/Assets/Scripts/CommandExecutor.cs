@@ -74,6 +74,26 @@ public class CommandExecutor : MonoBehaviour
         {
             MainScript.GetComponent<mainScript>().robotDict[cmd.objName].GetComponent<robot>().setRobotPosition(cmd.posX, cmd.posY);
         }
+        else if (cmd.Command == CommandName.ROBOTWAITING)
+        {
+            MainScript.GetComponent<mainScript>().robotStatusDict[cmd.objName].text = "waiting...";
+            MainScript.GetComponent<mainScript>().robotStatusDict[cmd.objName].color = Color.white;
+        }
+        else if (cmd.Command == CommandName.ROBOTACTIVE)
+        {
+            MainScript.GetComponent<mainScript>().robotStatusDict[cmd.objName].text = "active";
+            MainScript.GetComponent<mainScript>().robotStatusDict[cmd.objName].color = Color.green;
+        }
+        else if (cmd.Command == CommandName.ROBOTFAULT)
+        {
+            MainScript.GetComponent<mainScript>().robotStatusDict[cmd.objName].text = "actuator fault...";
+            MainScript.GetComponent<mainScript>().robotStatusDict[cmd.objName].color = new Color(1.0f, 0.64f, 0.0f);
+        }
+        else if (cmd.Command == CommandName.ROBOTDEAD)
+        {
+            MainScript.GetComponent<mainScript>().robotStatusDict[cmd.objName].text = "critically faulted";
+            MainScript.GetComponent<mainScript>().robotStatusDict[cmd.objName].color = Color.red;
+        }
         else if (cmd.Command == CommandName.CREATESHELF)
         {
             MainScript.GetComponent<mainScript>().CreateShelf(cmd.objName, cmd.posX, cmd.posY, cmd.itemName);

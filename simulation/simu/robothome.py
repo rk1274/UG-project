@@ -1,3 +1,5 @@
+import udptransmit
+
 class RobotHome:
     def __init__(self, home_name: str, robot_name: str, x: int, y: int):
         self._x = x
@@ -6,6 +8,8 @@ class RobotHome:
         self._robot_name = robot_name
 
     def interact(self, obj):
+        udptransmit.robot_waiting(obj.get_name())
+        
         if obj.apply_charge_wait_upon_reaching_home:
             obj.start_charging()
 

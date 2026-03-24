@@ -15,14 +15,19 @@ def run_simple_sim(warehouse_file, transmit=False, print_dags=False, mode="simpl
     # TODO inv should always be 1.
     inv_size = 1         
 
-    fault_rate = 0.005 # Set to 0.0 for no faults.
-    use_battery = True # Set to False for no battery.
+    fault_rate = 0.000 # Set to 0.0 for no faults. otherwise 0.005
+    use_battery = False # Set to False for no battery.
     
     step_limit = 2000     
     
+    num_init_orders = 5
+    num_dynamic_orders = 5
+
     print(f"Initializing Warehouse: {warehouse_file}...")
     
     simu = warehouse.Warehouse(
+        num_init_orders,
+        num_dynamic_orders,
         warehouse_file, 
         inv_size, 
         mode, 
@@ -46,8 +51,34 @@ def run_simple_sim(warehouse_file, transmit=False, print_dags=False, mode="simpl
         if simu.get_total_steps() % 50 == 0:
             print(f"Step: {simu.get_total_steps()}...")
 
+    overall_time_waiting = 0
+    overall_time_active = 0
+
     for robot in simu._robots.values():
         print(f"{robot.get_name()} had {robot.num_faults} faults.")
+
+        if len(robot.status_history) != simu.get_total_steps():
+            print("wtf, hist: %d, steps: %d", len(robot.status_history), simu.get_total_steps())
+
+        time_waiting = 0
+        time_active = 0
+        for status in robot.status_history:
+            if status == "W":
+                time_waiting += 1
+
+            if status == "A":
+                time_active += 1
+
+        overall_time_waiting += time_waiting
+        overall_time_active += time_active
+
+        print("Time spent waiting: %.1f%%" % ((time_waiting/simu.get_total_steps())*100))
+        print("Time spent active: %.1f%%" % ((time_active/simu.get_total_steps())*100))
+
+    
+    print("\nOverall time spent waiting: %.1f%%" % ((overall_time_waiting/(simu.get_total_steps()*len(simu._robots)))*100))
+    print("Overall time spent active: %.1f%%" % ((overall_time_active/(simu.get_total_steps()*len(simu._robots)))*100))
+    
 
     print(f"Simulation Complete in {simu.get_total_steps()} steps.")
 

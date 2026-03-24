@@ -22,6 +22,9 @@ public class mainScript : MonoBehaviour
 
     public GameObject batteryTextTemplate; 
     public GameObject batteryTextContainer;
+    
+    public GameObject robotStatusTemplate; 
+    public GameObject robotStatusContainer;
 
     public GameObject canvas;
 
@@ -32,6 +35,7 @@ public class mainScript : MonoBehaviour
     public Dictionary<string, GameObject> itemObjects = new Dictionary<string, GameObject>();
 
     public Dictionary<string, TextMeshProUGUI> batteryTextDict = new Dictionary<string, TextMeshProUGUI>();
+    public Dictionary<string, TextMeshProUGUI> robotStatusDict = new Dictionary<string, TextMeshProUGUI>();
 
     public List<string> items = new List<string>();
 
@@ -65,17 +69,32 @@ public class mainScript : MonoBehaviour
 
         if (batteryTextTemplate != null && batteryTextContainer != null)
         {
-            GameObject textClone = Instantiate(batteryTextTemplate, batteryTextContainer.transform);
-            textClone.name = name + "_BatteryText";
-            textClone.SetActive(true);
+            GameObject clone = Instantiate(batteryTextTemplate, batteryTextContainer.transform);
+            clone.name = name + "_BatteryText";
+            clone.SetActive(true);
 
-            UnityEngine.UI.Image colorBox = textClone.GetComponentInChildren<UnityEngine.UI.Image>();
-            TextMeshProUGUI tmp = textClone.GetComponent<TextMeshProUGUI>();
+            UnityEngine.UI.Image colorBox = clone.GetComponentInChildren<UnityEngine.UI.Image>();
+            TextMeshProUGUI tmp = clone.GetComponent<TextMeshProUGUI>();
             tmp.text = "100%"; // Initial state
             
             if (colorBox != null) colorBox.color = robotColor;
 
             batteryTextDict[name] = tmp;
+        }
+
+        if (robotStatusTemplate != null && robotStatusContainer != null)
+        {
+            GameObject clone = Instantiate(robotStatusTemplate, robotStatusContainer.transform);
+            clone.name = name + "_RobotStatus";
+            clone.SetActive(true);
+
+            UnityEngine.UI.Image colorBox = clone.GetComponentInChildren<UnityEngine.UI.Image>();
+            TextMeshProUGUI tmp = clone.GetComponent<TextMeshProUGUI>();
+            tmp.text = "waiting..."; // Initial state
+            
+            if (colorBox != null) colorBox.color = robotColor;
+
+            robotStatusDict[name] = tmp;
         }
     }
 
@@ -97,6 +116,12 @@ public class mainScript : MonoBehaviour
         if (batteryTextDict.ContainsKey(robotName))
         {
             batteryTextDict[robotName].color = new Color(1.0f, 0.64f, 0.0f);
+        }
+
+        if (robotStatusDict.ContainsKey(robotName))
+        {
+            robotStatusDict[robotName].text = "charging...";
+            robotStatusDict[robotName].color = new Color(1.0f, 0.64f, 0.0f);
         }
     }
 

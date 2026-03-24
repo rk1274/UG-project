@@ -18,7 +18,7 @@ from dataclasses import dataclass, field
 
 ITEMS = ["SMALL", "MEDIUM", "LARGE"]
 class Warehouse:
-    def __init__(self, w_house_filename: str, robot_max_inventory: int, schedule_mode: str,
+    def __init__(self, num_init_orders: int, num_dynamic_orders: int, w_house_filename: str, robot_max_inventory: int, schedule_mode: str,
                  robot_fault_rate: float, use_battery:bool, step_limit: int, print_dags: bool, use_dags:bool):
 
         self._current_orders = []
@@ -46,7 +46,7 @@ class Warehouse:
         # Warehouse cell (x,y) is accessed via self._cells[y][x]
         self._cells = self.parse_warehouse_file(w_house_filename)
 
-        self._order_manager = ordermanager.OrderManager(5, 5, self._dynamic_deadline, self._size_to_shelves, self._shelves, print_dags, use_dags)
+        self._order_manager = ordermanager.OrderManager(num_init_orders, num_dynamic_orders, self._dynamic_deadline, self._size_to_shelves, self._shelves, print_dags, use_dags)
 
         if schedule_mode == "simple":
             self._scheduler = scheduler.SimpleScheduler(
@@ -56,6 +56,17 @@ class Warehouse:
             self._scheduler = scheduler.HeftScheduler(
                                               self._robots, self._shelves, self._order_stations,
                                               self._homes, self._order_manager.get_init_orders())
+            
+        if schedule_mode == "heft-dls":
+            self._scheduler = scheduler.HeftDlsScheduler(
+                                              self._robots, self._shelves, self._order_stations,
+                                              self._homes, self._order_manager.get_init_orders())
+        
+        if schedule_mode == "dls":
+            self._scheduler = scheduler.SimpleDlsScheduler(
+                                              self._robots, self._shelves, self._order_stations,
+                                              self._homes, self._order_manager.get_init_orders())
+
         
         self._scheduler.schedule()
 
@@ -84,12 +95,21 @@ class Warehouse:
 
             if robot_obj._just_critically_faulted:
                 robot_obj._just_critically_faulted = False
+                robot_obj.status_history.append("D")
                 self._scheduler.schedule()
             elif robot_obj.wait_steps == 0:
                 self.decide_robot_action(robot_obj)
             else:
-                if not robot_obj.is_charging() and not robot_obj.has_faulted():
+                if robot_obj.is_charging():
+                    robot_obj.status_history.append("C")
+
+                elif robot_obj.has_faulted():
+                    robot_obj.status_history.append("F")
+
+                elif not robot_obj.is_charging() and not robot_obj.has_faulted():
+                    robot_obj.status_history.append("A")
                     print("waiting...", robot_obj.get_name())
+
 
                 should_schedule = robot_obj.decrement_wait_steps()
 
@@ -113,11 +133,19 @@ class Warehouse:
             if (type(robot_obj.target) is robothome.RobotHome):
                 # Check if the scheduler has a new job for this robot yet
                 #print("Robot is waiting for direction, while travelling home")
+                udptransmit.robot_waiting(robot_obj.get_name())
+                robot_obj.status_history.append("W")
+
                 self._scheduler.direct_robot(robot_obj)
                 if robot_obj.wait_steps != 0:
                     return
+            else:
+                robot_obj.status_history.append("A")
+                udptransmit.robot_active(robot_obj.get_name())
+            
             # If the scheduler did have a new job, the robot will begin moving towards that
             # If it didn't, it will keep moving towards its home
+
 
             if not robot_obj.is_at_target():
                 #print("Robot is trying to move")
@@ -128,6 +156,7 @@ class Warehouse:
 
         else:
             #print("Robot is waiting for direction")
+            robot_obj.status_history.append("W")
             self._scheduler.direct_robot(robot_obj)
 
     def get_total_steps(self):
