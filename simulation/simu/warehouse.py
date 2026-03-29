@@ -18,7 +18,7 @@ from dataclasses import dataclass, field
 
 ITEMS = ["SMALL", "MEDIUM", "LARGE"]
 class Warehouse:
-    def __init__(self, num_init_orders: int, num_dynamic_orders: int, w_house_filename: str, robot_max_inventory: int, schedule_mode: str,
+    def __init__(self, num_init_orders: int, num_dynamic_orders: int, w_house_filename: str, schedule_mode: str,
                  robot_fault_rate: float, use_battery:bool, step_limit: int, print_dags: bool, use_dags:bool):
 
         self._current_orders = []
@@ -42,7 +42,6 @@ class Warehouse:
         self.generate_items()
         self._dynamic_deadline = 100
 
-        self._robot_max_inventory = robot_max_inventory
         # Warehouse cell (x,y) is accessed via self._cells[y][x]
         self._cells = self.parse_warehouse_file(w_house_filename)
 
@@ -63,7 +62,7 @@ class Warehouse:
                                               self._homes, self._order_manager.get_init_orders())
         
         if schedule_mode == "dls":
-            self._scheduler = scheduler.SimpleDlsScheduler(
+            self._scheduler = scheduler.DlsScheduler(
                                               self._robots, self._shelves, self._order_stations,
                                               self._homes, self._order_manager.get_init_orders())
 
@@ -512,7 +511,6 @@ class Warehouse:
         new_robot_name = "robot%s" % robot_name_ctr
         new_robot = robot.Robot(
             new_robot_name, x, y, 
-            self._robot_max_inventory,
             fault_rate, self._use_battery
         )
         self._robots[new_robot_name] = new_robot

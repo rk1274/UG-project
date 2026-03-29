@@ -10,7 +10,7 @@ class Robot(entitywithinventory.InventoryEntity):
     CHARGE_TIME = 50
     HALT_THRESHOLD = 10
 
-    def __init__(self, name: str, x: int, y: int, max_inv_size: int, fault_rate: float, use_battery: bool):
+    def __init__(self, name: str, x: int, y: int, fault_rate: float, use_battery: bool):
         self._x, self._y = x, y
         self._home_x, self._home_y = x, y
 
@@ -46,7 +46,7 @@ class Robot(entitywithinventory.InventoryEntity):
 
         self.num_faults = 0
 
-        super().__init__(name, max_inv_size)
+        super().__init__(name, 1)
 
     def start_charging(self):
         """Initiates the charge cycle."""

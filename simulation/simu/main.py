@@ -10,13 +10,10 @@ def run_simple_sim(warehouse_file, transmit=False, print_dags=False, mode="simpl
     A simplified runner that just starts the simulation and 
     loops until all tasks are complete.
     """
-    os.environ["ROBOTSIM_TRANSMIT"] = str(transmit)
+    os.environ["ROBOTSIM_TRANSMIT"] = str(transmit)      
 
-    # TODO inv should always be 1.
-    inv_size = 1         
-
-    fault_rate = 0.000 # Set to 0.0 for no faults. otherwise 0.005
-    use_battery = False # Set to False for no battery.
+    fault_rate = 0.005 # Set to 0.0 for no faults. otherwise 0.005
+    use_battery = True # Set to False for no battery.
     
     step_limit = 2000     
     
@@ -29,7 +26,6 @@ def run_simple_sim(warehouse_file, transmit=False, print_dags=False, mode="simpl
         num_init_orders,
         num_dynamic_orders,
         warehouse_file, 
-        inv_size, 
         mode, 
         fault_rate, 
         use_battery,

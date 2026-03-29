@@ -25,7 +25,6 @@ class OrderStation(entitywithinventory.InventoryEntity):
         obj.payload_weight = 0.0
         obj.current_task_id = None
 
-        # TODO probably dont need to recieve the inventory.
         self.receive_inventory(items, taskID)
 
         print("recieved:",taskID, "for order:",self._active_order.get_id(), "from:", obj.get_name())
@@ -35,7 +34,6 @@ class OrderStation(entitywithinventory.InventoryEntity):
                 if not "large" in item.get_name():
                     raise customexceptions.SimulationError(f"Added a large after a medium/small for order {self._active_order.get_id()}. {item.get_name()}")
 
-        # TODO is there even multiple items? change this to always only be 1 ??
         for item in items:
             self._active_order.mark_completed(taskID)
 

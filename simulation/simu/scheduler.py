@@ -34,6 +34,7 @@ class Scheduler:
         self._order_goal_assignment = {}
 
         self._schedule = {}
+        self._prev_schedule = {}
 
         self._all_positions = {}
         self._all_distances = {}
@@ -202,7 +203,6 @@ class Scheduler:
         elif "home" in dest_type:
             robot_next_target_obj = self._homes[robot_next_target_name]
         elif "block" in dest_type:
-            # TODO idk what flags are for.
             split = robot_next_target_name.split("|")
             flag_name = split[1]
 
@@ -330,8 +330,6 @@ class SimpleScheduler(Scheduler):
                     continue
 
                 all_ready_tasks.append((order_obj, tid))
-            
-        # TODO maybe sort ready tasks?
 
         orders_to_move = []
         for robot_obj in free_robots:
@@ -350,7 +348,10 @@ class SimpleScheduler(Scheduler):
             assigned_this_robot = False
             while all_ready_tasks and not assigned_this_robot:
                 order_obj, task_id = all_ready_tasks.pop(0)
-                
+
+                if task_id == "MEDIUM_3":
+                    print("assigning medium 3 for order %s to robot %s" % (order_obj.get_id(), robot_obj.get_name()))
+
                 assigned_this_robot = self.assign_task_with_robot(task_id, order_obj, robot_obj)
             
         return orders_to_move
@@ -406,7 +407,7 @@ class HeftScheduler(Scheduler):
 
         return ready_tasks
     
-class SimpleDlsScheduler(Scheduler):
+class DlsScheduler(Scheduler):
     def schedule(self):
         free_robots = self.find_free_robots_and_handle_faults()
         if not free_robots:
@@ -419,15 +420,12 @@ class SimpleDlsScheduler(Scheduler):
                 if f"{tid}_{order.get_id()}" not in self._active_tasks:
                     all_ready_tasks.append({'order': order, 'task_id': tid})
 
-        # If we have idle robots but no active tasks, pull from backlog
         if len(all_ready_tasks) < len(free_robots) and self._orders_backlog:
             new_order = self.get_order_from_backlog()
             if new_order:
                 for tid in new_order.get_ready_tasks():
                     all_ready_tasks.append({'order': new_order, 'task_id': tid})
 
-        # 4. The DLS Assignment Loop
-        # We process tasks in order, but pick the 'Best Fit' robot for each
         while all_ready_tasks and free_robots:
             current_task = all_ready_tasks.pop(0)
             order_obj = current_task['order']
@@ -436,14 +434,11 @@ class SimpleDlsScheduler(Scheduler):
             best_robot = None
             lowest_cost = math.inf
 
-            # Target shelf position for this specific task
             task_data = order_obj.dag.nodes[tid]
             shelf_name = task_data['shelf_name']
             shelf_pos = self._shelves[shelf_name].get_position()
 
             for robot in free_robots:
-                # DLS Calculation:
-                # Cost = Distance + (Fault History * Penalty Weight)
                 dist = utils.taxicab_dist(robot.get_position()[0], robot.get_position()[1], shelf_pos[0], shelf_pos[1])
                 reliability_tax = robot.num_faults * 5 
                 
@@ -453,10 +448,9 @@ class SimpleDlsScheduler(Scheduler):
                     lowest_cost = total_cost
                     best_robot = robot
 
-            # 5. Commit the assignment
             if best_robot:
                 self.assign_task_with_robot(tid, order_obj, best_robot)
-                free_robots.remove(best_robot) # This robot is no longer free
+                free_robots.remove(best_robot) 
     
 class HeftDlsScheduler(Scheduler):
     def schedule(self):
@@ -475,24 +469,19 @@ class HeftDlsScheduler(Scheduler):
 
         all_ready_tasks.sort(key=lambda x: x['rank'], reverse=True)
 
-        # 2. Assignment Loop: Find the "Earliest Finish" for each task
         while all_ready_tasks and free_robots:
             task_info = all_ready_tasks.pop(0)
             order_obj = task_info['order']
             task_id = task_info['task_id']
             
-            # Find the robot that can finish this specific task the fastest
             best_robot = None
             best_score = math.inf
 
             for robot in free_robots:
-                # Calculate Distance to the task's shelf
                 task_data = order_obj.dag.nodes[task_id]
                 shelf_pos = self._shelves[task_data['shelf_name']].get_position()
                 dist = utils.taxicab_dist(robot.get_position()[0], robot.get_position()[1], shelf_pos[0], shelf_pos[1])
                 
-                # RELIABILITY TAX: Add 5 steps of 'expected delay' for every fault the robot has had
-                # This makes the Lemon (Robot 0) less attractive but not "banned"
                 reliability_penalty = robot.num_faults * 5
                 
                 fitness_score = dist + reliability_penalty
@@ -501,7 +490,6 @@ class HeftDlsScheduler(Scheduler):
                     best_score = fitness_score
                     best_robot = robot
 
-            # 3. Assign and remove the chosen robot from the free pool
             if best_robot:
                 self.assign_task_with_robot(task_id, order_obj, best_robot)
                 free_robots.remove(best_robot)
