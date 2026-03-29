@@ -20,7 +20,9 @@ class Robot(entitywithinventory.InventoryEntity):
         self.steps_halted = 0
 
         self.assigned_order = None
+        self.next_assigned_order = None
         self.current_task_id = None
+        self.next_task_id = None
         self.prio = None
         self._goal_visit_flag = None
 
@@ -138,8 +140,6 @@ class Robot(entitywithinventory.InventoryEntity):
         self.target = target
         if target is None:
             self.prio = None
-
-    def get_target(self): return self.target
 
     def interact_with_target(self):
         if self.get_position() != self.target.get_position():

@@ -27,8 +27,6 @@ class OrderStation(entitywithinventory.InventoryEntity):
 
         self.receive_inventory(items, taskID)
 
-        print("recieved:",taskID, "for order:",self._active_order.get_id(), "from:", obj.get_name())
-
         if "large" in items[0].get_name():
             for item in self.report_inventory():
                 if not "large" in item.get_name():

@@ -77,10 +77,12 @@ class Scheduler:
         Handles robots which have critically faulted.
         RETURNS a list of robots available to take a new task.
         """
+        num_critically_faulted = 0
         free_robots = []
         for robot_name, robot in self._robots.items():
             if robot.critically_faulted:
                 self.handle_critical_faults(robot)
+                num_critically_faulted += 1
 
                 continue
 
@@ -95,6 +97,10 @@ class Scheduler:
 
             if not robot_already_used:
                 free_robots.append(robot)
+
+        if num_critically_faulted == len(self._robots):
+            raise customexceptions.SimulationError("All robots have critically faulted, unable to continue.")
+
 
         return free_robots
     
@@ -115,6 +121,25 @@ class Scheduler:
 
             self._schedule[robot_obj.get_name()] = []
             robot_obj.current_task_id = None
+
+            is_blocking, blocked_area = self.check_if_blocking(robot_obj)
+            if is_blocking:
+                raise customexceptions.FaultBlockingError(robot_obj.get_name(), blocked_area)
+            
+        task_id = robot_obj.next_task_id
+        if task_id is not None:
+            order_id = robot_obj.next_assigned_order
+            order_obj = None
+            for o in self._orders_active:
+                if o.get_id() == order_id:
+                    order_obj = o
+            if order_obj is not None:
+                order_obj.mark_unassigned(task_id)
+
+                self._active_tasks.pop(f"{task_id}_{order_id}")
+
+            self._schedule[robot_obj.get_name()] = []
+            robot_obj.next_task_id = None
 
             is_blocking, blocked_area = self.check_if_blocking(robot_obj)
             if is_blocking:
@@ -167,6 +192,8 @@ class Scheduler:
                 robot_obj.set_target(robot_next_target_obj)
                 if task_id != None:
                     robot_obj.current_task_id = task_id
+                    if robot_obj.next_task_id == task_id:
+                        robot_obj.next_task_id = None
 
                 if order_id != None:
                     robot_obj.assigned_order = order_id
@@ -290,6 +317,9 @@ class Scheduler:
         else:
             robot_obj.payload_weight = 5.0
 
+        robot_obj.next_task_id = task_id
+        robot_obj.next_assigned_order = order_obj.get_id()
+
         goal_name = self._order_goal_assignment.get(order_obj.get_id())
         self.assign_single_robot_schedule_empty_starting_inventory(
             order_obj, robot_obj, self._goals[goal_name], task_id
@@ -348,9 +378,6 @@ class SimpleScheduler(Scheduler):
             assigned_this_robot = False
             while all_ready_tasks and not assigned_this_robot:
                 order_obj, task_id = all_ready_tasks.pop(0)
-
-                if task_id == "MEDIUM_3":
-                    print("assigning medium 3 for order %s to robot %s" % (order_obj.get_id(), robot_obj.get_name()))
 
                 assigned_this_robot = self.assign_task_with_robot(task_id, order_obj, robot_obj)
             
