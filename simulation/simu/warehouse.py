@@ -46,6 +46,8 @@ class Warehouse:
         self._cells = self.parse_warehouse_file(w_house_filename)
 
         self._order_manager = ordermanager.OrderManager(num_init_orders, num_dynamic_orders, self._dynamic_deadline, self._size_to_shelves, self._shelves, print_dags, use_dags)
+        
+        udptransmit.transmit_num_orders(num_init_orders + num_dynamic_orders)
 
         if schedule_mode == "simple":
             self._scheduler = scheduler.SimpleScheduler(
@@ -78,6 +80,7 @@ class Warehouse:
 
     def step(self):
         self._total_steps = self._total_steps + 1
+        udptransmit.transmit_step(self._total_steps)
 
         if self._total_steps > self._step_limit:
             raise customexceptions.SimulationError("Simulation still running after step limit")

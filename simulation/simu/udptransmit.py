@@ -83,8 +83,17 @@ def robot_temp_fault(robot_name: str):
     message = '{"command":"ROBOTFAULT", "objName":"%s"}' % robot_name
     send_udp_message(message)
 
+def transmit_num_orders(num_orders: int):
+    message = '{"command":"NUMORDERS", "objName":"%s"}' % num_orders
+    send_udp_message(message)
 
+def transmit_order_complete():
+    message = '{"command":"ORDERCOMPLETE"}'
+    send_udp_message(message)
 
+def transmit_step(step_num: int):
+    message = '{"command":"STEPNUM", "objName":"%s"}' % step_num
+    send_udp_message(message)
 
 
 

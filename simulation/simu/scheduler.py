@@ -1,5 +1,6 @@
 import customexceptions
 import ordermanager
+import udptransmit
 import utils
 import math
 
@@ -89,7 +90,6 @@ class Scheduler:
             if robot.is_charging():
                 continue
 
-            
             robot_already_used = False
             for assignment in self._order_robots_assignment.values():
                 if robot_name in assignment:
@@ -260,7 +260,8 @@ class Scheduler:
 
     def handle_complete_order(self, order_manager: ordermanager.OrderManager, step_ctr, order):
         self._orders_active.remove(order)
-
+        udptransmit.transmit_order_complete()
+    
         _ = self._order_robots_assignment.pop(order.get_id())
         self._order_goal_assignment.pop(order.get_id())
         #print("Order %s completed by robot %s" % (order.get_id(), robots))
@@ -330,12 +331,17 @@ class Scheduler:
     def assign_single_robot_schedule_empty_starting_inventory(self, order_obj, robot_obj, goal_obj, task_id):
         robot_name = robot_obj.get_name()
         goal_name = goal_obj.get_name()
-        self._order_robots_assignment[order_obj.get_id()] = [robot_name]
+        if order_obj.get_id() in self._order_robots_assignment.keys():
+            self._order_robots_assignment[order_obj.get_id()].append(robot_name)
+        else:
+            self._order_robots_assignment[order_obj.get_id()] = [robot_name]
         self._order_goal_assignment[order_obj.get_id()] = goal_name
         robot_obj.prio = order_obj.get_prio()
 
         task_data = order_obj.dag.nodes[task_id]
         assigned_shelf = task_data['shelf_name']
+
+        print(f"Assigning task {task_id} of order {order_obj.get_id()} to robot {robot_name}, which will go to shelf {assigned_shelf} and then goal {goal_name}")
 
         self.add_to_schedule(robot_name, assigned_shelf, task_id, order_obj.get_id())
         

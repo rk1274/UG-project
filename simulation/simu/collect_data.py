@@ -8,17 +8,18 @@ def get_sim_data(warehouse_file, mode, seed_val):
     """Runs a single simulation and returns the final stats."""
 
     random.seed(seed_val)
-    inv_size = 1
-    fault_rate = 0.000
-    use_battery = False
+    fault_rate = 0.0025 # default 0.0025, set to 0.0 for no faults.
+    use_battery = True
 
-    num_init_orders = 10
-    num_dynamic_orders = 10
+    num_init_orders = 5
+    num_dynamic_orders = 5
+
+    max_steps = 4000
 
     simu = warehouse.Warehouse(
         num_init_orders, num_dynamic_orders,
-        warehouse_file, inv_size, mode, fault_rate, 
-        use_battery, 2000, False, False
+        warehouse_file, mode, fault_rate, 
+        use_battery, max_steps, False, False
     )
 
     try:
@@ -47,7 +48,7 @@ def get_sim_data(warehouse_file, mode, seed_val):
             "seed": seed_val,
             "total_steps": None,
             "avg_wait_pct": None,
-            "status": "BLOCKED_BY_FAULT"
+            "status": "BLOCKED_BY_FAULT"+str(e),
         }
     
     except customexceptions.SimulationError as e:
@@ -56,7 +57,7 @@ def get_sim_data(warehouse_file, mode, seed_val):
             "seed": seed_val,
             "total_steps": None, 
             "avg_wait_pct": None,
-            "status": "SIM_ERROR"
+            "status": "SIM_ERROR"+str(e),
         }
 
 if __name__ == "__main__":
@@ -64,9 +65,9 @@ if __name__ == "__main__":
     os.environ["ROBOTSIM_TRANSMIT"] = "False"
 
     schedulers = ["simple", "heft", "dls", "heft-dls"]
-    seeds = range(100, 130)
+    seeds = range(100, 200)
     warehouse_file = "whouse.txt"
-    output_file = "results/10_init_10_dynamic.csv"
+    output_file = "results/5_5_0.0025x100.csv"
 
     all_results = []
 

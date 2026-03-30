@@ -26,6 +26,10 @@ public class mainScript : MonoBehaviour
     public GameObject robotStatusTemplate; 
     public GameObject robotStatusContainer;
 
+    public TMPro.TextMeshProUGUI orderText;
+
+    public TMPro.TextMeshProUGUI stepText;
+
     public GameObject canvas;
 
     public Dictionary<string, GameObject> robotDict = new Dictionary<string, GameObject>();

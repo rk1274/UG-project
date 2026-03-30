@@ -25,6 +25,8 @@ class OrderStation(entitywithinventory.InventoryEntity):
         obj.payload_weight = 0.0
         obj.current_task_id = None
 
+        print("recieved:",taskID, "for order:",self._active_order.get_id(), "from:", obj.get_name())
+
         self.receive_inventory(items, taskID)
 
         if "large" in items[0].get_name():

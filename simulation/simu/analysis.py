@@ -32,4 +32,4 @@ def analyze_csv(file_path):
     print(f"\nInsight: '{best_scheduler}' is currently the most efficient (lowest avg steps).")
 
 if __name__ == "__main__":
-    analyze_csv("results/10_init_10_dynamic.csv")
+    analyze_csv("results/5_5_0.0025x100.csv")

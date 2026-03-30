@@ -8,6 +8,9 @@ public class CommandExecutor : MonoBehaviour
 
     private List<string> commandsToParse = new List<string>();
 
+    private int numOrders = 0;
+    private int numTotalOrders = 0;
+
     public void Update()
     {
         foreach (string command in commandsToParse) 
@@ -69,6 +72,20 @@ public class CommandExecutor : MonoBehaviour
         {
             Floor.GetComponent<plane>().setSize(cmd.posX, cmd.posY);
             MainScript.GetComponent<mainScript>().correctScreenPosition();
+        }
+        else if (cmd.Command == CommandName.NUMORDERS)
+        {
+            MainScript.GetComponent<mainScript>().orderText.text = "Orders complete: 0 / " + cmd.objName;
+            numTotalOrders = int.Parse(cmd.objName);
+        }
+        else if (cmd.Command == CommandName.ORDERCOMPLETE)
+        {
+            numOrders += 1;
+            MainScript.GetComponent<mainScript>().orderText.text = "Orders complete: " + numOrders + " / " + numTotalOrders;
+        }
+        else if (cmd.Command == CommandName.STEPNUM)
+        {
+            MainScript.GetComponent<mainScript>().stepText.text = "Step: " + cmd.objName;
         }
         else if (cmd.Command == CommandName.MOVEROBOT)
         {

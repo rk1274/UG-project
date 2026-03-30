@@ -38,7 +38,7 @@ class Robot(entitywithinventory.InventoryEntity):
 
         self_fault_rate = fault_rate
         self._actuator_overheat_prob = self_fault_rate * 0.5
-        self._critical_fault_prob = self_fault_rate * 0.05
+        self._critical_fault_prob = self_fault_rate * 0.01
 
         self._just_critically_faulted = False
         self.critically_faulted = False  # Permanent death
