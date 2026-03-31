@@ -32,6 +32,10 @@ class Warehouse:
             utils.Size.SMALL: []
         }
 
+        self._battery_threshold = utils.BATTERY_THRESHOLD
+        if schedule_mode == "heft-dls-dyn":
+            self._battery_threshold = utils.HEFT_DLS_BATTERY_THRESHOLD
+
         self._homes = {}
 
         self._robot_fault_rate = robot_fault_rate
@@ -57,9 +61,14 @@ class Warehouse:
             self._scheduler = scheduler.HeftScheduler(
                                               self._robots, self._shelves, self._order_stations,
                                               self._homes, self._order_manager.get_init_orders())
-            
+        
         if schedule_mode == "heft-dls":
             self._scheduler = scheduler.HeftDlsScheduler(
+                                              self._robots, self._shelves, self._order_stations,
+                                              self._homes, self._order_manager.get_init_orders())
+        
+        if schedule_mode == "heft-dls-dyn":
+            self._scheduler = scheduler.HeftDlsSchedulerNEW(
                                               self._robots, self._shelves, self._order_stations,
                                               self._homes, self._order_manager.get_init_orders())
         
@@ -514,7 +523,8 @@ class Warehouse:
         new_robot_name = "robot%s" % robot_name_ctr
         new_robot = robot.Robot(
             new_robot_name, x, y, 
-            fault_rate, self._use_battery
+            fault_rate, self._use_battery,
+            self._battery_threshold
         )
         self._robots[new_robot_name] = new_robot
 

@@ -20,7 +20,7 @@ class Scheduler:
             if item_name not in self._item_to_shelf_mapping.keys():
                 self._item_to_shelf_mapping[item_name] = [shelf_name]
             else:
-                self._item_to_shelf_mapping[item_name] = self._item_to_shelf_mapping[item_name].append(shelf_name)
+                self._item_to_shelf_mapping[item_name].append(shelf_name)
 
         self._goals = goals
         self._flags = []
@@ -341,7 +341,7 @@ class Scheduler:
         task_data = order_obj.dag.nodes[task_id]
         assigned_shelf = task_data['shelf_name']
 
-        print(f"Assigning task {task_id} of order {order_obj.get_id()} to robot {robot_name}, which will go to shelf {assigned_shelf} and then goal {goal_name}")
+        print(f"Assigning task {task_id} of order {order_obj.get_id()} to robot {robot_name} at {robot_obj.battery_level}, which will go to shelf {assigned_shelf} and then goal {goal_name}")
 
         self.add_to_schedule(robot_name, assigned_shelf, task_id, order_obj.get_id())
         
@@ -541,3 +541,87 @@ class HeftDlsScheduler(Scheduler):
 
         return ready_tasks
     
+
+class HeftDlsSchedulerNEW(Scheduler):
+    def schedule(self):
+        free_robots = self.find_free_robots_and_handle_faults()
+        if not free_robots:
+            return
+        
+        all_ready_tasks = []
+        for order in self._orders_active:
+            all_ready_tasks.extend(self.get_ready_tasks_with_rank(order))
+        
+        if len(all_ready_tasks) < len(free_robots) and self._orders_backlog:
+            new_order = self.get_order_from_backlog()
+            if new_order:
+                all_ready_tasks.extend(self.get_ready_tasks_with_rank(new_order))
+
+        all_ready_tasks.sort(key=lambda x: x['rank'], reverse=True)
+
+        assigned_tasks_indices = []
+
+        for i, task_info in enumerate(all_ready_tasks):
+            if not free_robots:
+                break
+                
+            order_obj = task_info['order']
+            task_id = task_info['task_id']
+            
+            best_robot = None
+            best_score = math.inf
+
+            for robot in free_robots:
+                if not self.is_capable(robot, task_id, order_obj):
+                    continue
+
+                task_data = order_obj.dag.nodes[task_id]
+                shelf_pos = self._shelves[task_data['shelf_name']].get_position()
+                dist = utils.taxicab_dist(robot.get_position()[0], robot.get_position()[1], 
+                                        shelf_pos[0], shelf_pos[1])
+                
+                fitness_score = dist + (robot.num_faults * 5)
+
+                if fitness_score < best_score:
+                    best_score = fitness_score
+                    best_robot = robot
+
+            if best_robot:
+                self.assign_task_with_robot(task_id, order_obj, best_robot)
+                free_robots.remove(best_robot)
+                assigned_tasks_indices.append(i)
+
+        for index in sorted(assigned_tasks_indices, reverse=True):
+            all_ready_tasks.pop(index)
+
+        for robot in free_robots:
+            if robot.battery_level < 15: # Or your BATTERY_THRESHOLD
+                robot.apply_charge_wait_upon_reaching_home = True
+                selected_home = self._homes[self.get_home_name_for_robot_name(robot.get_name())]
+                self._schedule[robot.get_name()] = [[selected_home.get_name(), None, None]]
+        
+    def get_ready_tasks_with_rank(self, order):
+        ready_tasks = []
+        ranks = order.get_upward_ranks()
+        ready_ids = order.get_ready_tasks()
+        for tid in ready_ids:
+            if f"{tid}_{order.get_id()}" not in self._active_tasks:
+                ready_tasks.append({
+                    'order': order,
+                    'task_id': tid,
+                    'rank': ranks.get(tid, 0)
+                })
+
+        return ready_tasks
+
+    def is_capable(self, robot_obj, task_id, order_obj):
+        task_type = task_id.split("_")[0].lower()
+        battery = robot_obj.battery_level
+        
+        if task_type == "large":
+            return battery >= 25.0
+        if task_type == "medium":
+            return battery >= 15.0 
+        if task_type == "small":
+            return battery >= 10.0 
+        return False

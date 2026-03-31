@@ -64,10 +64,10 @@ if __name__ == "__main__":
     
     os.environ["ROBOTSIM_TRANSMIT"] = "False"
 
-    schedulers = ["simple", "heft", "dls", "heft-dls"]
-    seeds = range(100, 200)
+    schedulers = ["simple", "heft", "dls", "heft-dls", "heft-dls-dyn"]
+    seeds = range(100, 130)
     warehouse_file = "whouse.txt"
-    output_file = "results/5_5_0.0025x100.csv"
+    output_file = "results/new_5_5x30.csv"
 
     all_results = []
 

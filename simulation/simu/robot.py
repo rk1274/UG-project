@@ -10,7 +10,7 @@ class Robot(entitywithinventory.InventoryEntity):
     CHARGE_TIME = 50
     HALT_THRESHOLD = 10
 
-    def __init__(self, name: str, x: int, y: int, fault_rate: float, use_battery: bool):
+    def __init__(self, name: str, x: int, y: int, fault_rate: float, use_battery: bool, battery_threshold: int):
         self._x, self._y = x, y
         self._home_x, self._home_y = x, y
 
@@ -32,6 +32,7 @@ class Robot(entitywithinventory.InventoryEntity):
         self.WEIGHT_FACTOR = 0.2
 
         self._use_battery = use_battery
+        self._battery_threshold = battery_threshold
         self._charging = False
         self._was_charging_last_step = False
         self.apply_charge_wait_upon_reaching_home = False
@@ -92,7 +93,7 @@ class Robot(entitywithinventory.InventoryEntity):
         drain = distance * (self.BASE_DRAIN + (self.payload_weight * self.WEIGHT_FACTOR))
         self.battery_level = max(0, self.battery_level - drain)
 
-        if self.battery_level < utils.BATTERY_THRESHOLD:
+        if self.battery_level < self._battery_threshold:
             self.apply_charge_wait_upon_reaching_home = True
 
         if self.battery_level <= 0:
