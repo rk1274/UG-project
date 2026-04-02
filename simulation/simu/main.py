@@ -84,7 +84,7 @@ if __name__ == "__main__":
     parser.add_argument("-p", action="store_true", help="Print visualisations of the generated DAGs")
     parser.add_argument("-s", type=str, default="simple", help="The scheduler to use. 'simple', 'heft' or 'heft-dls'")
     parser.add_argument("-d", action="store_true", help=f"Use /{utils.DAG_FOLDER} as the dags for the simulation")
-    parser.add_argument("-f", type=str, default="whouse.txt", help="The warehouse layout file")
+    parser.add_argument("-f", type=str, default="whouses/whouse_2s_2o_4r.txt", help="The warehouse layout file")
     parser.add_argument("-r", type=int, help="The random seed to use")
     args = parser.parse_args()
     

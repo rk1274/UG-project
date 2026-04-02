@@ -303,7 +303,7 @@ class Scheduler:
 
         return
         
-    def assign_task_with_robot(self, task_id, order_obj, robot_obj):
+    def assign_task_with_robot(self, task_id, rank, order_obj, robot_obj):
         if f"{task_id}_{order_obj.get_id()}" in self._active_tasks:
             return False
         
@@ -323,12 +323,12 @@ class Scheduler:
 
         goal_name = self._order_goal_assignment.get(order_obj.get_id())
         self.assign_single_robot_schedule_empty_starting_inventory(
-            order_obj, robot_obj, self._goals[goal_name], task_id
+            order_obj, robot_obj, self._goals[goal_name], task_id, rank
         )
 
         return True
     
-    def assign_single_robot_schedule_empty_starting_inventory(self, order_obj, robot_obj, goal_obj, task_id):
+    def assign_single_robot_schedule_empty_starting_inventory(self, order_obj, robot_obj, goal_obj, task_id, rank):
         robot_name = robot_obj.get_name()
         goal_name = goal_obj.get_name()
         if order_obj.get_id() in self._order_robots_assignment.keys():
@@ -336,12 +336,12 @@ class Scheduler:
         else:
             self._order_robots_assignment[order_obj.get_id()] = [robot_name]
         self._order_goal_assignment[order_obj.get_id()] = goal_name
-        robot_obj.prio = order_obj.get_prio()
+        robot_obj.prio = rank
 
         task_data = order_obj.dag.nodes[task_id]
         assigned_shelf = task_data['shelf_name']
 
-        print(f"Assigning task {task_id} of order {order_obj.get_id()} to robot {robot_name} at {robot_obj.battery_level}, which will go to shelf {assigned_shelf} and then goal {goal_name}")
+        print(f"Assigning task {task_id} with rank {rank} of order {order_obj.get_id()} to robot {robot_name} at {robot_obj.battery_level}, which will go to shelf {assigned_shelf} and then goal {goal_name}")
 
         self.add_to_schedule(robot_name, assigned_shelf, task_id, order_obj.get_id())
         
@@ -385,7 +385,7 @@ class SimpleScheduler(Scheduler):
             while all_ready_tasks and not assigned_this_robot:
                 order_obj, task_id = all_ready_tasks.pop(0)
 
-                assigned_this_robot = self.assign_task_with_robot(task_id, order_obj, robot_obj)
+                assigned_this_robot = self.assign_task_with_robot(task_id, 0, order_obj, robot_obj)
             
         return orders_to_move
 
@@ -421,8 +421,9 @@ class HeftScheduler(Scheduler):
                 task_info = all_ready_tasks.pop(0)
                 order_obj = task_info['order']
                 task_id = task_info['task_id']
+                rank = task_info['rank']
                 
-                assigned_this_robot = self.assign_task_with_robot(task_id, order_obj, robot_obj)
+                assigned_this_robot = self.assign_task_with_robot(task_id, rank, order_obj, robot_obj)
 
         return orders_to_move
         
@@ -482,7 +483,7 @@ class DlsScheduler(Scheduler):
                     best_robot = robot
 
             if best_robot:
-                self.assign_task_with_robot(tid, order_obj, best_robot)
+                self.assign_task_with_robot(tid, 0, order_obj, best_robot)
                 free_robots.remove(best_robot) 
     
 class HeftDlsScheduler(Scheduler):
@@ -506,6 +507,7 @@ class HeftDlsScheduler(Scheduler):
             task_info = all_ready_tasks.pop(0)
             order_obj = task_info['order']
             task_id = task_info['task_id']
+            rank = task_info['rank']
             
             best_robot = None
             best_score = math.inf
@@ -524,7 +526,7 @@ class HeftDlsScheduler(Scheduler):
                     best_robot = robot
 
             if best_robot:
-                self.assign_task_with_robot(task_id, order_obj, best_robot)
+                self.assign_task_with_robot(task_id, rank, order_obj, best_robot)
                 free_robots.remove(best_robot)
         
     def get_ready_tasks_with_rank(self, order):
@@ -542,7 +544,7 @@ class HeftDlsScheduler(Scheduler):
         return ready_tasks
     
 
-class HeftDlsSchedulerNEW(Scheduler):
+class DynamicHeftDlsScheduler(Scheduler):
     def schedule(self):
         free_robots = self.find_free_robots_and_handle_faults()
         if not free_robots:
@@ -567,6 +569,7 @@ class HeftDlsSchedulerNEW(Scheduler):
                 
             order_obj = task_info['order']
             task_id = task_info['task_id']
+            rank = task_info['rank']
             
             best_robot = None
             best_score = math.inf
@@ -587,7 +590,7 @@ class HeftDlsSchedulerNEW(Scheduler):
                     best_robot = robot
 
             if best_robot:
-                self.assign_task_with_robot(task_id, order_obj, best_robot)
+                self.assign_task_with_robot(task_id, rank, order_obj, best_robot)
                 free_robots.remove(best_robot)
                 assigned_tasks_indices.append(i)
 

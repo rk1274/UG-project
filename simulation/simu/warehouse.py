@@ -68,7 +68,7 @@ class Warehouse:
                                               self._homes, self._order_manager.get_init_orders())
         
         if schedule_mode == "heft-dls-dyn":
-            self._scheduler = scheduler.HeftDlsSchedulerNEW(
+            self._scheduler = scheduler.DynamicHeftDlsScheduler(
                                               self._robots, self._shelves, self._order_stations,
                                               self._homes, self._order_manager.get_init_orders())
         
@@ -77,7 +77,6 @@ class Warehouse:
                                               self._robots, self._shelves, self._order_stations,
                                               self._homes, self._order_manager.get_init_orders())
 
-        
         self._scheduler.schedule()
 
         self._width = len(self._cells[0])
@@ -248,7 +247,7 @@ class Warehouse:
                     #print("doing nothing, waiting for the blocking robot to move as it will get out the way")
             else:
                 #print("ATTEMPTING TO RESOLVE DEADLOCK")
-                robots_by_prio = reversed(sorted([robot_obj, blocking_robot], key=lambda robot2: robot2.prio))
+                robots_by_prio = sorted([robot_obj, blocking_robot], key=lambda robot2: robot2.prio)
                 is_horizontal = (blocking_robot.get_position()[0] - robot_obj.get_position()[0]) != 0
                 self.move_robot_break_deadlock(robot_obj, robots_by_prio, is_horizontal)
 
@@ -279,7 +278,7 @@ class Warehouse:
                 elif next_robot in robots_searched:
                     break
         if loop_found:
-            robots_by_prio = reversed(sorted(robots_searched, key=lambda robot2: robot2.prio))
+            robots_by_prio = sorted(robots_searched, key=lambda robot2: robot2.prio)
             self.move_robot_break_deadlock(robot_obj, robots_by_prio)
 
     def get_robot_at(self, x, y):
@@ -364,7 +363,7 @@ class Warehouse:
             raise customexceptions.SimulationError(message)
 
         #print("BOXED IN TARGET DETECTED")
-        robots_by_prio = reversed(sorted(blocking_robots, key=lambda robot2: robot2.prio))
+        robots_by_prio = sorted(blocking_robots, key=lambda robot2: robot2.prio)
         result = self.move_robots_away_from(x, y, robots_by_prio)
 
     def compute_robot_astar_path(self, robot_obj):
