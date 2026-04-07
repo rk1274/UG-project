@@ -58,9 +58,8 @@ class Order:
 
     def generate_dag(self):
         G = nx.DiGraph()
-        
-        all_tasks = sorted(self.tasks, key=lambda x: x.size.value, reverse=True)
 
+        all_tasks = sorted(self.tasks, key=lambda x: x.size.value, reverse=True)
         for t in all_tasks:
             G.add_node(t.node_id, weight=t.weight, size=t.size.name, shelf_name=t.shelf_name)
 
@@ -107,9 +106,7 @@ class Order:
             G.add_edge(leaf, "SINK")
 
         self.dag = G
-
         self.list = processed_tasks
-
         self.ranks = compute_upward_ranks(G)
 
     def get_large_relatives(self, G, node_id):
@@ -124,7 +121,6 @@ class Order:
             for s in G.successors(p):
                 if s != node_id and G.nodes[s].get('size') == "LARGE":
                     siblings.add(s)
-                    # siblings.update(n for n in nx.descendants(G, s) if G.nodes[n].get('size') == "LARGE")
 
         return list(descendants | siblings)
         

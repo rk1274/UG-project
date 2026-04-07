@@ -16,7 +16,6 @@ import robothome
 import time
 from dataclasses import dataclass, field
 
-ITEMS = ["SMALL", "MEDIUM", "LARGE"]
 class Warehouse:
     def __init__(self, num_init_orders: int, num_dynamic_orders: int, w_house_filename: str, schedule_mode: str,
                  robot_fault_rate: float, use_battery:bool, step_limit: int, print_dags: bool, use_dags:bool):

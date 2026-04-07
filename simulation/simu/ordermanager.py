@@ -102,8 +102,8 @@ class OrderManager:
             os.remove(os.path.join(f"./{utils.DAG_FOLDER}/", file))
 
     def generate_order(self, order_list, id, size_to_shelves_map, shelves_registry):
-        l, m, s = random.randint(1, 3), random.randint(1, 4), random.randint(1, 5)
-            
+        # l, m, s = random.randint(1, 3), random.randint(1, 4), random.randint(1, 5)
+        l, m, s = 1, random.randint(1, 2), random.randint(1, 3)
         goal_pos = [0, 3]
         dag_gen = dag_generator.Order(l, m, s, size_to_shelves_map, shelves_registry, goal_pos)
         dag_gen.generate_dag()

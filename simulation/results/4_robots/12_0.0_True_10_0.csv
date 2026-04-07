@@ -1,0 +1,501 @@
+scheduler,seed,total_steps,avg_wait_pct,status,rank
+simple,100,704.0,32.99,SUCCESS,2.0
+simple,101,760.0,34.11,SUCCESS,3.0
+simple,102,,,BLOCKED_BY_FAULTrobot2 has critically faulted and is blocking goal0. Simulation cannot proceed.,
+simple,103,934.0,35.92,SUCCESS,4.0
+simple,104,815.0,34.6,SUCCESS,5.0
+simple,105,870.0,32.9,SUCCESS,3.0
+simple,106,776.0,34.18,SUCCESS,1.0
+simple,107,,,BLOCKED_BY_FAULTrobot0 has critically faulted and is blocking goal1. Simulation cannot proceed.,
+simple,108,791.0,33.09,SUCCESS,4.0
+simple,109,716.0,36.87,SUCCESS,1.0
+simple,110,696.0,37.43,SUCCESS,4.0
+simple,111,726.0,34.19,SUCCESS,2.0
+simple,112,781.0,32.07,SUCCESS,4.0
+simple,113,924.0,35.5,SUCCESS,3.0
+simple,114,989.0,32.33,SUCCESS,4.0
+simple,115,699.0,38.59,SUCCESS,2.0
+simple,116,768.0,36.56,SUCCESS,1.0
+simple,117,,,BLOCKED_BY_FAULTrobot0 has critically faulted and is blocking goal0. Simulation cannot proceed.,
+simple,118,816.0,35.6,SUCCESS,2.0
+simple,119,795.0,37.04,SUCCESS,3.0
+simple,120,804.0,35.48,SUCCESS,2.0
+simple,121,958.0,29.8,SUCCESS,4.0
+simple,122,1081.0,29.58,SUCCESS,3.0
+simple,123,,,BLOCKED_BY_FAULTrobot0 has critically faulted and is blocking shelf4. Simulation cannot proceed.,
+simple,124,751.0,32.96,SUCCESS,5.0
+simple,125,791.0,36.95,SUCCESS,2.0
+simple,126,1167.0,30.83,SUCCESS,5.0
+simple,127,684.0,33.88,SUCCESS,2.0
+simple,128,1065.0,29.48,SUCCESS,4.0
+simple,129,656.0,36.01,SUCCESS,2.0
+simple,130,799.0,35.73,SUCCESS,2.0
+simple,131,741.0,35.66,SUCCESS,2.0
+simple,132,747.0,34.47,SUCCESS,1.0
+simple,133,1127.0,28.19,SUCCESS,4.0
+simple,134,767.0,34.06,SUCCESS,1.0
+simple,135,756.0,33.83,SUCCESS,1.0
+simple,136,753.0,37.95,SUCCESS,1.0
+simple,137,777.0,39.48,SUCCESS,4.0
+simple,138,818.0,35.76,SUCCESS,4.0
+simple,139,765.0,39.18,SUCCESS,4.0
+simple,140,779.0,35.37,SUCCESS,1.0
+simple,141,,,BLOCKED_BY_FAULTrobot0 has critically faulted and is blocking goal0. Simulation cannot proceed.,
+simple,142,904.0,34.1,SUCCESS,4.0
+simple,143,673.0,37.96,SUCCESS,1.0
+simple,144,755.0,34.74,SUCCESS,3.0
+simple,145,,,BLOCKED_BY_FAULTrobot1 has critically faulted and is blocking shelf4. Simulation cannot proceed.,
+simple,146,850.0,31.85,SUCCESS,3.0
+simple,147,756.0,35.22,SUCCESS,2.0
+simple,148,795.0,36.98,SUCCESS,5.0
+simple,149,844.0,34.36,SUCCESS,3.0
+simple,150,896.0,37.61,SUCCESS,5.0
+simple,151,779.0,31.61,SUCCESS,1.0
+simple,152,975.0,29.85,SUCCESS,4.0
+simple,153,897.0,32.72,SUCCESS,5.0
+simple,154,842.0,34.83,SUCCESS,4.0
+simple,155,879.0,35.3,SUCCESS,3.0
+simple,156,807.0,35.81,SUCCESS,3.0
+simple,157,1253.0,26.88,SUCCESS,4.0
+simple,158,677.0,36.41,SUCCESS,2.0
+simple,159,825.0,35.12,SUCCESS,4.0
+simple,160,782.0,37.44,SUCCESS,1.0
+simple,161,787.0,37.33,SUCCESS,4.0
+simple,162,821.0,37.06,SUCCESS,1.0
+simple,163,786.0,33.84,SUCCESS,2.0
+simple,164,867.0,34.72,SUCCESS,2.0
+simple,165,820.0,34.05,SUCCESS,1.0
+simple,166,871.0,35.13,SUCCESS,3.0
+simple,167,668.0,36.04,SUCCESS,3.0
+simple,168,812.0,34.27,SUCCESS,3.0
+simple,169,908.0,37.14,SUCCESS,3.0
+simple,170,851.0,37.54,SUCCESS,4.0
+simple,171,,,BLOCKED_BY_FAULTrobot0 has critically faulted and is blocking goal1. Simulation cannot proceed.,
+simple,172,1074.0,28.91,SUCCESS,5.0
+simple,173,783.0,36.08,SUCCESS,1.0
+simple,174,690.0,35.58,SUCCESS,1.0
+simple,175,911.0,39.19,SUCCESS,4.0
+simple,176,846.0,34.72,SUCCESS,4.0
+simple,177,881.0,36.8,SUCCESS,2.0
+simple,178,952.0,29.39,SUCCESS,5.0
+simple,179,677.0,39.84,SUCCESS,2.0
+simple,180,782.0,34.37,SUCCESS,4.0
+simple,181,845.0,38.37,SUCCESS,3.0
+simple,182,,,BLOCKED_BY_FAULTrobot0 has critically faulted and is blocking goal0. Simulation cannot proceed.,
+simple,183,673.0,35.22,SUCCESS,3.0
+simple,184,803.0,38.61,SUCCESS,3.0
+simple,185,899.0,35.73,SUCCESS,2.0
+simple,186,776.0,38.02,SUCCESS,1.0
+simple,187,1146.0,28.64,SUCCESS,5.0
+simple,188,,,BLOCKED_BY_FAULTrobot1 has critically faulted and is blocking goal0. Simulation cannot proceed.,
+simple,189,735.0,37.52,SUCCESS,4.0
+simple,190,839.0,34.71,SUCCESS,1.0
+simple,191,915.0,38.44,SUCCESS,4.0
+simple,192,726.0,36.5,SUCCESS,3.0
+simple,193,876.0,34.99,SUCCESS,2.0
+simple,194,922.0,31.72,SUCCESS,2.0
+simple,195,877.0,31.13,SUCCESS,5.0
+simple,196,673.0,37.3,SUCCESS,3.0
+simple,197,671.0,35.39,SUCCESS,1.0
+simple,198,666.0,36.75,SUCCESS,3.0
+simple,199,779.0,32.57,SUCCESS,3.0
+heft,100,685.0,33.94,SUCCESS,1.0
+heft,101,756.0,34.39,SUCCESS,2.0
+heft,102,821.0,37.58,SUCCESS,3.0
+heft,103,899.0,32.31,SUCCESS,1.0
+heft,104,755.0,33.54,SUCCESS,2.0
+heft,105,1029.0,27.19,SUCCESS,5.0
+heft,106,816.0,30.97,SUCCESS,5.0
+heft,107,930.0,31.96,SUCCESS,1.0
+heft,108,806.0,34.12,SUCCESS,5.0
+heft,109,761.0,35.09,SUCCESS,4.0
+heft,110,657.0,37.37,SUCCESS,1.0
+heft,111,689.0,34.69,SUCCESS,1.0
+heft,112,739.0,37.45,SUCCESS,1.0
+heft,113,910.0,32.88,SUCCESS,2.0
+heft,114,880.0,32.36,SUCCESS,1.0
+heft,115,700.0,37.64,SUCCESS,3.0
+heft,116,808.0,35.37,SUCCESS,4.0
+heft,117,970.0,32.73,SUCCESS,4.0
+heft,118,741.0,32.35,SUCCESS,1.0
+heft,119,772.0,33.74,SUCCESS,2.0
+heft,120,813.0,34.99,SUCCESS,3.0
+heft,121,828.0,36.47,SUCCESS,3.0
+heft,122,,,BLOCKED_BY_FAULTrobot0 has critically faulted and is blocking goal0. Simulation cannot proceed.,
+heft,123,,,BLOCKED_BY_FAULTrobot0 has critically faulted and is blocking shelf0. Simulation cannot proceed.,
+heft,124,716.0,34.99,SUCCESS,4.0
+heft,125,830.0,33.4,SUCCESS,5.0
+heft,126,1075.0,28.93,SUCCESS,4.0
+heft,127,649.0,33.24,SUCCESS,1.0
+heft,128,,,BLOCKED_BY_FAULTrobot0 has critically faulted and is blocking goal1. Simulation cannot proceed.,
+heft,129,719.0,30.95,SUCCESS,4.0
+heft,130,861.0,35.92,SUCCESS,3.0
+heft,131,727.0,30.67,SUCCESS,1.0
+heft,132,,,BLOCKED_BY_FAULTrobot0 has critically faulted and is blocking shelf4. Simulation cannot proceed.,
+heft,133,1130.0,28.63,SUCCESS,5.0
+heft,134,786.0,35.85,SUCCESS,2.0
+heft,135,1015.0,25.44,SUCCESS,5.0
+heft,136,766.0,35.28,SUCCESS,2.0
+heft,137,748.0,36.6,SUCCESS,2.0
+heft,138,799.0,33.14,SUCCESS,1.0
+heft,139,759.0,33.56,SUCCESS,3.0
+heft,140,809.0,34.77,SUCCESS,4.0
+heft,141,759.0,41.9,SUCCESS,2.0
+heft,142,872.0,34.52,SUCCESS,2.0
+heft,143,675.0,36.78,SUCCESS,2.0
+heft,144,751.0,33.72,SUCCESS,2.0
+heft,145,854.0,34.95,SUCCESS,2.0
+heft,146,871.0,32.81,SUCCESS,4.0
+heft,147,735.0,35.24,SUCCESS,1.0
+heft,148,772.0,34.62,SUCCESS,2.0
+heft,149,863.0,32.97,SUCCESS,5.0
+heft,150,895.0,36.2,SUCCESS,4.0
+heft,151,878.0,30.01,SUCCESS,5.0
+heft,152,823.0,35.48,SUCCESS,1.0
+heft,153,817.0,32.31,SUCCESS,1.0
+heft,154,812.0,32.33,SUCCESS,1.0
+heft,155,845.0,36.36,SUCCESS,1.0
+heft,156,789.0,33.33,SUCCESS,1.0
+heft,157,847.0,32.29,SUCCESS,1.0
+heft,158,675.0,31.56,SUCCESS,1.0
+heft,159,821.0,34.56,SUCCESS,3.0
+heft,160,792.0,34.19,SUCCESS,2.0
+heft,161,761.0,35.41,SUCCESS,2.0
+heft,162,,,BLOCKED_BY_FAULTrobot0 has critically faulted and is blocking goal1. Simulation cannot proceed.,
+heft,163,814.0,34.46,SUCCESS,4.0
+heft,164,867.0,35.81,SUCCESS,2.0
+heft,165,837.0,35.84,SUCCESS,3.0
+heft,166,,,BLOCKED_BY_FAULTrobot0 has critically faulted and is blocking goal1. Simulation cannot proceed.,
+heft,167,671.0,36.1,SUCCESS,5.0
+heft,168,796.0,33.64,SUCCESS,2.0
+heft,169,874.0,33.81,SUCCESS,2.0
+heft,170,792.0,34.63,SUCCESS,1.0
+heft,171,751.0,32.29,SUCCESS,2.0
+heft,172,845.0,32.78,SUCCESS,2.0
+heft,173,839.0,36.95,SUCCESS,5.0
+heft,174,1066.0,26.06,SUCCESS,3.0
+heft,175,894.0,32.05,SUCCESS,2.0
+heft,176,815.0,33.37,SUCCESS,2.0
+heft,177,,,BLOCKED_BY_FAULTrobot0 has critically faulted and is blocking shelf4. Simulation cannot proceed.,
+heft,178,769.0,34.4,SUCCESS,3.0
+heft,179,694.0,40.2,SUCCESS,4.0
+heft,180,746.0,33.41,SUCCESS,3.0
+heft,181,810.0,37.44,SUCCESS,2.0
+heft,182,703.0,36.24,SUCCESS,2.0
+heft,183,667.0,33.47,SUCCESS,2.0
+heft,184,810.0,33.98,SUCCESS,4.0
+heft,185,901.0,36.13,SUCCESS,3.0
+heft,186,784.0,33.39,SUCCESS,2.0
+heft,187,905.0,34.45,SUCCESS,2.0
+heft,188,814.0,34.12,SUCCESS,3.0
+heft,189,734.0,37.4,SUCCESS,3.0
+heft,190,901.0,36.46,SUCCESS,4.0
+heft,191,856.0,34.2,SUCCESS,3.0
+heft,192,716.0,36.24,SUCCESS,1.0
+heft,193,,,BLOCKED_BY_FAULTrobot0 has critically faulted and is blocking shelf4. Simulation cannot proceed.,
+heft,194,887.0,33.65,SUCCESS,1.0
+heft,195,764.0,34.78,SUCCESS,1.0
+heft,196,662.0,34.74,SUCCESS,2.0
+heft,197,831.0,28.37,SUCCESS,5.0
+heft,198,664.0,35.66,SUCCESS,2.0
+heft,199,771.0,35.18,SUCCESS,2.0
+dls,100,725.0,36.24,SUCCESS,4.0
+dls,101,761.0,37.35,SUCCESS,4.0
+dls,102,815.0,38.65,SUCCESS,2.0
+dls,103,,,SIM_ERRORSimulation still running after step limit,
+dls,104,769.0,34.14,SUCCESS,4.0
+dls,105,841.0,35.91,SUCCESS,2.0
+dls,106,783.0,34.32,SUCCESS,2.0
+dls,107,986.0,35.57,SUCCESS,3.0
+dls,108,787.0,35.13,SUCCESS,3.0
+dls,109,725.0,36.76,SUCCESS,2.0
+dls,110,755.0,31.03,SUCCESS,5.0
+dls,111,744.0,36.39,SUCCESS,3.0
+dls,112,,,BLOCKED_BY_FAULTrobot2 has critically faulted and is blocking goal1. Simulation cannot proceed.,
+dls,113,886.0,34.96,SUCCESS,1.0
+dls,114,935.0,37.11,SUCCESS,3.0
+dls,115,671.0,38.67,SUCCESS,1.0
+dls,116,777.0,37.68,SUCCESS,2.0
+dls,117,919.0,36.13,SUCCESS,2.0
+dls,118,824.0,36.44,SUCCESS,3.0
+dls,119,798.0,38.31,SUCCESS,4.0
+dls,120,814.0,35.14,SUCCESS,4.0
+dls,121,,,BLOCKED_BY_FAULTrobot2 has critically faulted and is blocking goal1. Simulation cannot proceed.,
+dls,122,911.0,36.33,SUCCESS,2.0
+dls,123,781.0,34.7,SUCCESS,2.0
+dls,124,679.0,35.16,SUCCESS,2.0
+dls,125,815.0,36.35,SUCCESS,4.0
+dls,126,928.0,36.58,SUCCESS,3.0
+dls,127,692.0,34.0,SUCCESS,3.0
+dls,128,915.0,34.51,SUCCESS,2.0
+dls,129,670.0,38.62,SUCCESS,3.0
+dls,130,1376.0,23.98,SUCCESS,5.0
+dls,131,1013.0,26.53,SUCCESS,4.0
+dls,132,879.0,32.03,SUCCESS,4.0
+dls,133,908.0,35.13,SUCCESS,1.0
+dls,134,807.0,37.83,SUCCESS,4.0
+dls,135,767.0,34.0,SUCCESS,3.0
+dls,136,1205.0,23.76,SUCCESS,4.0
+dls,137,785.0,40.54,SUCCESS,5.0
+dls,138,,,BLOCKED_BY_FAULTrobot2 has critically faulted and is blocking goal1. Simulation cannot proceed.,
+dls,139,,,BLOCKED_BY_FAULTrobot0 has critically faulted and is blocking goal0. Simulation cannot proceed.,
+dls,140,805.0,37.92,SUCCESS,3.0
+dls,141,736.0,38.18,SUCCESS,1.0
+dls,142,,,BLOCKED_BY_FAULTrobot1 has critically faulted and is blocking goal1. Simulation cannot proceed.,
+dls,143,697.0,39.1,SUCCESS,3.0
+dls,144,777.0,33.75,SUCCESS,5.0
+dls,145,807.0,36.59,SUCCESS,1.0
+dls,146,1109.0,28.88,SUCCESS,5.0
+dls,147,925.0,30.16,SUCCESS,5.0
+dls,148,780.0,37.21,SUCCESS,3.0
+dls,149,827.0,35.91,SUCCESS,1.0
+dls,150,892.0,38.14,SUCCESS,3.0
+dls,151,792.0,35.7,SUCCESS,2.0
+dls,152,1033.0,28.41,SUCCESS,5.0
+dls,153,817.0,34.3,SUCCESS,1.0
+dls,154,831.0,37.7,SUCCESS,2.0
+dls,155,,,BLOCKED_BY_FAULTrobot0 has critically faulted and is blocking shelf4. Simulation cannot proceed.,
+dls,156,,,BLOCKED_BY_FAULTrobot1 has critically faulted and is blocking goal1. Simulation cannot proceed.,
+dls,157,1036.0,30.79,SUCCESS,2.0
+dls,158,724.0,33.84,SUCCESS,5.0
+dls,159,,,BLOCKED_BY_FAULTrobot1 has critically faulted and is blocking goal0. Simulation cannot proceed.,
+dls,160,824.0,34.68,SUCCESS,4.0
+dls,161,767.0,36.34,SUCCESS,3.0
+dls,162,,,SIM_ERRORSimulation still running after step limit,
+dls,163,835.0,35.78,SUCCESS,5.0
+dls,164,858.0,34.44,SUCCESS,1.0
+dls,165,949.0,31.4,SUCCESS,5.0
+dls,166,839.0,36.08,SUCCESS,2.0
+dls,167,651.0,34.18,SUCCESS,1.0
+dls,168,915.0,32.4,SUCCESS,4.0
+dls,169,1059.0,29.91,SUCCESS,5.0
+dls,170,802.0,36.69,SUCCESS,2.0
+dls,171,921.0,27.58,SUCCESS,4.0
+dls,172,843.0,35.62,SUCCESS,1.0
+dls,173,802.0,37.75,SUCCESS,3.0
+dls,174,,,BLOCKED_BY_FAULTrobot1 has critically faulted and is blocking goal0. Simulation cannot proceed.,
+dls,175,905.0,37.73,SUCCESS,3.0
+dls,176,825.0,36.52,SUCCESS,3.0
+dls,177,,,BLOCKED_BY_FAULTrobot0 has critically faulted and is blocking goal1. Simulation cannot proceed.,
+dls,178,788.0,36.93,SUCCESS,4.0
+dls,179,682.0,37.06,SUCCESS,3.0
+dls,180,783.0,35.95,SUCCESS,5.0
+dls,181,788.0,36.04,SUCCESS,1.0
+dls,182,776.0,36.98,SUCCESS,4.0
+dls,183,707.0,37.34,SUCCESS,5.0
+dls,184,784.0,36.13,SUCCESS,1.0
+dls,185,866.0,35.97,SUCCESS,1.0
+dls,186,811.0,38.26,SUCCESS,4.0
+dls,187,1030.0,31.14,SUCCESS,4.0
+dls,188,836.0,37.77,SUCCESS,4.0
+dls,189,,,BLOCKED_BY_FAULTrobot0 has critically faulted and is blocking goal0. Simulation cannot proceed.,
+dls,190,954.0,29.11,SUCCESS,5.0
+dls,191,855.0,35.88,SUCCESS,2.0
+dls,192,720.0,36.22,SUCCESS,2.0
+dls,193,909.0,36.08,SUCCESS,3.0
+dls,194,942.0,35.24,SUCCESS,3.0
+dls,195,788.0,37.91,SUCCESS,4.0
+dls,196,681.0,37.11,SUCCESS,4.0
+dls,197,723.0,37.69,SUCCESS,4.0
+dls,198,682.0,37.35,SUCCESS,4.0
+dls,199,,,BLOCKED_BY_FAULTrobot2 has critically faulted and is blocking goal0. Simulation cannot proceed.,
+heft-dls,100,716.0,34.71,SUCCESS,3.0
+heft-dls,101,752.0,35.74,SUCCESS,1.0
+heft-dls,102,794.0,37.47,SUCCESS,1.0
+heft-dls,103,910.0,34.78,SUCCESS,3.0
+heft-dls,104,763.0,33.75,SUCCESS,3.0
+heft-dls,105,916.0,30.79,SUCCESS,4.0
+heft-dls,106,798.0,34.74,SUCCESS,4.0
+heft-dls,107,983.0,33.52,SUCCESS,2.0
+heft-dls,108,775.0,34.13,SUCCESS,2.0
+heft-dls,109,756.0,34.82,SUCCESS,3.0
+heft-dls,110,670.0,34.55,SUCCESS,2.0
+heft-dls,111,807.0,31.29,SUCCESS,5.0
+heft-dls,112,765.0,37.22,SUCCESS,3.0
+heft-dls,113,928.0,35.7,SUCCESS,4.0
+heft-dls,114,995.0,30.95,SUCCESS,5.0
+heft-dls,115,720.0,34.24,SUCCESS,4.0
+heft-dls,116,786.0,34.38,SUCCESS,3.0
+heft-dls,117,883.0,34.34,SUCCESS,1.0
+heft-dls,118,,,BLOCKED_BY_FAULTrobot3 has critically faulted and is blocking goal1. Simulation cannot proceed.,
+heft-dls,119,761.0,33.77,SUCCESS,1.0
+heft-dls,120,795.0,34.62,SUCCESS,1.0
+heft-dls,121,770.0,34.55,SUCCESS,2.0
+heft-dls,122,900.0,33.17,SUCCESS,1.0
+heft-dls,123,892.0,30.47,SUCCESS,3.0
+heft-dls,124,683.0,34.33,SUCCESS,3.0
+heft-dls,125,800.0,35.69,SUCCESS,3.0
+heft-dls,126,871.0,33.75,SUCCESS,1.0
+heft-dls,127,,,BLOCKED_BY_FAULTrobot0 has critically faulted and is blocking shelf2. Simulation cannot proceed.,
+heft-dls,128,940.0,34.6,SUCCESS,3.0
+heft-dls,129,,,BLOCKED_BY_FAULTrobot3 has critically faulted and is blocking goal1. Simulation cannot proceed.,
+heft-dls,130,794.0,33.91,SUCCESS,1.0
+heft-dls,131,,,BLOCKED_BY_FAULTrobot2 has critically faulted and is blocking goal0. Simulation cannot proceed.,
+heft-dls,132,777.0,38.74,SUCCESS,3.0
+heft-dls,133,927.0,38.08,SUCCESS,2.0
+heft-dls,134,802.0,36.38,SUCCESS,3.0
+heft-dls,135,789.0,33.9,SUCCESS,4.0
+heft-dls,136,772.0,33.81,SUCCESS,3.0
+heft-dls,137,770.0,35.06,SUCCESS,3.0
+heft-dls,138,799.0,36.11,SUCCESS,1.0
+heft-dls,139,723.0,35.55,SUCCESS,1.0
+heft-dls,140,838.0,36.1,SUCCESS,5.0
+heft-dls,141,762.0,41.83,SUCCESS,3.0
+heft-dls,142,880.0,36.59,SUCCESS,3.0
+heft-dls,143,731.0,41.52,SUCCESS,5.0
+heft-dls,144,774.0,34.88,SUCCESS,4.0
+heft-dls,145,,,BLOCKED_BY_FAULTrobot2 has critically faulted and is blocking goal1. Simulation cannot proceed.,
+heft-dls,146,825.0,34.3,SUCCESS,1.0
+heft-dls,147,768.0,36.36,SUCCESS,3.0
+heft-dls,148,785.0,35.89,SUCCESS,4.0
+heft-dls,149,850.0,36.97,SUCCESS,4.0
+heft-dls,150,845.0,35.86,SUCCESS,1.0
+heft-dls,151,795.0,38.43,SUCCESS,3.0
+heft-dls,152,972.0,28.78,SUCCESS,3.0
+heft-dls,153,854.0,32.99,SUCCESS,4.0
+heft-dls,154,,,BLOCKED_BY_FAULTrobot2 has critically faulted and is blocking goal0. Simulation cannot proceed.,
+heft-dls,155,882.0,36.93,SUCCESS,4.0
+heft-dls,156,805.0,37.27,SUCCESS,2.0
+heft-dls,157,1054.0,30.12,SUCCESS,3.0
+heft-dls,158,693.0,35.35,SUCCESS,3.0
+heft-dls,159,788.0,32.9,SUCCESS,1.0
+heft-dls,160,799.0,37.58,SUCCESS,3.0
+heft-dls,161,743.0,36.24,SUCCESS,1.0
+heft-dls,162,821.0,37.09,SUCCESS,1.0
+heft-dls,163,799.0,35.23,SUCCESS,3.0
+heft-dls,164,944.0,32.94,SUCCESS,4.0
+heft-dls,165,852.0,37.32,SUCCESS,4.0
+heft-dls,166,,,SIM_ERRORSimulation still running after step limit,
+heft-dls,167,664.0,38.14,SUCCESS,2.0
+heft-dls,168,786.0,33.52,SUCCESS,1.0
+heft-dls,169,861.0,32.93,SUCCESS,1.0
+heft-dls,170,,,BLOCKED_BY_FAULTrobot0 has critically faulted and is blocking goal1. Simulation cannot proceed.,
+heft-dls,171,749.0,31.91,SUCCESS,1.0
+heft-dls,172,890.0,37.33,SUCCESS,4.0
+heft-dls,173,821.0,34.81,SUCCESS,4.0
+heft-dls,174,,,BLOCKED_BY_FAULTrobot0 has critically faulted and is blocking shelf4. Simulation cannot proceed.,
+heft-dls,175,866.0,33.63,SUCCESS,1.0
+heft-dls,176,794.0,32.78,SUCCESS,1.0
+heft-dls,177,905.0,34.53,SUCCESS,3.0
+heft-dls,178,759.0,38.31,SUCCESS,2.0
+heft-dls,179,697.0,37.45,SUCCESS,5.0
+heft-dls,180,724.0,32.8,SUCCESS,1.0
+heft-dls,181,987.0,29.31,SUCCESS,4.0
+heft-dls,182,691.0,36.32,SUCCESS,1.0
+heft-dls,183,683.0,36.35,SUCCESS,4.0
+heft-dls,184,791.0,33.0,SUCCESS,2.0
+heft-dls,185,910.0,36.73,SUCCESS,4.0
+heft-dls,186,922.0,29.93,SUCCESS,5.0
+heft-dls,187,910.0,32.77,SUCCESS,3.0
+heft-dls,188,789.0,35.87,SUCCESS,1.0
+heft-dls,189,730.0,35.92,SUCCESS,2.0
+heft-dls,190,875.0,32.8,SUCCESS,3.0
+heft-dls,191,846.0,33.72,SUCCESS,1.0
+heft-dls,192,731.0,37.48,SUCCESS,4.0
+heft-dls,193,,,BLOCKED_BY_FAULTrobot2 has critically faulted and is blocking goal1. Simulation cannot proceed.,
+heft-dls,194,1120.0,29.15,SUCCESS,4.0
+heft-dls,195,786.0,39.63,SUCCESS,3.0
+heft-dls,196,640.0,33.48,SUCCESS,1.0
+heft-dls,197,699.0,35.69,SUCCESS,3.0
+heft-dls,198,683.0,35.07,SUCCESS,5.0
+heft-dls,199,758.0,33.84,SUCCESS,1.0
+heft-dls-dyn,100,729.0,33.37,SUCCESS,5.0
+heft-dls-dyn,101,,,SIM_ERRORSimulation still running after step limit,
+heft-dls-dyn,102,845.0,38.91,SUCCESS,4.0
+heft-dls-dyn,103,904.0,36.64,SUCCESS,2.0
+heft-dls-dyn,104,748.0,34.79,SUCCESS,1.0
+heft-dls-dyn,105,836.0,33.16,SUCCESS,1.0
+heft-dls-dyn,106,789.0,37.29,SUCCESS,3.0
+heft-dls-dyn,107,1276.0,31.45,SUCCESS,4.0
+heft-dls-dyn,108,751.0,31.72,SUCCESS,1.0
+heft-dls-dyn,109,,,SIM_ERRORSimulation still running after step limit,
+heft-dls-dyn,110,685.0,39.53,SUCCESS,3.0
+heft-dls-dyn,111,762.0,39.17,SUCCESS,4.0
+heft-dls-dyn,112,750.0,35.43,SUCCESS,2.0
+heft-dls-dyn,113,950.0,38.37,SUCCESS,5.0
+heft-dls-dyn,114,888.0,38.43,SUCCESS,2.0
+heft-dls-dyn,115,735.0,45.14,SUCCESS,5.0
+heft-dls-dyn,116,901.0,29.63,SUCCESS,5.0
+heft-dls-dyn,117,934.0,36.56,SUCCESS,3.0
+heft-dls-dyn,118,,,BLOCKED_BY_FAULTrobot3 has critically faulted and is blocking goal1. Simulation cannot proceed.,
+heft-dls-dyn,119,819.0,34.8,SUCCESS,5.0
+heft-dls-dyn,120,924.0,31.87,SUCCESS,5.0
+heft-dls-dyn,121,752.0,35.47,SUCCESS,1.0
+heft-dls-dyn,122,,,SIM_ERRORSimulation still running after step limit,
+heft-dls-dyn,123,762.0,36.38,SUCCESS,1.0
+heft-dls-dyn,124,670.0,36.83,SUCCESS,1.0
+heft-dls-dyn,125,768.0,36.04,SUCCESS,1.0
+heft-dls-dyn,126,883.0,38.17,SUCCESS,2.0
+heft-dls-dyn,127,,,BLOCKED_BY_FAULTrobot0 has critically faulted and is blocking shelf2. Simulation cannot proceed.,
+heft-dls-dyn,128,909.0,35.67,SUCCESS,1.0
+heft-dls-dyn,129,626.0,36.62,SUCCESS,1.0
+heft-dls-dyn,130,927.0,34.63,SUCCESS,4.0
+heft-dls-dyn,131,838.0,30.97,SUCCESS,3.0
+heft-dls-dyn,132,776.0,37.73,SUCCESS,2.0
+heft-dls-dyn,133,954.0,34.3,SUCCESS,3.0
+heft-dls-dyn,134,818.0,31.23,SUCCESS,5.0
+heft-dls-dyn,135,757.0,34.35,SUCCESS,2.0
+heft-dls-dyn,136,,,BLOCKED_BY_FAULTrobot1 has critically faulted and is blocking goal0. Simulation cannot proceed.,
+heft-dls-dyn,137,740.0,36.99,SUCCESS,1.0
+heft-dls-dyn,138,810.0,35.83,SUCCESS,3.0
+heft-dls-dyn,139,741.0,36.98,SUCCESS,2.0
+heft-dls-dyn,140,787.0,39.23,SUCCESS,2.0
+heft-dls-dyn,141,865.0,32.43,SUCCESS,4.0
+heft-dls-dyn,142,856.0,33.0,SUCCESS,1.0
+heft-dls-dyn,143,710.0,38.42,SUCCESS,4.0
+heft-dls-dyn,144,746.0,33.58,SUCCESS,1.0
+heft-dls-dyn,145,901.0,39.26,SUCCESS,3.0
+heft-dls-dyn,146,841.0,33.92,SUCCESS,2.0
+heft-dls-dyn,147,827.0,35.61,SUCCESS,4.0
+heft-dls-dyn,148,737.0,35.38,SUCCESS,1.0
+heft-dls-dyn,149,837.0,36.47,SUCCESS,2.0
+heft-dls-dyn,150,873.0,34.82,SUCCESS,2.0
+heft-dls-dyn,151,824.0,38.02,SUCCESS,4.0
+heft-dls-dyn,152,950.0,29.42,SUCCESS,2.0
+heft-dls-dyn,153,842.0,33.61,SUCCESS,3.0
+heft-dls-dyn,154,840.0,41.16,SUCCESS,3.0
+heft-dls-dyn,155,867.0,34.69,SUCCESS,2.0
+heft-dls-dyn,156,,,SIM_ERRORSimulation still running after step limit,
+heft-dls-dyn,157,,,SIM_ERRORSimulation still running after step limit,
+heft-dls-dyn,158,707.0,33.63,SUCCESS,4.0
+heft-dls-dyn,159,790.0,37.28,SUCCESS,2.0
+heft-dls-dyn,160,,,BLOCKED_BY_FAULTrobot0 has critically faulted and is blocking goal0. Simulation cannot proceed.,
+heft-dls-dyn,161,,,SIM_ERRORSimulation still running after step limit,
+heft-dls-dyn,162,832.0,36.99,SUCCESS,3.0
+heft-dls-dyn,163,769.0,35.73,SUCCESS,1.0
+heft-dls-dyn,164,1078.0,31.12,SUCCESS,5.0
+heft-dls-dyn,165,828.0,37.62,SUCCESS,2.0
+heft-dls-dyn,166,825.0,34.61,SUCCESS,1.0
+heft-dls-dyn,167,669.0,38.49,SUCCESS,4.0
+heft-dls-dyn,168,945.0,30.63,SUCCESS,5.0
+heft-dls-dyn,169,986.0,29.99,SUCCESS,4.0
+heft-dls-dyn,170,827.0,35.34,SUCCESS,3.0
+heft-dls-dyn,171,780.0,37.95,SUCCESS,3.0
+heft-dls-dyn,172,889.0,36.98,SUCCESS,3.0
+heft-dls-dyn,173,800.0,35.44,SUCCESS,2.0
+heft-dls-dyn,174,729.0,37.69,SUCCESS,2.0
+heft-dls-dyn,175,,,SIM_ERRORSimulation still running after step limit,
+heft-dls-dyn,176,887.0,33.57,SUCCESS,5.0
+heft-dls-dyn,177,864.0,37.15,SUCCESS,1.0
+heft-dls-dyn,178,740.0,33.78,SUCCESS,1.0
+heft-dls-dyn,179,675.0,42.07,SUCCESS,1.0
+heft-dls-dyn,180,730.0,34.11,SUCCESS,2.0
+heft-dls-dyn,181,1010.0,31.24,SUCCESS,5.0
+heft-dls-dyn,182,716.0,38.9,SUCCESS,3.0
+heft-dls-dyn,183,666.0,37.61,SUCCESS,1.0
+heft-dls-dyn,184,833.0,37.21,SUCCESS,5.0
+heft-dls-dyn,185,1016.0,36.98,SUCCESS,5.0
+heft-dls-dyn,186,795.0,37.33,SUCCESS,3.0
+heft-dls-dyn,187,901.0,36.07,SUCCESS,1.0
+heft-dls-dyn,188,809.0,33.16,SUCCESS,2.0
+heft-dls-dyn,189,728.0,37.77,SUCCESS,1.0
+heft-dls-dyn,190,849.0,35.13,SUCCESS,2.0
+heft-dls-dyn,191,,,SIM_ERRORSimulation still running after step limit,
+heft-dls-dyn,192,755.0,38.61,SUCCESS,5.0
+heft-dls-dyn,193,855.0,35.09,SUCCESS,1.0
+heft-dls-dyn,194,,,BLOCKED_BY_FAULTrobot0 has critically faulted and is blocking goal0. Simulation cannot proceed.,
+heft-dls-dyn,195,764.0,37.89,SUCCESS,1.0
+heft-dls-dyn,196,723.0,35.34,SUCCESS,5.0
+heft-dls-dyn,197,676.0,35.87,SUCCESS,2.0
+heft-dls-dyn,198,646.0,38.27,SUCCESS,1.0
+heft-dls-dyn,199,,,SIM_ERRORSimulation still running after step limit,
