@@ -2,7 +2,7 @@ import pandas as pd
 from natsort import natsorted
 from pathlib import Path
 
-def analyze_csv(file_path, yeah):
+def analyze_csv(file_path, mode):
     try:
         df = pd.read_csv(file_path)
     except FileNotFoundError:
@@ -30,12 +30,15 @@ def analyze_csv(file_path, yeah):
 
     stats = stats.sort_values(by='Avg Steps')
 
-    if yeah:
+    if mode == "initial":
         id, fault_rate, use_battery, num_init_orders, num_dynamic_orders = file_path.name.split('_')
 
         print(f"\n--- Analysis for: ---")
         print(f"\nFault Rate: {fault_rate}\nUse Battery: {use_battery}, ")
         print(f"Initial Orders: {num_init_orders}\nDynamic Orders: {num_dynamic_orders}")
+    elif mode == "complex_dags":
+        type = file_path.name.split('-')[0]
+        print(f"\n--- Analysis for {type} dags: ---")
 
     else:
         s_def, o_def, r_def = "", "", ""
@@ -63,8 +66,13 @@ def analyze_csv(file_path, yeah):
 
 if __name__ == "__main__":
     # directory = Path('different_layout_results/no_faults_10x5')
-    directory = Path('different_layout_results/no_faults_order_stations')
+    # mode = "initial"
+
+    directory = Path('DAG-complexity')
+    mode = "complex_dags"
+
     # directory = Path('5_robot_layout_results')
+    # mode = "layout_comparison"
 
 
     files = natsorted(directory.rglob('*'))
@@ -72,4 +80,4 @@ if __name__ == "__main__":
     for file_path in files:
         if file_path.is_file():
             # print(f"\nAnalyzing {file_path.name}...")
-            analyze_csv(file_path, yeah=False)
+            analyze_csv(file_path, mode)

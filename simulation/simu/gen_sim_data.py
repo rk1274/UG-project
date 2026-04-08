@@ -59,8 +59,11 @@ if __name__ == "__main__":
     schedulers = ["simple", "heft", "dls", "heft-dls", "heft-dls-dyn"]
     orders = [[5,5]]
     fault_rates = [0.0, 0.0025]
+    fault_rates = [0.0]
     battery_options = [True, False]
+    battery_options = [False]
     warehouse_files = ["whouses/whouse_2s_2o_6r.txt","whouses/whouse_2s_2o_5r.txt","whouses/whouse_2s_2o_4r.txt"]
+    warehouse_files = ["whouses/whouse_2s_2o_4r.txt"]
     seeds = range(100, 200)
 
     # warehouse_file = "whouses/whouse_2s_2o_4r.txt"

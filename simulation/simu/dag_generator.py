@@ -109,6 +109,50 @@ class Order:
         self.list = processed_tasks
         self.ranks = compute_upward_ranks(G)
 
+    def generate_simple_dag(self):
+        G = nx.DiGraph()
+        
+        large_tasks = [t for t in self.tasks if t.size == utils.Size.LARGE]
+        medium_tasks = [t for t in self.tasks if t.size == utils.Size.MEDIUM]
+        small_tasks = [t for t in self.tasks if t.size == utils.Size.SMALL]
+
+        all_tasks = sorted(self.tasks, key=lambda x: x.size.value, reverse=True)
+        for t in all_tasks:
+            G.add_node(t.node_id, weight=t.weight, size=t.size.name, shelf_name=t.shelf_name)
+
+        for l in large_tasks:
+            for m in medium_tasks:
+                G.add_edge(l.node_id, m.node_id)
+
+        for m in medium_tasks:
+            for s in small_tasks:
+                G.add_edge(m.node_id, s.node_id)
+
+        leaves = [n for n in G.nodes() if G.out_degree(n) == 0]
+        G.add_node("SINK", weight=0, size="VIRTUAL")
+        for leaf in leaves:
+            G.add_edge(leaf, "SINK")
+
+        self.dag = G
+        self.list = sorted(self.tasks, key=lambda x: x.size.value, reverse=True)
+        self.ranks = compute_upward_ranks(G)
+    
+    def generate_linear_dag(self):
+        G = nx.DiGraph()
+        all_tasks = sorted(self.tasks, key=lambda x: x.size.value, reverse=True)
+        
+        for i in range(len(all_tasks)):
+            t = all_tasks[i]
+            G.add_node(t.node_id, weight=t.weight, size=t.size.name, shelf_name=t.shelf_name)
+            if i > 0:
+                G.add_edge(all_tasks[i-1].node_id, t.node_id)
+                
+        G.add_node("SINK", weight=0, size="VIRTUAL")
+        G.add_edge(all_tasks[-1].node_id, "SINK")
+        self.dag = G
+        self.list = sorted(self.tasks, key=lambda x: x.size.value, reverse=True)
+        self.ranks = compute_upward_ranks(G)
+
     def get_large_relatives(self, G, node_id):
         descendants = set()
     
