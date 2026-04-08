@@ -10,7 +10,7 @@ class OrderStation(entitywithinventory.InventoryEntity):
         self._y = y_pos
         self._warehouse_ref = warehouse
         self._active_order = None
-        super().__init__(name, math.inf)
+        super().__init__(name)
 
     def set_active_order(self, order: orderDAG.OrderDAG):
         self._active_order = order
@@ -40,10 +40,7 @@ class OrderStation(entitywithinventory.InventoryEntity):
         self._warehouse_ref.get_scheduler().schedule()
 
         if self._active_order.is_finished():
-            self._warehouse_ref.get_scheduler().handle_complete_order(
-                                                                        self._warehouse_ref.get_order_manager(),
-                                                                        self._warehouse_ref.get_total_steps(),
-                                                                        self._active_order)
+            self._warehouse_ref.get_scheduler().handle_complete_order(self._active_order)
             self.clear_inventory()
 
         flag_maybe = obj.consume_flag()

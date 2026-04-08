@@ -31,22 +31,17 @@ class Warehouse:
             utils.Size.SMALL: []
         }
 
-        self._battery_threshold = utils.BATTERY_THRESHOLD
-        if schedule_mode == "heft-dls-dyn":
-            self._battery_threshold = utils.HEFT_DLS_BATTERY_THRESHOLD
-
         self._homes = {}
 
-        self._robot_fault_rate = robot_fault_rate
-        self._use_battery = use_battery
-
-        self._items = {}
         udptransmit.transmit_start()
         self.generate_items()
         self._dynamic_deadline = 100
 
-        # Warehouse cell (x,y) is accessed via self._cells[y][x]
-        self._cells = self.parse_warehouse_file(w_house_filename)
+        battery_threshold = utils.BATTERY_THRESHOLD
+        if schedule_mode == "heft-dls-dyn":
+            battery_threshold = utils.HEFT_DLS_BATTERY_THRESHOLD
+
+        self._cells = self.parse_warehouse_file(w_house_filename, battery_threshold, robot_fault_rate, use_battery)
 
         self._order_manager = ordermanager.OrderManager(num_init_orders, num_dynamic_orders, self._dynamic_deadline, self._size_to_shelves, self._shelves, print_dags, use_dags)
         
@@ -456,7 +451,7 @@ class Warehouse:
             print("-", end="")
         print("")
 
-    def parse_warehouse_file(self, filename: str):
+    def parse_warehouse_file(self, filename: str, battery_threshold: float, robot_fault_rate: float, use_battery: bool):
         """
         Reads a warehouse layout from a text file and initializes all simulation objects.
         """
@@ -485,7 +480,7 @@ class Warehouse:
             for char in line:
                 match char:
                     case "R":
-                        self.initialise_new_robot(col_ctr, row_ctr, robot_name_ctr, cells_copy)
+                        self.initialise_new_robot(col_ctr, row_ctr, robot_name_ctr, cells_copy, battery_threshold, robot_fault_rate, use_battery)
                         robot_name_ctr += 1
                     case "L":
                         self.initialise_new_shelf(col_ctr, row_ctr, utils.Size.LARGE, shelf_name_ctr, cells_copy)
@@ -509,20 +504,19 @@ class Warehouse:
 
         return cells_copy
     
-    def initialise_new_robot(self, x, y, robot_name_ctr, cells_copy):
+    def initialise_new_robot(self, x, y, robot_name_ctr, cells_copy, battery_threshold, robot_fault_rate, use_battery):
         """
         Initializes a new robot and its home, and adds them to the warehouse.
         The first robot will have a higher fault rate.
         """
-        fault_rate = self._robot_fault_rate
         if robot_name_ctr == 0:
-            fault_rate = fault_rate * 3
+            robot_fault_rate = robot_fault_rate * 3
 
         new_robot_name = "robot%s" % robot_name_ctr
         new_robot = robot.Robot(
             new_robot_name, x, y, 
-            fault_rate, self._use_battery,
-            self._battery_threshold
+            robot_fault_rate, use_battery,
+            battery_threshold
         )
         self._robots[new_robot_name] = new_robot
 
@@ -558,15 +552,12 @@ class Warehouse:
         self._order_stations[new_goal_name] = new_goal
         cells_copy[y].append([new_goal_name])
 
-    def transmit(self):
-        udptransmit.transmit_warehouse_size(self._width, self._height)
-
     def generate_items(self):
-        self._items = [item.Item(utils.Size.LARGE),
-                       item.Item(utils.Size.MEDIUM),
-                       item.Item(utils.Size.SMALL)]
+        items = [item.Item(utils.Size.LARGE),
+                item.Item(utils.Size.MEDIUM),
+                item.Item(utils.Size.SMALL)]
         
-        for i in self._items:
+        for i in items:
             print("Generated item %s" % i.get_name())
             udptransmit.transmit_item_existence(i.get_name())
 

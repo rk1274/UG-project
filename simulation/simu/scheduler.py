@@ -1,5 +1,4 @@
 import customexceptions
-import ordermanager
 import udptransmit
 import utils
 import math
@@ -8,22 +7,10 @@ class Scheduler:
     def __init__(self, robots: dict, shelves: dict, goals: dict, homes: dict, init_orders: list):
         self._robots = robots
         self._shelves = shelves
-        self._item_to_shelf_mapping = {}
-        self._shelf_to_item_mapping = {}
         
         self._active_tasks = {}
 
-        for shelf_name, shelf in self._shelves.items():
-            item_name = shelf.get_item().get_name()
-            self._shelf_to_item_mapping[shelf_name] = shelf.get_item()
-
-            if item_name not in self._item_to_shelf_mapping.keys():
-                self._item_to_shelf_mapping[item_name] = [shelf_name]
-            else:
-                self._item_to_shelf_mapping[item_name].append(shelf_name)
-
         self._goals = goals
-        self._flags = []
         self._homes = homes
 
         self._orders_backlog = []
@@ -35,7 +22,6 @@ class Scheduler:
         self._order_goal_assignment = {}
 
         self._schedule = {}
-        self._prev_schedule = {}
 
         self._all_positions = {}
         self._all_distances = {}
@@ -168,11 +154,6 @@ class Scheduler:
             
         return False, None
 
-    def prepend_to_schedule(self, robot_name, targets_list):
-        if robot_name not in self._schedule.keys():
-            self._schedule[robot_name] = []
-        self._schedule[robot_name] = targets_list + self._schedule[robot_name]
-
     def add_order(self, order):
         print("Adding new order %s to backlog" % order.get_id())
         self._orders_backlog.append(order)
@@ -229,15 +210,6 @@ class Scheduler:
                 robot_next_target_obj = self._goals[robot_next_target_name]
         elif "home" in dest_type:
             robot_next_target_obj = self._homes[robot_next_target_name]
-        elif "block" in dest_type:
-            split = robot_next_target_name.split("|")
-            flag_name = split[1]
-
-            if flag_name in self._flags:
-                robot_next_target_obj = self.parse_schedule_value(self._schedule[robot_obj.get_name()].pop(0), robot_obj)
-            else:
-                robot_next_target_obj = self._homes[self.get_home_name_for_robot_name(robot_obj.get_name())]
-                self.prepend_to_schedule(robot_obj.get_name(), [robot_next_target_name])
         elif "wait" in dest_type:
             robot_next_target_obj = self._homes[self.get_home_name_for_robot_name(robot_obj.get_name())]
             robot_obj.add_wait_steps(2)
@@ -258,7 +230,7 @@ class Scheduler:
             return False
         return True
 
-    def handle_complete_order(self, order_manager: ordermanager.OrderManager, step_ctr, order):
+    def handle_complete_order(self, order):
         self._orders_active.remove(order)
         udptransmit.transmit_order_complete()
     
@@ -266,7 +238,6 @@ class Scheduler:
         self._order_goal_assignment.pop(order.get_id())
         #print("Order %s completed by robot %s" % (order.get_id(), robots))
         print("Order %s complete" % order.get_id())
-        order_manager.set_order_completion_time(order, step_ctr)
 
         self.schedule()    
 
@@ -617,7 +588,7 @@ class DynamicHeftDlsScheduler(Scheduler):
 
         return ready_tasks
 
-    def is_capable(self, robot_obj, task_id, order_obj):
+    def is_capable(self, robot_obj, task_id):
         task_type = task_id.split("_")[0].lower()
         battery = robot_obj.battery_level
         

@@ -15,7 +15,7 @@ class Task:
         # Base weight on size + physical distance weighting
         self.weight = (size.value * 10) + (distance * 0.5) + random.randint(1, 5)
 
-class Order:
+class DagGenerator:
     def __init__(self, num_large, num_medium, num_small,
                  size_to_shelves_map, shelves_registry, goal_pos):
         self.num_large = num_large

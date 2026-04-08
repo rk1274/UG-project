@@ -37,9 +37,8 @@ class Robot(entitywithinventory.InventoryEntity):
         self._was_charging_last_step = False
         self.apply_charge_wait_upon_reaching_home = False
 
-        self_fault_rate = fault_rate
-        self._actuator_overheat_prob = self_fault_rate * 0.5
-        self._critical_fault_prob = self_fault_rate * 0.01
+        self._actuator_overheat_prob = fault_rate * 0.5
+        self._critical_fault_prob = fault_rate * 0.01
 
         self._just_critically_faulted = False
         self.critically_faulted = False  # Permanent death
@@ -49,7 +48,7 @@ class Robot(entitywithinventory.InventoryEntity):
 
         self.num_faults = 0
 
-        super().__init__(name, 1)
+        super().__init__(name)
 
     def start_charging(self):
         """Initiates the charge cycle."""
