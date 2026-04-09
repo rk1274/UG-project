@@ -19,7 +19,7 @@ class OrderManager:
         self._dynamic_orders = []
 
         if use_dags:
-            self.get_orders_from_folder(num_init_orders, num_dynamic_orders, size_to_shelves_map, shelves_registry)
+            self.get_orders_from_folder(num_init_orders, num_dynamic_orders)
         else:
             self.generate_orders(num_init_orders, num_dynamic_orders, size_to_shelves_map, shelves_registry)
 

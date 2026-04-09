@@ -236,7 +236,6 @@ class Scheduler:
     
         _ = self._order_robots_assignment.pop(order.get_id())
         self._order_goal_assignment.pop(order.get_id())
-        #print("Order %s completed by robot %s" % (order.get_id(), robots))
         print("Order %s complete" % order.get_id())
 
         self.schedule()    
@@ -546,7 +545,7 @@ class DynamicHeftDlsScheduler(Scheduler):
             best_score = math.inf
 
             for robot in free_robots:
-                if not self.is_capable(robot, task_id, order_obj):
+                if not self.is_capable(robot, task_id):
                     continue
 
                 task_data = order_obj.dag.nodes[task_id]

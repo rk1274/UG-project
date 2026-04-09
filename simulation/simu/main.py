@@ -13,7 +13,7 @@ def run_simple_sim(warehouse_file, transmit=False, print_dags=False, mode="simpl
     os.environ["ROBOTSIM_TRANSMIT"] = str(transmit)      
 
     fault_rate = 0.0025 # Set to 0.0 for no faults. otherwise 0.0025
-    use_battery = False # Set to False for no battery.
+    use_battery = True # Set to False for no battery.
     
     step_limit = 4000     
     

@@ -13,13 +13,13 @@ def get_sim_data(warehouse_file, mode, seed_val, fault_rate=0.0025, use_battery=
     simu = warehouse.Warehouse(
         num_init_orders, num_dynamic_orders,
         warehouse_file, mode, fault_rate, 
-        use_battery, max_steps, False, True
+        use_battery, max_steps, False, False
     )
 
     try:
         while not simu.step():
             pass
-        
+    
         total_steps = simu.get_total_steps()
         num_robots = len(simu._robots)
         overall_wait = 0
@@ -57,40 +57,41 @@ def get_sim_data(warehouse_file, mode, seed_val, fault_rate=0.0025, use_battery=
 if __name__ == "__main__":
     os.environ["ROBOTSIM_TRANSMIT"] = "False"
     schedulers = ["simple", "heft", "dls", "heft-dls", "heft-dls-dyn"]
-    orders = [[5,5]]
+    orders = [[1,0], [5,0],[5,5], [10,0], [10,10], [20,10]]
     fault_rates = [0.0, 0.0025]
-    fault_rates = [0.0]
-    battery_options = [True, False]
-    battery_options = [False]
+    # fault_rates = [0.0]
+    battery_options = [False, True]
+    # battery_options = [False]
     warehouse_files = ["whouses/whouse_2s_2o_6r.txt","whouses/whouse_2s_2o_5r.txt","whouses/whouse_2s_2o_4r.txt"]
     warehouse_files = ["whouses/whouse_2s_2o_4r.txt"]
     seeds = range(100, 200)
 
     # warehouse_file = "whouses/whouse_2s_2o_4r.txt"
-    output_dir = "simple_dags/"
+    output_dir = "different_orders/"
 
-    robot_num = 5
     unique_id = 0
     for warehouse_file in warehouse_files:
         for order in orders:
-            for fault_rate in fault_rates:
-                for use_battery in battery_options:
-                    all_results = []
+            for i in range(len(fault_rates)):
+                all_results = []
+                if i == 0:
+                    schedulers = ["simple", "heft", "dls", "heft-dls"]
+                else:
+                    schedulers = ["simple", "heft", "dls", "heft-dls", "heft-dls-dyn"]
 
-                    for scheduler in schedulers:
-                        print(f"Running {scheduler}...")
-                        for s in seeds:
-                            data = get_sim_data(warehouse_file, scheduler, s, fault_rate, use_battery,order[0], order[1])
-                            all_results.append(data)
+                for scheduler in schedulers:
+                    print(f"Running {scheduler}...")
+                    for s in seeds:
+                        data = get_sim_data(warehouse_file, scheduler, s, fault_rates[i], battery_options[i],order[0], order[1])
+                        all_results.append(data)
 
-                    df = pd.DataFrame(all_results)
-                    
-                    df['rank'] = df.groupby('seed')['total_steps'].rank(method='min', ascending=True)
-                    
-                    output_path = f"{output_dir}{unique_id}_{robot_num}r_{fault_rate}_{use_battery}_{order[0]}_{order[1]}.csv"
-                    # Save to CSV
-                    df.to_csv(output_path, index=False)
-                    print(f"\nSuccess! Data saved to {output_path}")
+                df = pd.DataFrame(all_results)
+                
+                df['rank'] = df.groupby('seed')['total_steps'].rank(method='min', ascending=True)
+                
+                output_path = f"{output_dir}{unique_id}_{battery_options[i]}_{order[0]}_{order[1]}.csv"
+                # Save to CSV
+                df.to_csv(output_path, index=False)
+                print(f"\nSuccess! Data saved to {output_path}")
 
-                    unique_id += 1
-        robot_num -= 1
+                unique_id += 1
