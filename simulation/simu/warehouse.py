@@ -23,6 +23,7 @@ class Warehouse:
         self._current_orders = []
         self._cells = []
         self._robots = {}
+        self._dead_robots = 0
         self._order_stations = {}
         self._shelves = {}
         self._size_to_shelves = {
@@ -91,15 +92,12 @@ class Warehouse:
         for robot_obj in self._robots.values():
             # Apply any faults
             robot_obj.check_for_actuator_fault()
-            
-            # TODO is this good?
-            is_blocking, _ = self._scheduler.check_if_blocking(robot_obj)
-            if not is_blocking:
-                robot_obj.check_for_critical_fault()
+            robot_obj.check_for_critical_fault()
 
             if robot_obj._just_critically_faulted:
                 robot_obj._just_critically_faulted = False
                 robot_obj.status_history.append("D")
+                self.remove_dead_robot(robot_obj)
                 self._scheduler.schedule()
             elif robot_obj.wait_steps == 0:
                 self.decide_robot_action(robot_obj)
@@ -112,7 +110,7 @@ class Warehouse:
 
                 elif not robot_obj.is_charging() and not robot_obj.has_faulted():
                     robot_obj.status_history.append("A")
-                    print("waiting...", robot_obj.get_name())
+                    # print("waiting...", robot_obj.get_name())
 
 
                 should_schedule = robot_obj.decrement_wait_steps()
@@ -558,7 +556,7 @@ class Warehouse:
                 item.Item(utils.Size.SMALL)]
         
         for i in items:
-            print("Generated item %s" % i.get_name())
+            # print("Generated item %s" % i.get_name())
             udptransmit.transmit_item_existence(i.get_name())
 
     def move_robot_next_path_spot(self, robot_obj):
@@ -577,6 +575,19 @@ class Warehouse:
         self._cells[new_y][new_x].append(robot_name)
         udptransmit.transmit_robot_position(robot_name, new_x, new_y)
 
+    def remove_dead_robot(self, robot_obj):
+        new_x = len(self._cells[0]) - 1 - self._dead_robots
+        new_y = 0
 
+        robot_obj.wait_steps = 0
+        x, y = robot_obj.get_position()
+        robot_obj.set_position(new_x, new_y)
+        self._cells[y][x].remove(robot_obj.get_name())
+        self._cells[new_y][new_x].append(robot_obj.get_name())
+
+        udptransmit.transmit_robot_position(robot_obj.get_name(), new_x, new_y)
+        self._dead_robots += 1
+        
+        robot_obj.wait_steps = math.inf
 
 

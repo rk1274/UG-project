@@ -107,10 +107,6 @@ class Scheduler:
 
             self._schedule[robot_obj.get_name()] = []
             robot_obj.current_task_id = None
-
-            is_blocking, blocked_area = self.check_if_blocking(robot_obj)
-            if is_blocking:
-                raise customexceptions.FaultBlockingError(robot_obj.get_name(), blocked_area)
             
         task_id = robot_obj.next_task_id
         if task_id is not None:
@@ -127,35 +123,8 @@ class Scheduler:
             self._schedule[robot_obj.get_name()] = []
             robot_obj.next_task_id = None
 
-            is_blocking, blocked_area = self.check_if_blocking(robot_obj)
-            if is_blocking:
-                raise customexceptions.FaultBlockingError(robot_obj.get_name(), blocked_area)
-
-    def check_if_blocking(self, robot_obj):
-        """
-        Raises an exception if the critically faulted robot is currently blocking any goals, shelves, or homes.
-        """
-        x = robot_obj.get_position()[0]
-        y = robot_obj.get_position()[1]
-
-        for goal_name, goal_obj in self._goals.items():
-            if goal_obj.get_position() == (x,y):
-                return True, goal_name
-
-        for shelf_name, shelf_obj in self._shelves.items():
-            if shelf_obj.get_position() == (x,y):
-                return True, shelf_name
-
-        for home_name, home_obj in self._homes.items():
-            if home_obj.get_robot_name() == robot_obj.get_name():
-                continue
-            if home_obj.get_position() == (x,y):
-                return True, home_name
-            
-        return False, None
-
     def add_order(self, order):
-        print("Adding new order %s to backlog" % order.get_id())
+        # print("Adding new order %s to backlog" % order.get_id())
         self._orders_backlog.append(order)
         self.schedule()
 
@@ -236,7 +205,7 @@ class Scheduler:
     
         _ = self._order_robots_assignment.pop(order.get_id())
         self._order_goal_assignment.pop(order.get_id())
-        print("Order %s complete" % order.get_id())
+        # print("Order %s complete" % order.get_id())
 
         self.schedule()    
 
@@ -311,7 +280,7 @@ class Scheduler:
         task_data = order_obj.dag.nodes[task_id]
         assigned_shelf = task_data['shelf_name']
 
-        print(f"Assigning task {task_id} with rank {rank} of order {order_obj.get_id()} to robot {robot_name} at {robot_obj.battery_level}, which will go to shelf {assigned_shelf} and then goal {goal_name}")
+        # print(f"Assigning task {task_id} with rank {rank} of order {order_obj.get_id()} to robot {robot_name} at {robot_obj.battery_level}, which will go to shelf {assigned_shelf} and then goal {goal_name}")
 
         self.add_to_schedule(robot_name, assigned_shelf, task_id, order_obj.get_id())
         

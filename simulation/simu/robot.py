@@ -52,7 +52,7 @@ class Robot(entitywithinventory.InventoryEntity):
 
     def start_charging(self):
         """Initiates the charge cycle."""
-        print(f"CHARGING {self.get_name()}")
+        # print(f"CHARGING {self.get_name()}")
         udptransmit.transmit_battery_charging(self._name)
 
         self.apply_charge_wait_upon_reaching_home = False
@@ -77,7 +77,7 @@ class Robot(entitywithinventory.InventoryEntity):
                 self._charging = False
                 self.battery_level = 100
                 self._was_charging_last_step = True
-                print("CHARGING COMPLETE", self.get_name())
+                # print("CHARGING COMPLETE", self.get_name())
                 udptransmit.transmit_battery_level(self._name, self.battery_level)
 
             return True
@@ -101,7 +101,7 @@ class Robot(entitywithinventory.InventoryEntity):
             self._just_critically_faulted = True
             self.wait_steps = math.inf
 
-            print("BATTERY CRITICALLY FAULTED for robot %s" % self._name)
+            # print("BATTERY CRITICALLY FAULTED for robot %s" % self._name)
 
         udptransmit.transmit_battery_level(self._name, self.battery_level)
 
@@ -168,17 +168,17 @@ class Robot(entitywithinventory.InventoryEntity):
     def check_for_actuator_fault(self):
         """Checks if motors overheat. Returns True if a new fault occurred."""
         if not self.actuators_faulted and not self.critically_faulted and random.random() < self._actuator_overheat_prob:
-            print("FAULT %s ACTUATOR OVERHEAT" % self._name)
+            # print("FAULT %s ACTUATOR OVERHEAT" % self._name)
             self.actuators_faulted = True
             self.wait_steps += 10
-            self._just_critically_faulted = True
+            # self._just_critically_faulted = True
             self.num_faults += 1
             udptransmit.robot_temp_fault(self._name)
 
     def check_for_critical_fault(self):
         """Checks if robot is permanently broken."""
         if not self.critically_faulted and random.random() < self._critical_fault_prob:
-            print("FAULT %s CRITICAL" % self._name)
+            # print("FAULT %s CRITICAL" % self._name)
             self.wait_steps = math.inf
             self._just_critically_faulted = True
             self.critically_faulted = True

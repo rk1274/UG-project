@@ -71,7 +71,7 @@ class OrderManager:
         self._init_orders = orders[:num_init_orders]
         self._dynamic_orders = orders[num_init_orders:total_needed]
 
-        print("using order", orders[0])
+        # print("using order", orders[0])
     
     def clear_img_directory(self):
         if not os.path.exists(f"./{utils.DAG_FOLDER}/"):
@@ -87,7 +87,7 @@ class OrderManager:
         dag_gen = dag_generator.DagGenerator(l, m, s, size_to_shelves_map, shelves_registry, goal_pos)
         dag_gen.generate_dag()
         if self._print_dags:
-            print(f"Saving DAG for order {id}...")
+            # print(f"Saving DAG for order {id}...")
             dag_gen.save(f"order_{id}")
 
         order = orderDAG.OrderDAG(dag_gen.dag, dag_gen.ranks, id)

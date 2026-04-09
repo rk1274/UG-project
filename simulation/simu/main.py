@@ -20,7 +20,7 @@ def run_simple_sim(warehouse_file, transmit=False, print_dags=False, mode="simpl
     num_init_orders = 5
     num_dynamic_orders = 5
 
-    print(f"Initializing Warehouse: {warehouse_file}...")
+    # print(f"Initializing Warehouse: {warehouse_file}...")
     
     simu = warehouse.Warehouse(
         num_init_orders,
@@ -34,27 +34,27 @@ def run_simple_sim(warehouse_file, transmit=False, print_dags=False, mode="simpl
         use_dags
     )
 
-    print("Starting Simulation Loop...")
+    # print("Starting Simulation Loop...")
     
     keep_running = True
     while keep_running:
         if transmit:
-            time.sleep(0.2)
+            time.sleep(0.05)
             
         finished = simu.step()
         keep_running = not finished
         
-        if simu.get_total_steps() % 50 == 0:
-            print(f"Step: {simu.get_total_steps()}...")
+        # if simu.get_total_steps() % 50 == 0:
+            # print(f"Step: {simu.get_total_steps()}...")
 
     overall_time_waiting = 0
     overall_time_active = 0
 
     for robot in simu._robots.values():
-        print(f"{robot.get_name()} had {robot.num_faults} faults.")
+        # print(f"{robot.get_name()} had {robot.num_faults} faults.")
 
-        if len(robot.status_history) != simu.get_total_steps():
-            print("wtf, hist: %d, steps: %d", len(robot.status_history), simu.get_total_steps())
+        # if len(robot.status_history) != simu.get_total_steps():
+        #     print("wtf, hist: %d, steps: %d", len(robot.status_history), simu.get_total_steps())
 
         time_waiting = 0
         time_active = 0
@@ -68,15 +68,15 @@ def run_simple_sim(warehouse_file, transmit=False, print_dags=False, mode="simpl
         overall_time_waiting += time_waiting
         overall_time_active += time_active
 
-        print("Time spent waiting: %.1f%%" % ((time_waiting/simu.get_total_steps())*100))
-        print("Time spent active: %.1f%%" % ((time_active/simu.get_total_steps())*100))
+        # print("Time spent waiting: %.1f%%" % ((time_waiting/simu.get_total_steps())*100))
+        # print("Time spent active: %.1f%%" % ((time_active/simu.get_total_steps())*100))
 
     
-    print("\nOverall time spent waiting: %.1f%%" % ((overall_time_waiting/(simu.get_total_steps()*len(simu._robots)))*100))
-    print("Overall time spent active: %.1f%%" % ((overall_time_active/(simu.get_total_steps()*len(simu._robots)))*100))
+    # print("\nOverall time spent waiting: %.1f%%" % ((overall_time_waiting/(simu.get_total_steps()*len(simu._robots)))*100))
+    # print("Overall time spent active: %.1f%%" % ((overall_time_active/(simu.get_total_steps()*len(simu._robots)))*100))
     
 
-    print(f"Simulation Complete in {simu.get_total_steps()} steps.")
+    # print(f"Simulation Complete in {simu.get_total_steps()} steps.")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
