@@ -1,6 +1,10 @@
+from email.policy import default
+
 import pandas as pd
 from natsort import natsorted
 from pathlib import Path
+
+filter = False
 
 def analyze_csv(file_path, mode):
     try:
@@ -9,18 +13,34 @@ def analyze_csv(file_path, mode):
         print(f"Error: {file_path} not found.")
         return
 
-    success_df = df[df['status'] == 'SUCCESS'].copy()
+    num_schedulers = df['scheduler'].nunique()
+    
+    def all_successful(group):
+        if filter:
+            return (group['status'] == 'SUCCESS').all() and len(group) == num_schedulers
+       
+        return True
+
+    valid_seeds = df.groupby('seed').filter(all_successful)['seed'].unique()
+    
+    filtered_df = df[df['seed'].isin(valid_seeds)].copy()
+    
+    total_seeds = df['seed'].nunique()
+    dropped_count = total_seeds - len(valid_seeds)
+
+
+    success_df = filtered_df.copy() 
     
     success_df['total_steps'] = pd.to_numeric(success_df['total_steps'])
-    success_df['rank'] = pd.to_numeric(success_df['rank'])
-
+    success_df['rank'] = success_df.groupby('seed')['total_steps'].rank(method='min')
     success_df['is_first'] = (success_df['rank'] == 1)
+    success_df['is_success'] = (success_df['status'] == 'SUCCESS')
 
     stats = success_df.groupby('scheduler').agg({
         'total_steps': ['mean', 'std', 'min', 'max'],
         'rank': 'mean',
         'is_first': 'sum',
-        'seed': 'count'
+        'is_success': 'sum',
     })
 
     stats.columns = [
@@ -29,16 +49,38 @@ def analyze_csv(file_path, mode):
     ]
 
     stats = stats.sort_values(by='Avg Steps')
+    print(f"Total seeds processed: {total_seeds}")
+    print(f"Seeds excluded (failed in at least one method): {dropped_count}")
 
     if mode == "initial":
-        id, fault_rate, use_battery, num_init_orders, num_dynamic_orders = file_path.name.split('_')
+        id, faults, num_init_orders, num_dynamic_orders = file_path.name.split('_')
+
+        if faults == "False":
+            return
 
         print(f"\n--- Analysis for: ---")
-        print(f"\nFault Rate: {fault_rate}\nUse Battery: {use_battery}, ")
+        print(f"\nFault enabled?: {faults}")
         print(f"Initial Orders: {num_init_orders}\nDynamic Orders: {num_dynamic_orders}")
+    elif mode == "default":
+        id,use_battery,  fault_rate  = file_path.name.split('_')
+        print(f"\n--- Analysis for: ---")
+        print(f"\nFault Rate: {fault_rate}\nUse Battery: {use_battery}, ")
+
     elif mode == "complex_dags":
-        type = file_path.name.split('-')[0]
+        type = file_path.name.split('_')[0]
         print(f"\n--- Analysis for {type} dags: ---")
+
+    elif mode == "robots":
+        num = file_path.name.split('_')[0]
+        print(f"\n--- Analysis for {num} robots: ---")
+
+    elif mode == "shelves":
+        num = file_path.name.split('_')[0]
+        print(f"\n--- Analysis for {num} shelves: ---")
+
+    elif mode == "goals":
+        num = file_path.name.split('_')[0]
+        print(f"\n--- Analysis for {num} goals: ---")
 
     else:
         s_def, o_def, r_def = "", "", ""
@@ -65,19 +107,32 @@ def analyze_csv(file_path, mode):
     print(f"Insight: '{best_by_rank}' is the most consistent winner (best avg rank).")
 
 if __name__ == "__main__":
-    # directory = Path('different_layout_results/no_faults_10x5')
+    # directory = Path('different_orders')
     # mode = "initial"
 
-    directory = Path('DAG-complexity')
-    mode = "complex_dags"
+    # directory = Path('sim_results')
+    # mode = "robots"
+
+    # directory = Path('shelf_results')
+    # mode = "shelves"
+
+    directory = Path('goal_results')
+    mode = "goals"
+
+    # directory = Path('DAG-complexity')
+    # mode = "complex_dags"
+
+    # directory = Path('complex_dags')
+    # mode = "complex_dags"
 
     # directory = Path('5_robot_layout_results')
     # mode = "layout_comparison"
 
+    # directory = Path('default')
+    # mode = "default"
 
     files = natsorted(directory.rglob('*'))
 
     for file_path in files:
         if file_path.is_file():
-            # print(f"\nAnalyzing {file_path.name}...")
             analyze_csv(file_path, mode)

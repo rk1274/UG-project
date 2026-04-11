@@ -11,21 +11,20 @@ COLOR_WINNER = '#54A24B'
 COLOR_TEXT = '#2b2b2b'
 COLOR_GRID = '#cccccc'
 
-# --- DATA ---
-schedulers = ['HEFT-DLS', 'HEFT', 'DLS', 'Simple']
+schedulers = ['HEFT', 'DLS', 'HEFT-DLS', 'Simple', 'HEFT-DLS-Dyn']
 
 data = {
-    'Small':      [313.35, 336.10, 322.45, 326.79],
-    'Simple':     [648.69, 647.00, 659.82, 657.31],
-    'Linear':     [655.48, 644.69, 662.54, 655.63],
-    'Complex':    [1081.86, 1093.47, 1115.64, 1130.38]
+    'Small':      [551.48, 552.25, 547.85, 550.71, 543.07],
+    'Simple':     [1728.72, 1792.12, 1726.06, 1818.38, 1762.47],
+    'Linear':     [1999.34, 1933.03, 1942.65, 2009.32, 1897.28],
+    'Complex':    [2598.41, 2684.41, 2612.65, 2726.86, 2642.80]
 }
 
 ylimits = {
-    'Small':      (280, 360),
-    'Simple':     (600, 700),
-    'Linear':     (600, 700),
-    'Complex':    (1000, 1200)
+    'Small':      (500, 600),
+    'Simple':     (1600, 1900),
+    'Linear':     (1800, 2100),
+    'Complex':    (2400, 2900)
 }
 
 x = np.arange(len(schedulers))
@@ -45,11 +44,12 @@ for i, ax in enumerate(axes):
     bars = ax.bar(x, vals, width, color=colors, edgecolor='none', alpha=0.85)
     
     ax.set_title(f'{category} DAGs', fontsize=16, weight='bold', color=COLOR_TEXT, pad=15)
+    
     if i % 2 == 0:
         ax.set_ylabel('Average Steps', fontsize=14, color=COLOR_TEXT)
     
     ax.set_xticks(x)
-    ax.set_xticklabels(schedulers, fontsize=12, color=COLOR_TEXT)
+    ax.set_xticklabels(schedulers, fontsize=11, color=COLOR_TEXT)
     ax.set_ylim(ylimits[category])
     
     for spine in ax.spines.values():
@@ -62,5 +62,4 @@ for i, ax in enumerate(axes):
 
 plt.tight_layout(pad=4.0)
 
-plt.savefig('dag_topology_comparison.png', dpi=300, bbox_inches='tight')
-print("Saved: dag_topology_comparison.png")
+plt.savefig('dag_complexity.png', dpi=300, bbox_inches='tight')
