@@ -39,7 +39,7 @@ def run_simple_sim(warehouse_file, transmit=False, print_dags=False, mode="simpl
     keep_running = True
     while keep_running:
         if transmit:
-            time.sleep(0.05)
+            time.sleep(0.1)
             
         finished = simu.step()
         keep_running = not finished
@@ -81,8 +81,8 @@ def run_simple_sim(warehouse_file, transmit=False, print_dags=False, mode="simpl
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-t", action="store_true", help="Transmit UDP packets for visualization")
-    parser.add_argument("-p", action="store_true", help="Print visualisations of the generated DAGs")
-    parser.add_argument("-s", type=str, default="simple", help="The scheduler to use. 'simple', 'heft' or 'heft-dls'")
+    parser.add_argument("-p", action="store_true", help="Save generated DAGs in /{utils.DAG_FOLDER}")
+    parser.add_argument("-s", type=str, default="simple", help="The scheduler to use: 'simple', 'heft', 'dls', 'heft-dls' or 'heft-dls-dyn'")
     parser.add_argument("-d", action="store_true", help=f"Use /{utils.DAG_FOLDER} as the dags for the simulation")
     parser.add_argument("-f", type=str, default="whouses/whouse_2s_2o_4r.txt", help="The warehouse layout file")
     parser.add_argument("-r", type=int, help="The random seed to use")

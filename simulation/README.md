@@ -3,7 +3,6 @@ A python simulator for a robotic smart warehouse, with many configurable propert
 
 ## Project Structure
 
-- doc/: documentations
 - simu/: simulator (Python)
 - viz/: visualisor (Unity)
 
@@ -14,6 +13,8 @@ Simulation:
 - Python >= 3.11
 - pygad
 - matplotlib
+- networkx
+- pydot
 
 Visualisation:
 
@@ -21,6 +22,26 @@ Visualisation:
 
 ## Usage
 
-Run `python main.py -t` to transmit positions to the visualiser.
+To run the simulation, navigate to the simu/ directory and execute main.py
+`python main.py [OPTIONS]`
 
-Setting parameter `slow_for_transit` to `true` when calling `run_simulation()` on a simulator object may be useful to reduce the speed of the simulator for visualisation.
+The following CLI options are available:
+- `-h`: Shows help text
+- `-t`: To use communicate with Unity visualiser
+- `-p`: Save representations of the generated DAGs (.png and .gml) to simu/data/
+- `-d`: Use premade dags stored inside simu/data/ for the simulation (.gml files required) 
+- `-s`: Choose which scheduler to use: 'simple', 'heft', 'dls', 'heft-dls', 'heft-dls-dyn' (default 'simple')
+- `-f`: Specify the path to the warehouse layout file
+- `-r`: Set the random seed
+
+To use to visualiser you need to open the project in Unity and run the main scene, then run `python main.py -t [OPTIONS]`.
+
+### Examples
+1. Basic simulation with visualisation enabled:
+`python main.py -t`
+
+2. Using the HEFT-DLS hybrid scheduler with a specific random seed:
+`python main.py -s heft -r 1234`
+
+3. Using a different warehouse file:
+`python main.py -f whouses/whouse_2s_2o_6r.txt`
