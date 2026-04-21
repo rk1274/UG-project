@@ -36,6 +36,8 @@ The following CLI options are available:
 
 To use to visualiser you need to open the project in Unity and run the main scene, then run `python main.py -t [OPTIONS]`.
 
+To run experiments, use `python generate_experiment_data.py`. This will save csvs in simu/results/.
+
 ### Examples
 1. Basic simulation with visualisation enabled:
 `python main.py -t`
