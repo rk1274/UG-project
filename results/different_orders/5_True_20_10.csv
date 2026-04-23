@@ -1,0 +1,501 @@
+scheduler,seed,total_steps,avg_wait_pct,status,rank
+simple,100,2536.0,30.21,SUCCESS,3.0
+simple,101,2468.0,34.04,SUCCESS,1.0
+simple,102,,,"SIM_ERRORAll robots have critically faulted, unable to continue.",
+simple,103,2955.0,27.39,SUCCESS,2.0
+simple,104,2999.0,26.68,SUCCESS,3.0
+simple,105,2489.0,32.53,SUCCESS,2.0
+simple,106,2883.0,28.63,SUCCESS,2.0
+simple,107,3157.0,27.11,SUCCESS,4.0
+simple,108,2534.0,32.23,SUCCESS,5.0
+simple,109,2612.0,30.22,SUCCESS,2.0
+simple,110,2275.0,33.37,SUCCESS,3.0
+simple,111,3060.0,25.95,SUCCESS,4.0
+simple,112,4052.0,22.08,SUCCESS,4.0
+simple,113,2945.0,29.81,SUCCESS,3.0
+simple,114,3046.0,28.5,SUCCESS,3.0
+simple,115,2298.0,34.55,SUCCESS,4.0
+simple,116,3114.0,26.73,SUCCESS,5.0
+simple,117,2904.0,28.59,SUCCESS,2.0
+simple,118,3252.0,27.53,SUCCESS,4.0
+simple,119,3301.0,26.53,SUCCESS,4.0
+simple,120,2593.0,28.48,SUCCESS,3.0
+simple,121,2909.0,27.64,SUCCESS,2.0
+simple,122,3018.0,28.07,SUCCESS,3.0
+simple,123,2845.0,28.14,SUCCESS,3.0
+simple,124,2727.0,29.37,SUCCESS,4.0
+simple,125,2744.0,29.54,SUCCESS,2.0
+simple,126,3032.0,26.62,SUCCESS,2.0
+simple,127,3190.0,26.17,SUCCESS,5.0
+simple,128,4362.0,23.56,SUCCESS,4.0
+simple,129,4597.0,21.83,SUCCESS,3.0
+simple,130,2848.0,30.21,SUCCESS,3.0
+simple,131,4141.0,23.55,SUCCESS,4.0
+simple,132,3060.0,26.1,SUCCESS,5.0
+simple,133,4522.0,22.52,SUCCESS,5.0
+simple,134,2829.0,29.01,SUCCESS,4.0
+simple,135,2631.0,29.26,SUCCESS,3.0
+simple,136,2411.0,35.83,SUCCESS,3.0
+simple,137,4338.0,24.73,SUCCESS,4.0
+simple,138,2514.0,33.98,SUCCESS,1.0
+simple,139,2792.0,27.31,SUCCESS,5.0
+simple,140,2530.0,34.77,SUCCESS,3.0
+simple,141,2459.0,33.95,SUCCESS,1.0
+simple,142,2758.0,31.24,SUCCESS,1.0
+simple,143,2331.0,33.08,SUCCESS,1.0
+simple,144,4448.0,26.4,SUCCESS,3.0
+simple,145,3597.0,23.59,SUCCESS,5.0
+simple,146,3118.0,26.39,SUCCESS,2.0
+simple,147,3033.0,27.26,SUCCESS,4.0
+simple,148,,,SIM_ERRORSimulation still running after step limit,
+simple,149,2655.0,30.18,SUCCESS,3.0
+simple,150,2729.0,29.16,SUCCESS,1.0
+simple,151,3525.0,25.6,SUCCESS,1.0
+simple,152,2980.0,26.94,SUCCESS,1.0
+simple,153,2346.0,34.48,SUCCESS,1.0
+simple,154,3662.0,26.36,SUCCESS,4.0
+simple,155,3018.0,27.55,SUCCESS,3.0
+simple,156,4911.0,26.49,SUCCESS,5.0
+simple,157,3156.0,25.71,SUCCESS,3.0
+simple,158,2910.0,26.46,SUCCESS,4.0
+simple,159,2846.0,26.48,SUCCESS,4.0
+simple,160,2617.0,31.64,SUCCESS,1.0
+simple,161,2452.0,32.31,SUCCESS,2.0
+simple,162,3393.0,25.38,SUCCESS,5.0
+simple,163,4715.0,23.22,SUCCESS,4.0
+simple,164,3012.0,26.11,SUCCESS,3.0
+simple,165,2680.0,29.45,SUCCESS,2.0
+simple,166,,,SIM_ERRORSimulation still running after step limit,
+simple,167,2649.0,29.19,SUCCESS,3.0
+simple,168,2530.0,32.82,SUCCESS,1.0
+simple,169,2467.0,32.0,SUCCESS,2.0
+simple,170,3245.0,24.99,SUCCESS,3.0
+simple,171,2450.0,32.32,SUCCESS,1.0
+simple,172,2521.0,32.76,SUCCESS,1.0
+simple,173,2368.0,34.22,SUCCESS,1.0
+simple,174,2530.0,31.59,SUCCESS,1.0
+simple,175,3632.0,26.26,SUCCESS,4.0
+simple,176,6909.0,22.8,SUCCESS,5.0
+simple,177,2451.0,31.26,SUCCESS,4.0
+simple,178,2402.0,32.46,SUCCESS,2.0
+simple,179,2332.0,34.2,SUCCESS,2.0
+simple,180,3968.0,22.59,SUCCESS,5.0
+simple,181,2920.0,29.9,SUCCESS,5.0
+simple,182,2784.0,30.38,SUCCESS,3.0
+simple,183,2288.0,32.51,SUCCESS,1.0
+simple,184,2445.0,33.06,SUCCESS,3.0
+simple,185,2619.0,33.88,SUCCESS,2.0
+simple,186,3028.0,28.12,SUCCESS,5.0
+simple,187,,,SIM_ERRORSimulation still running after step limit,
+simple,188,2435.0,31.54,SUCCESS,1.0
+simple,189,2445.0,31.25,SUCCESS,2.0
+simple,190,2587.0,33.86,SUCCESS,1.0
+simple,191,2857.0,28.75,SUCCESS,3.0
+simple,192,2727.0,28.36,SUCCESS,5.0
+simple,193,2717.0,33.3,SUCCESS,4.0
+simple,194,2906.0,29.98,SUCCESS,2.0
+simple,195,3051.0,28.36,SUCCESS,4.0
+simple,196,3979.0,22.9,SUCCESS,5.0
+simple,197,2311.0,33.44,SUCCESS,2.0
+simple,198,3368.0,24.23,SUCCESS,3.0
+simple,199,2790.0,30.13,SUCCESS,2.0
+heft,100,2359.0,32.43,SUCCESS,2.0
+heft,101,4340.0,27.16,SUCCESS,4.0
+heft,102,3092.0,27.35,SUCCESS,4.0
+heft,103,3118.0,26.28,SUCCESS,3.0
+heft,104,2428.0,33.44,SUCCESS,1.0
+heft,105,2969.0,27.85,SUCCESS,3.0
+heft,106,4040.0,23.08,SUCCESS,4.0
+heft,107,2476.0,33.38,SUCCESS,1.0
+heft,108,2464.0,33.56,SUCCESS,3.0
+heft,109,,,SIM_ERRORSimulation still running after step limit,
+heft,110,2950.0,26.23,SUCCESS,5.0
+heft,111,4736.0,25.45,SUCCESS,5.0
+heft,112,2845.0,26.7,SUCCESS,1.0
+heft,113,3097.0,26.52,SUCCESS,4.0
+heft,114,,,SIM_ERRORSimulation still running after step limit,
+heft,115,2297.0,34.58,SUCCESS,3.0
+heft,116,2657.0,28.64,SUCCESS,3.0
+heft,117,3828.0,23.55,SUCCESS,5.0
+heft,118,2547.0,33.76,SUCCESS,2.0
+heft,119,2805.0,27.54,SUCCESS,3.0
+heft,120,2375.0,31.94,SUCCESS,2.0
+heft,121,,,SIM_ERRORSimulation still running after step limit,
+heft,122,3171.0,26.12,SUCCESS,5.0
+heft,123,3312.0,26.43,SUCCESS,4.0
+heft,124,2323.0,31.38,SUCCESS,1.0
+heft,125,3645.0,25.4,SUCCESS,3.0
+heft,126,3264.0,26.53,SUCCESS,4.0
+heft,127,2454.0,28.88,SUCCESS,2.0
+heft,128,2541.0,32.27,SUCCESS,1.0
+heft,129,,,SIM_ERRORSimulation still running after step limit,
+heft,130,3125.0,26.39,SUCCESS,5.0
+heft,131,2734.0,30.71,SUCCESS,1.0
+heft,132,2384.0,31.7,SUCCESS,1.0
+heft,133,3241.0,25.62,SUCCESS,3.0
+heft,134,,,SIM_ERRORSimulation still running after step limit,
+heft,135,2463.0,29.85,SUCCESS,1.0
+heft,136,3735.0,21.95,SUCCESS,5.0
+heft,137,2984.0,27.71,SUCCESS,1.0
+heft,138,3222.0,25.85,SUCCESS,4.0
+heft,139,2721.0,28.04,SUCCESS,4.0
+heft,140,2490.0,33.97,SUCCESS,2.0
+heft,141,,,SIM_ERRORSimulation still running after step limit,
+heft,142,3391.0,27.16,SUCCESS,3.0
+heft,143,2868.0,27.29,SUCCESS,4.0
+heft,144,3240.0,25.08,SUCCESS,2.0
+heft,145,3257.0,26.02,SUCCESS,4.0
+heft,146,3823.0,23.71,SUCCESS,3.0
+heft,147,2653.0,29.45,SUCCESS,2.0
+heft,148,4405.0,24.4,SUCCESS,3.0
+heft,149,3973.0,23.49,SUCCESS,5.0
+heft,150,3670.0,25.46,SUCCESS,2.0
+heft,151,,,SIM_ERRORSimulation still running after step limit,
+heft,152,3362.0,25.19,SUCCESS,2.0
+heft,153,,,SIM_ERRORSimulation still running after step limit,
+heft,154,,,"SIM_ERRORAll robots have critically faulted, unable to continue.",
+heft,155,3045.0,28.7,SUCCESS,4.0
+heft,156,3104.0,27.49,SUCCESS,4.0
+heft,157,2567.0,32.43,SUCCESS,1.0
+heft,158,2432.0,32.31,SUCCESS,2.0
+heft,159,6269.0,31.03,SUCCESS,5.0
+heft,160,2922.0,25.94,SUCCESS,4.0
+heft,161,2395.0,33.29,SUCCESS,1.0
+heft,162,2800.0,29.1,SUCCESS,4.0
+heft,163,2494.0,33.53,SUCCESS,1.0
+heft,164,,,SIM_ERRORSimulation still running after step limit,
+heft,165,4685.0,21.1,SUCCESS,5.0
+heft,166,3699.0,23.89,SUCCESS,3.0
+heft,167,2940.0,27.06,SUCCESS,4.0
+heft,168,3102.0,28.69,SUCCESS,5.0
+heft,169,2402.0,32.3,SUCCESS,1.0
+heft,170,3151.0,24.4,SUCCESS,2.0
+heft,171,2464.0,32.42,SUCCESS,2.0
+heft,172,2673.0,32.92,SUCCESS,4.0
+heft,173,2941.0,26.05,SUCCESS,5.0
+heft,174,4924.0,24.95,SUCCESS,4.0
+heft,175,2521.0,31.78,SUCCESS,1.0
+heft,176,2918.0,25.69,SUCCESS,3.0
+heft,177,2897.0,26.8,SUCCESS,5.0
+heft,178,3648.0,23.97,SUCCESS,3.0
+heft,179,2295.0,32.48,SUCCESS,1.0
+heft,180,2684.0,27.92,SUCCESS,3.0
+heft,181,2841.0,29.22,SUCCESS,3.0
+heft,182,2783.0,31.03,SUCCESS,2.0
+heft,183,2328.0,31.7,SUCCESS,2.0
+heft,184,2407.0,34.07,SUCCESS,2.0
+heft,185,3318.0,25.85,SUCCESS,5.0
+heft,186,3005.0,26.98,SUCCESS,4.0
+heft,187,3230.0,28.69,SUCCESS,2.0
+heft,188,4624.0,21.95,SUCCESS,5.0
+heft,189,2183.0,35.5,SUCCESS,1.0
+heft,190,2691.0,30.27,SUCCESS,2.0
+heft,191,2464.0,33.03,SUCCESS,1.0
+heft,192,2641.0,28.94,SUCCESS,2.0
+heft,193,2672.0,33.79,SUCCESS,3.0
+heft,194,2693.0,31.25,SUCCESS,1.0
+heft,195,2989.0,28.21,SUCCESS,3.0
+heft,196,2613.0,27.86,SUCCESS,2.0
+heft,197,2720.0,28.3,SUCCESS,4.0
+heft,198,2351.0,28.83,SUCCESS,2.0
+heft,199,3130.0,26.19,SUCCESS,5.0
+dls,100,3269.0,24.4,SUCCESS,5.0
+dls,101,2960.0,27.19,SUCCESS,3.0
+dls,102,2885.0,29.48,SUCCESS,3.0
+dls,103,3251.0,26.65,SUCCESS,4.0
+dls,104,2572.0,29.42,SUCCESS,2.0
+dls,105,3203.0,26.36,SUCCESS,4.0
+dls,106,3873.0,23.77,SUCCESS,3.0
+dls,107,2479.0,32.01,SUCCESS,2.0
+dls,108,2397.0,31.85,SUCCESS,1.0
+dls,109,2824.0,28.98,SUCCESS,4.0
+dls,110,2221.0,31.63,SUCCESS,1.0
+dls,111,2649.0,31.18,SUCCESS,3.0
+dls,112,3993.0,21.23,SUCCESS,3.0
+dls,113,2624.0,33.08,SUCCESS,2.0
+dls,114,2620.0,33.31,SUCCESS,1.0
+dls,115,,,"SIM_ERRORAll robots have critically faulted, unable to continue.",
+dls,116,2267.0,32.2,SUCCESS,1.0
+dls,117,2472.0,33.59,SUCCESS,1.0
+dls,118,2844.0,29.55,SUCCESS,3.0
+dls,119,2452.0,31.71,SUCCESS,1.0
+dls,120,2869.0,26.95,SUCCESS,4.0
+dls,121,2413.0,34.28,SUCCESS,1.0
+dls,122,3144.0,28.07,SUCCESS,4.0
+dls,123,,,SIM_ERRORSimulation still running after step limit,
+dls,124,2601.0,31.57,SUCCESS,2.0
+dls,125,,,SIM_ERRORSimulation still running after step limit,
+dls,126,2933.0,29.3,SUCCESS,1.0
+dls,127,2256.0,31.66,SUCCESS,1.0
+dls,128,3248.0,25.48,SUCCESS,2.0
+dls,129,2949.0,26.56,SUCCESS,1.0
+dls,130,2477.0,33.64,SUCCESS,2.0
+dls,131,3982.0,24.84,SUCCESS,3.0
+dls,132,2460.0,31.67,SUCCESS,2.0
+dls,133,2530.0,33.28,SUCCESS,2.0
+dls,134,2684.0,29.05,SUCCESS,3.0
+dls,135,2501.0,28.85,SUCCESS,2.0
+dls,136,2292.0,33.64,SUCCESS,2.0
+dls,137,3430.0,24.66,SUCCESS,3.0
+dls,138,,,SIM_ERRORSimulation still running after step limit,
+dls,139,2700.0,28.86,SUCCESS,3.0
+dls,140,3054.0,28.36,SUCCESS,4.0
+dls,141,3151.0,27.42,SUCCESS,4.0
+dls,142,2787.0,31.58,SUCCESS,2.0
+dls,143,3024.0,26.12,SUCCESS,5.0
+dls,144,,,SIM_ERRORSimulation still running after step limit,
+dls,145,2602.0,29.53,SUCCESS,1.0
+dls,146,4098.0,21.14,SUCCESS,4.0
+dls,147,2671.0,27.19,SUCCESS,3.0
+dls,148,4506.0,22.1,SUCCESS,4.0
+dls,149,2752.0,28.59,SUCCESS,4.0
+dls,150,,,SIM_ERRORSimulation still running after step limit,
+dls,151,3644.0,25.63,SUCCESS,2.0
+dls,152,,,SIM_ERRORSimulation still running after step limit,
+dls,153,2828.0,28.7,SUCCESS,2.0
+dls,154,2454.0,32.98,SUCCESS,2.0
+dls,155,2572.0,32.55,SUCCESS,2.0
+dls,156,3019.0,26.19,SUCCESS,2.0
+dls,157,,,SIM_ERRORSimulation still running after step limit,
+dls,158,3832.0,23.6,SUCCESS,5.0
+dls,159,2657.0,27.79,SUCCESS,1.0
+dls,160,2885.0,28.9,SUCCESS,3.0
+dls,161,2730.0,30.41,SUCCESS,5.0
+dls,162,2546.0,31.33,SUCCESS,3.0
+dls,163,3129.0,26.69,SUCCESS,2.0
+dls,164,2424.0,33.65,SUCCESS,1.0
+dls,165,3616.0,25.21,SUCCESS,3.0
+dls,166,3238.0,26.05,SUCCESS,1.0
+dls,167,4387.0,22.38,SUCCESS,5.0
+dls,168,3092.0,27.47,SUCCESS,4.0
+dls,169,2951.0,27.35,SUCCESS,3.0
+dls,170,2506.0,31.92,SUCCESS,1.0
+dls,171,3241.0,27.28,SUCCESS,5.0
+dls,172,3234.0,27.2,SUCCESS,5.0
+dls,173,2877.0,26.87,SUCCESS,3.0
+dls,174,,,SIM_ERRORSimulation still running after step limit,
+dls,175,3137.0,26.69,SUCCESS,3.0
+dls,176,2672.0,28.98,SUCCESS,2.0
+dls,177,2420.0,34.56,SUCCESS,3.0
+dls,178,4065.0,22.96,SUCCESS,5.0
+dls,179,2349.0,33.11,SUCCESS,4.0
+dls,180,2540.0,32.36,SUCCESS,2.0
+dls,181,2884.0,29.46,SUCCESS,4.0
+dls,182,2576.0,34.24,SUCCESS,1.0
+dls,183,2468.0,30.27,SUCCESS,3.0
+dls,184,2389.0,32.93,SUCCESS,1.0
+dls,185,2658.0,32.68,SUCCESS,4.0
+dls,186,2341.0,33.72,SUCCESS,1.0
+dls,187,,,"SIM_ERRORAll robots have critically faulted, unable to continue.",
+dls,188,2435.0,33.9,SUCCESS,1.0
+dls,189,3211.0,24.77,SUCCESS,5.0
+dls,190,3180.0,26.74,SUCCESS,4.0
+dls,191,2479.0,32.8,SUCCESS,2.0
+dls,192,2657.0,28.21,SUCCESS,3.0
+dls,193,2845.0,30.35,SUCCESS,5.0
+dls,194,4249.0,25.89,SUCCESS,5.0
+dls,195,2557.0,34.24,SUCCESS,1.0
+dls,196,2624.0,27.74,SUCCESS,4.0
+dls,197,2271.0,32.85,SUCCESS,1.0
+dls,198,3566.0,24.12,SUCCESS,4.0
+dls,199,3118.0,25.3,SUCCESS,4.0
+heft-dls,100,2747.0,27.01,SUCCESS,4.0
+heft-dls,101,2904.0,27.5,SUCCESS,2.0
+heft-dls,102,2706.0,30.86,SUCCESS,1.0
+heft-dls,103,2784.0,30.29,SUCCESS,1.0
+heft-dls,104,,,"SIM_ERRORAll robots have critically faulted, unable to continue.",
+heft-dls,105,2474.0,33.54,SUCCESS,1.0
+heft-dls,106,2859.0,27.41,SUCCESS,1.0
+heft-dls,107,2598.0,30.49,SUCCESS,3.0
+heft-dls,108,2438.0,33.47,SUCCESS,2.0
+heft-dls,109,2448.0,31.21,SUCCESS,1.0
+heft-dls,110,2256.0,32.78,SUCCESS,2.0
+heft-dls,111,2459.0,32.88,SUCCESS,1.0
+heft-dls,112,3799.0,23.84,SUCCESS,2.0
+heft-dls,113,2555.0,31.18,SUCCESS,1.0
+heft-dls,114,3244.0,27.2,SUCCESS,4.0
+heft-dls,115,2269.0,33.67,SUCCESS,2.0
+heft-dls,116,2776.0,27.96,SUCCESS,4.0
+heft-dls,117,3608.0,24.33,SUCCESS,4.0
+heft-dls,118,3509.0,26.66,SUCCESS,5.0
+heft-dls,119,2473.0,32.22,SUCCESS,2.0
+heft-dls,120,2258.0,33.67,SUCCESS,1.0
+heft-dls,121,,,SIM_ERRORSimulation still running after step limit,
+heft-dls,122,2595.0,32.75,SUCCESS,2.0
+heft-dls,123,2328.0,31.91,SUCCESS,1.0
+heft-dls,124,2663.0,29.06,SUCCESS,3.0
+heft-dls,125,,,SIM_ERRORSimulation still running after step limit,
+heft-dls,126,,,SIM_ERRORSimulation still running after step limit,
+heft-dls,127,2778.0,28.19,SUCCESS,4.0
+heft-dls,128,4557.0,21.98,SUCCESS,5.0
+heft-dls,129,4492.0,21.03,SUCCESS,2.0
+heft-dls,130,2443.0,31.18,SUCCESS,1.0
+heft-dls,131,2926.0,28.11,SUCCESS,2.0
+heft-dls,132,2850.0,28.65,SUCCESS,4.0
+heft-dls,133,3777.0,26.84,SUCCESS,4.0
+heft-dls,134,2298.0,32.91,SUCCESS,1.0
+heft-dls,135,2855.0,26.04,SUCCESS,4.0
+heft-dls,136,2809.0,26.39,SUCCESS,4.0
+heft-dls,137,3006.0,28.34,SUCCESS,2.0
+heft-dls,138,3032.0,27.36,SUCCESS,3.0
+heft-dls,139,2476.0,28.51,SUCCESS,2.0
+heft-dls,140,2471.0,32.56,SUCCESS,1.0
+heft-dls,141,2498.0,32.34,SUCCESS,2.0
+heft-dls,142,3592.0,26.19,SUCCESS,4.0
+heft-dls,143,2407.0,31.0,SUCCESS,3.0
+heft-dls,144,2721.0,29.94,SUCCESS,1.0
+heft-dls,145,2615.0,28.94,SUCCESS,2.0
+heft-dls,146,2857.0,25.95,SUCCESS,1.0
+heft-dls,147,2361.0,32.07,SUCCESS,1.0
+heft-dls,148,2849.0,26.09,SUCCESS,1.0
+heft-dls,149,2354.0,33.14,SUCCESS,1.0
+heft-dls,150,,,SIM_ERRORSimulation still running after step limit,
+heft-dls,151,4795.0,22.46,SUCCESS,3.0
+heft-dls,152,5507.0,29.17,SUCCESS,3.0
+heft-dls,153,5090.0,27.62,SUCCESS,3.0
+heft-dls,154,2399.0,31.84,SUCCESS,1.0
+heft-dls,155,2486.0,32.12,SUCCESS,1.0
+heft-dls,156,2516.0,32.42,SUCCESS,1.0
+heft-dls,157,2619.0,33.31,SUCCESS,2.0
+heft-dls,158,2482.0,29.59,SUCCESS,3.0
+heft-dls,159,2760.0,26.22,SUCCESS,2.0
+heft-dls,160,2953.0,26.33,SUCCESS,5.0
+heft-dls,161,2459.0,33.22,SUCCESS,3.0
+heft-dls,162,2445.0,31.08,SUCCESS,2.0
+heft-dls,163,4100.0,23.87,SUCCESS,3.0
+heft-dls,164,2480.0,33.0,SUCCESS,2.0
+heft-dls,165,2424.0,33.45,SUCCESS,1.0
+heft-dls,166,3541.0,26.38,SUCCESS,2.0
+heft-dls,167,2382.0,34.06,SUCCESS,2.0
+heft-dls,168,2994.0,29.02,SUCCESS,3.0
+heft-dls,169,3038.0,25.51,SUCCESS,4.0
+heft-dls,170,,,SIM_ERRORSimulation still running after step limit,
+heft-dls,171,2992.0,26.19,SUCCESS,3.0
+heft-dls,172,2528.0,34.48,SUCCESS,2.0
+heft-dls,173,2816.0,27.15,SUCCESS,2.0
+heft-dls,174,3056.0,26.62,SUCCESS,2.0
+heft-dls,175,2678.0,31.53,SUCCESS,2.0
+heft-dls,176,3033.0,26.59,SUCCESS,4.0
+heft-dls,177,2375.0,30.75,SUCCESS,2.0
+heft-dls,178,2369.0,29.78,SUCCESS,1.0
+heft-dls,179,2333.0,32.43,SUCCESS,3.0
+heft-dls,180,3180.0,26.2,SUCCESS,4.0
+heft-dls,181,2446.0,32.49,SUCCESS,2.0
+heft-dls,182,2885.0,29.39,SUCCESS,4.0
+heft-dls,183,2661.0,27.61,SUCCESS,5.0
+heft-dls,184,2569.0,29.76,SUCCESS,4.0
+heft-dls,185,2620.0,32.61,SUCCESS,3.0
+heft-dls,186,2731.0,28.73,SUCCESS,3.0
+heft-dls,187,2712.0,30.46,SUCCESS,1.0
+heft-dls,188,2792.0,27.98,SUCCESS,3.0
+heft-dls,189,2893.0,28.58,SUCCESS,4.0
+heft-dls,190,2944.0,27.96,SUCCESS,3.0
+heft-dls,191,2888.0,27.75,SUCCESS,4.0
+heft-dls,192,2272.0,34.69,SUCCESS,1.0
+heft-dls,193,2569.0,33.14,SUCCESS,1.0
+heft-dls,194,3436.0,26.27,SUCCESS,3.0
+heft-dls,195,2595.0,34.2,SUCCESS,2.0
+heft-dls,196,2560.0,28.31,SUCCESS,1.0
+heft-dls,197,2812.0,25.67,SUCCESS,5.0
+heft-dls,198,2267.0,32.95,SUCCESS,1.0
+heft-dls,199,2995.0,27.33,SUCCESS,3.0
+heft-dls-dyn,100,2209.0,33.71,SUCCESS,1.0
+heft-dls-dyn,101,,,"SIM_ERRORAll robots have critically faulted, unable to continue.",
+heft-dls-dyn,102,2792.0,33.74,SUCCESS,2.0
+heft-dls-dyn,103,,,SIM_ERRORSimulation still running after step limit,
+heft-dls-dyn,104,5775.0,31.64,SUCCESS,4.0
+heft-dls-dyn,105,,,SIM_ERRORSimulation still running after step limit,
+heft-dls-dyn,106,,,SIM_ERRORSimulation still running after step limit,
+heft-dls-dyn,107,,,"SIM_ERRORAll robots have critically faulted, unable to continue.",
+heft-dls-dyn,108,2523.0,32.37,SUCCESS,4.0
+heft-dls-dyn,109,2700.0,32.69,SUCCESS,3.0
+heft-dls-dyn,110,2826.0,29.52,SUCCESS,4.0
+heft-dls-dyn,111,2587.0,33.12,SUCCESS,2.0
+heft-dls-dyn,112,,,SIM_ERRORSimulation still running after step limit,
+heft-dls-dyn,113,,,SIM_ERRORSimulation still running after step limit,
+heft-dls-dyn,114,2749.0,34.45,SUCCESS,2.0
+heft-dls-dyn,115,2215.0,32.62,SUCCESS,1.0
+heft-dls-dyn,116,2389.0,32.11,SUCCESS,2.0
+heft-dls-dyn,117,3588.0,26.18,SUCCESS,3.0
+heft-dls-dyn,118,2519.0,34.06,SUCCESS,1.0
+heft-dls-dyn,119,3529.0,25.77,SUCCESS,5.0
+heft-dls-dyn,120,3812.0,36.9,SUCCESS,5.0
+heft-dls-dyn,121,,,SIM_ERRORSimulation still running after step limit,
+heft-dls-dyn,122,2504.0,33.34,SUCCESS,1.0
+heft-dls-dyn,123,2730.0,33.87,SUCCESS,2.0
+heft-dls-dyn,124,4022.0,30.08,SUCCESS,5.0
+heft-dls-dyn,125,2398.0,33.93,SUCCESS,1.0
+heft-dls-dyn,126,3162.0,26.79,SUCCESS,3.0
+heft-dls-dyn,127,2643.0,29.5,SUCCESS,3.0
+heft-dls-dyn,128,3382.0,27.29,SUCCESS,3.0
+heft-dls-dyn,129,,,SIM_ERRORSimulation still running after step limit,
+heft-dls-dyn,130,2897.0,28.74,SUCCESS,4.0
+heft-dls-dyn,131,,,SIM_ERRORSimulation still running after step limit,
+heft-dls-dyn,132,2811.0,29.13,SUCCESS,3.0
+heft-dls-dyn,133,2525.0,32.73,SUCCESS,1.0
+heft-dls-dyn,134,2336.0,34.86,SUCCESS,2.0
+heft-dls-dyn,135,,,SIM_ERRORSimulation still running after step limit,
+heft-dls-dyn,136,2227.0,31.95,SUCCESS,1.0
+heft-dls-dyn,137,,,SIM_ERRORSimulation still running after step limit,
+heft-dls-dyn,138,2674.0,30.51,SUCCESS,2.0
+heft-dls-dyn,139,2176.0,32.01,SUCCESS,1.0
+heft-dls-dyn,140,3274.0,32.06,SUCCESS,5.0
+heft-dls-dyn,141,2567.0,30.97,SUCCESS,3.0
+heft-dls-dyn,142,3602.0,28.45,SUCCESS,5.0
+heft-dls-dyn,143,2390.0,33.4,SUCCESS,2.0
+heft-dls-dyn,144,6261.0,34.36,SUCCESS,4.0
+heft-dls-dyn,145,2851.0,28.06,SUCCESS,3.0
+heft-dls-dyn,146,4392.0,26.2,SUCCESS,5.0
+heft-dls-dyn,147,3206.0,32.46,SUCCESS,5.0
+heft-dls-dyn,148,2865.0,28.32,SUCCESS,2.0
+heft-dls-dyn,149,2603.0,32.49,SUCCESS,2.0
+heft-dls-dyn,150,5830.0,37.29,SUCCESS,3.0
+heft-dls-dyn,151,,,SIM_ERRORSimulation still running after step limit,
+heft-dls-dyn,152,,,"SIM_ERRORAll robots have critically faulted, unable to continue.",
+heft-dls-dyn,153,,,SIM_ERRORSimulation still running after step limit,
+heft-dls-dyn,154,2960.0,30.65,SUCCESS,3.0
+heft-dls-dyn,155,3299.0,41.82,SUCCESS,5.0
+heft-dls-dyn,156,3028.0,26.81,SUCCESS,3.0
+heft-dls-dyn,157,3932.0,24.24,SUCCESS,4.0
+heft-dls-dyn,158,2324.0,35.31,SUCCESS,1.0
+heft-dls-dyn,159,2824.0,38.57,SUCCESS,3.0
+heft-dls-dyn,160,2846.0,27.39,SUCCESS,2.0
+heft-dls-dyn,161,2600.0,31.57,SUCCESS,4.0
+heft-dls-dyn,162,2438.0,31.49,SUCCESS,1.0
+heft-dls-dyn,163,5207.0,28.67,SUCCESS,5.0
+heft-dls-dyn,164,3321.0,26.3,SUCCESS,4.0
+heft-dls-dyn,165,3766.0,39.56,SUCCESS,4.0
+heft-dls-dyn,166,,,SIM_ERRORSimulation still running after step limit,
+heft-dls-dyn,167,2275.0,34.71,SUCCESS,1.0
+heft-dls-dyn,168,2930.0,28.09,SUCCESS,2.0
+heft-dls-dyn,169,,,SIM_ERRORSimulation still running after step limit,
+heft-dls-dyn,170,4018.0,24.3,SUCCESS,4.0
+heft-dls-dyn,171,3002.0,28.94,SUCCESS,4.0
+heft-dls-dyn,172,2593.0,34.87,SUCCESS,3.0
+heft-dls-dyn,173,2880.0,28.31,SUCCESS,4.0
+heft-dls-dyn,174,4195.0,24.42,SUCCESS,3.0
+heft-dls-dyn,175,,,SIM_ERRORSimulation still running after step limit,
+heft-dls-dyn,176,2353.0,33.04,SUCCESS,1.0
+heft-dls-dyn,177,2347.0,32.34,SUCCESS,1.0
+heft-dls-dyn,178,3885.0,31.03,SUCCESS,4.0
+heft-dls-dyn,179,2446.0,32.94,SUCCESS,5.0
+heft-dls-dyn,180,2354.0,35.23,SUCCESS,1.0
+heft-dls-dyn,181,2423.0,33.35,SUCCESS,1.0
+heft-dls-dyn,182,3156.0,30.65,SUCCESS,5.0
+heft-dls-dyn,183,2590.0,32.03,SUCCESS,4.0
+heft-dls-dyn,184,2781.0,29.67,SUCCESS,5.0
+heft-dls-dyn,185,2611.0,34.77,SUCCESS,1.0
+heft-dls-dyn,186,2391.0,33.3,SUCCESS,2.0
+heft-dls-dyn,187,3894.0,33.72,SUCCESS,3.0
+heft-dls-dyn,188,3535.0,25.79,SUCCESS,4.0
+heft-dls-dyn,189,2521.0,46.9,SUCCESS,3.0
+heft-dls-dyn,190,3197.0,27.39,SUCCESS,5.0
+heft-dls-dyn,191,,,SIM_ERRORSimulation still running after step limit,
+heft-dls-dyn,192,2677.0,31.76,SUCCESS,4.0
+heft-dls-dyn,193,2604.0,33.46,SUCCESS,2.0
+heft-dls-dyn,194,3547.0,31.86,SUCCESS,4.0
+heft-dls-dyn,195,3281.0,26.54,SUCCESS,5.0
+heft-dls-dyn,196,2615.0,28.94,SUCCESS,3.0
+heft-dls-dyn,197,2364.0,31.78,SUCCESS,3.0
+heft-dls-dyn,198,,,"SIM_ERRORAll robots have critically faulted, unable to continue.",
+heft-dls-dyn,199,2420.0,32.64,SUCCESS,1.0
