@@ -1,5 +1,0 @@
-source .venv/bin/activate
-
-python3 src/daggen-cli.py
-
-python3 dag.py --large=1 --medium=3 --small=2

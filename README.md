@@ -3,8 +3,10 @@ A python simulator for a robotic smart warehouse, with many configurable propert
 
 ## Project Structure
 
-- simu/: simulator (Python)
-- viz/: visualisor (Unity)
+- simulation/simu/: simulator (Python)
+- simulation/viz/: visualisor (Unity)
+- results/: evaluation results (csvs) and scripts to generate plots
+- HEFT-DLS_simulation_run.mp4: Video of a full HEFT-DLS run in Unity
 
 ## Requirements
 
